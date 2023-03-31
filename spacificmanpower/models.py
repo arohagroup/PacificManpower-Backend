@@ -16,7 +16,7 @@ class user_account(models.Model):
     gender=models.CharField(max_length=2)
     isactive=models.BooleanField()
     contact_number = models.IntegerField()
-    sms_notification_active=models.BooleanField()
+    # sms_notification_active=models.BooleanField()
     email_notification_active=models.BooleanField()
     user_image=models.ImageField(max_length=200, blank=True)
     registration_date = models.DateTimeField(auto_now_add=True)
@@ -63,7 +63,7 @@ class education_detail(models.Model):
     cgpa = models.IntegerField(blank=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
-    primary_key = ('user_account_id','certificate_degree_name', 'major')
+    # primary_key = ('user_account_id','certificate_degree_name', 'major')
 
 class experience_detail(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_ids', on_delete=models.CASCADE,default=None)
@@ -78,7 +78,7 @@ class experience_detail(models.Model):
     description=models.CharField(max_length=4000)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
-    primary_key = ('user_account_id','start_date', 'end_date')
+    # primary_key = ('user_account_id','start_date', 'end_date')
 
 class seeker_profile(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_idss', on_delete=models.CASCADE,default=None,primary_key=True)
@@ -93,11 +93,11 @@ class seeker_profile(models.Model):
 
 class seeker_skill_set(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_idsss', on_delete=models.CASCADE,default=None)
-    skill_set_id=models.IntegerField()
+    skill_set_id=models.IntegerField()# i need to add here forenkhkey from below table
     skill_level=models.IntegerField()
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
-    primary_key = ('user_account_id', 'skill_set_id')
+    # primary_key = ('user_account_id', 'skill_set_id')
 
 class skill_set(models.Model):
     skill_set_name=models.CharField(max_length=50)
@@ -117,7 +117,7 @@ class job_post(models.Model):
     is_active=models.BooleanField()
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
-    primary_key = ('posted_by_id', 'job_type_id','company_id','job_location_id')
+    # primary_key = ('posted_by_id', 'job_type_id','company_id','job_location_id')
 
 class job_post_activity(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_idssss', on_delete=models.CASCADE,default=None)
@@ -125,7 +125,7 @@ class job_post_activity(models.Model):
     apply_date=models.DateTimeField()
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
-    primary_key = ('user_account_id', 'job_post_id')
+    # primary_key = ('user_account_id', 'job_post_id')
 
 
 class job_type(models.Model):
@@ -148,4 +148,4 @@ class job_post_skill_set(models.Model):
     skill_level=models.IntegerField()
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
-    primary_key = ('skill_set_id', 'job_post_id')
+    # primary_key = ('skill_set_id', 'job_post_id')
