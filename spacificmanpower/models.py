@@ -18,7 +18,7 @@ class user_account(models.Model):
     contact_number = models.IntegerField()
     # sms_notification_active=models.BooleanField()
     email_notification_active=models.BooleanField()
-    user_image=models.ImageField(max_length=200, blank=True)
+    user_image=models.ImageField(max_length=200,null=True)
     registration_date = models.DateTimeField(auto_now_add=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)

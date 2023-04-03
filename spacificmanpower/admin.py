@@ -12,15 +12,12 @@ class UserAccountAdmin(admin.ModelAdmin):
                 'email_notification_active','user_image','registration_date','createdDate','modifiedDate')
     list_display_links = ('id', 'user_type_id') # adds links to id and name fields
 
-# class MyProfileAdmin(admin.ModelAdmin):
-#     list_display = ('id','user','profile_image','first_name','last_name','email_address','about_me','languages','location','attached_cv','createdDate','modifiedDate')
-#     list_display_links = ('id', 'profile_image') # adds links to id and name fields
+class UserLogAdmin(admin.ModelAdmin):
+    list_display = ('user_account_id','last_login_date','last_job_apply_date','createdDate','modifiedDate')
+    list_display_links = ('user_account_id','last_login_date') # adds links to id and name fields
 
-# class PostJobAdmin(admin.ModelAdmin):
-#     list_display = ('id','job_title','job_description','email_address','phone_number','categories','job_type','designation','salary','job_skills',
-#                     'job_title','application_deadline_date','country','city','zip_code','createdDate','modifiedDate')
-#     list_display_links = ('id', 'job_title') # adds links to id and name fields
 
 admin.site.register(user_type,UserTypeAdmin)
 admin.site.register(user_account, UserAccountAdmin)
+admin.site.register(user_log, UserLogAdmin)
 

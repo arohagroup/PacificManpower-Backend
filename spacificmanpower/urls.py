@@ -13,6 +13,10 @@ urlpatterns = [
     path('', include(router.urls)),
 
     path('user_type/',views.usertype.as_view()),
-    
-    path('user_account/',views.useraccount.as_view()),
+
+    path('user_save_account/',views.usersaveaccount.as_view()),
+    path('user_save_account/<int:pk>/',views.edituseraccount.as_view()),
+
+    path('user_login/',views.userlogin.as_view()),
+    path('forgot_password/<int:pk>/',views.forgotpassword.as_view()),
 ]
