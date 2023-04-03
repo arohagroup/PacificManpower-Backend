@@ -17,6 +17,8 @@ urlpatterns = [
     path('user_save_account/',views.usersaveaccount.as_view()),
     path('user_save_account/<int:pk>/',views.edituseraccount.as_view()),
 
+    path('user_log/<int:pk>/',views.userlog.as_view()),
+
     path('user_login/',views.userlogin.as_view()),
     path('forgot_password/<int:pk>/',views.forgotpassword.as_view()),
 ]

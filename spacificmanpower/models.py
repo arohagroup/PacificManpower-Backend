@@ -10,6 +10,7 @@ class user_type(models.Model):
 
 class user_account(models.Model):
     user_type_id = models.ForeignKey('user_type',related_name='usertype', on_delete=models.CASCADE,default=None)
+    username=models.CharField(max_length=122)  
     email=models.CharField(max_length=122)    
     password=models.CharField(max_length=100)
     date_of_birth=models.DateTimeField()
