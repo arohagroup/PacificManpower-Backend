@@ -15,7 +15,7 @@ class user_account(models.Model):
     email=models.CharField(max_length=122)    
     password=models.CharField(max_length=100)
     date_of_birth=models.DateTimeField()
-    gender=models.CharField(max_length=2)
+    gender=models.CharField(max_length=10)
     isactive=models.BooleanField()
     contact_number = models.IntegerField()
     # sms_notification_active=models.BooleanField()

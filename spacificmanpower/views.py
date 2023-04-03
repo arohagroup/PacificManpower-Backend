@@ -51,7 +51,8 @@ class usersaveaccount(APIView):
         userObject = user_type.objects.get(pk=request.data['user_type_id'])
         serializer = user_account_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user_type_id=userObject)
+            user_account = serializer.save(user_type_id=userObject)
+            user_log.objects.create(user_account_id=user_account)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
