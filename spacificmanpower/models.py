@@ -10,7 +10,8 @@ class user_type(models.Model):
 
 class user_account(models.Model):
     user_type_id = models.ForeignKey('user_type',related_name='usertype', on_delete=models.CASCADE,default=None)
-    username=models.CharField(max_length=122)  
+    first_name=models.CharField(max_length=122)  
+    last_name=models.CharField(max_length=122)  
     email=models.CharField(max_length=122)    
     password=models.CharField(max_length=100)
     date_of_birth=models.DateTimeField()
@@ -26,6 +27,7 @@ class user_account(models.Model):
 
 class user_log(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_id', on_delete=models.CASCADE,default=None,primary_key=True)
+    last_login_date = models.DateTimeField()
     last_login_date= models.DateTimeField()
     last_job_apply_date = models.DateTimeField(blank=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
