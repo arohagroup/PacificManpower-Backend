@@ -42,7 +42,7 @@ class company(models.Model):
     company_name=models.CharField(max_length=100)    
     profile_description=models.CharField(max_length=1000)
     business_stream_id = models.ForeignKey('business_stream',related_name='business_stream_id', on_delete=models.CASCADE,default=None)
-    establishment_date=models.DateTimeField()
+    establishment_date=models.DateField()
     company_website_url=models.CharField(max_length=500)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)

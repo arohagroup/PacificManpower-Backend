@@ -66,7 +66,7 @@ class company_serializer(serializers.ModelSerializer):
     business_stream_id=serializers.ReadOnlyField(source='business_stream_id.id')
     class Meta:
         model=company
-        fields=['id','company_name','profile_description','business_stream_id','establishment_date','company_website_url','createdDate','modifiedDate']
+        fields=['id','company_name','profile_description','business_stream_id','establishment_date','company_image','company_website_url','createdDate','modifiedDate']
 
 class company_image_serializer(serializers.ModelSerializer):
 

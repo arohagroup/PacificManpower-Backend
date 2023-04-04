@@ -110,7 +110,7 @@ class userlogin(APIView):
             user_logData = user_log.objects.last()
         except user_account.DoesNotExist:
             # User does not exist
-            return Response({"message": "User account doesn't exists"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"message": "User account doesn't exists"}, status=status.HTTP_404_NOT_FOUND)
 
         # Check the password
         if user.password == password:
@@ -129,3 +129,60 @@ class forgotpassword(APIView):
         my_model_instance.password = request.data['password']
         my_model_instance.save(update_fields=['password'])
         return Response({'success': True})
+    
+class businessstream(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = business_stream.objects.all()
+    serializer_class = business_stream_serializer
+
+    def get(self, request, format=None):
+        user_data = business_stream.objects.all().order_by('-createdDate')
+        serializer = business_stream_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = business_stream_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class companyadddetails(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = company.objects.all()
+    serializer_class = company_serializer
+
+    def get(self, request, format=None):
+        user_data = company.objects.all().order_by('-createdDate')
+        serializer = company_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = company_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def post(self, request, format=None):
+        expenseObject = business_stream.objects.get(pk=request.data['business_stream_id'])
+        serializer = company_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(business_stream_id=expenseObject)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class companyprofile(APIView):
+    def get_object(self, pk):
+        try:
+            return company.objects.get(pk=pk)
+        except company.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = company_serializer(data)
+        return Response(serializer.data)

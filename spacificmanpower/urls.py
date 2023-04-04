@@ -21,4 +21,9 @@ urlpatterns = [
 
     path('user_login/',views.userlogin.as_view()),
     path('forgot_password/<int:pk>/',views.forgotpassword.as_view()),
+
+    path('business_stream/',views.businessstream.as_view()),
+    
+    path('company_save_details/',views.companyadddetails.as_view()),
+    path('company_save_details/<int:pk>/',views.companyprofile.as_view()),
 ]
