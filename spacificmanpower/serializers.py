@@ -53,7 +53,7 @@ class user_log_serializer(serializers.ModelSerializer):
     user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
     class Meta:
         model=user_log
-        fields=['id','user_account_id','last_login_date','last_job_apply_date','createdDate','modifiedDate']
+        fields=['user_account_id','last_login_date','last_job_apply_date','createdDate','modifiedDate']
         
 #Company Porfile
 class business_stream_serializer(serializers.ModelSerializer):
