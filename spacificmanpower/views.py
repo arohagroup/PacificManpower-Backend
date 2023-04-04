@@ -47,8 +47,15 @@ class usersaveaccount(APIView):
         serializer = user_account_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
+
+    
     def post(self, request, format=None):
-        userObject = user_type.objects.get(pk=request.data['user_type_id'])
+
+        user_type_id = request.data.get('user_type_id')
+        if user_type_id:
+            userObject = user_type.objects.get(pk=user_type_id)
+            request.data['isactive'] = True
+
         serializer = user_account_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user_type_id=userObject)
