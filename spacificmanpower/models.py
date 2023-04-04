@@ -14,7 +14,7 @@ class user_account(models.Model):
     last_name=models.CharField(max_length=122)  
     email=models.CharField(max_length=122)    
     password=models.CharField(max_length=100)
-    date_of_birth=models.DateTimeField()
+    date_of_birth=models.DateField()
     gender=models.CharField(max_length=10)
     isactive=models.BooleanField()
     contact_number = models.IntegerField()
