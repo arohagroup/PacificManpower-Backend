@@ -169,23 +169,24 @@ class companyadddetails(APIView):
             business_streamObject = None
 
         serializer = company_serializer(data=request.data)
+        
         if serializer.is_valid():
-            company_obj = serializer.save(business_stream_id=business_streamObject)
-            company_id = company_obj.id
-           
-            if 'company_image' in request.data:
-                company_image_data = {
-                    'company_id': company_id,
-                    'company_image': request.data['company_image'] 
-                }
-                
-                serializer_image = company_image_serializer(data=company_image_data)
-                
-                if serializer_image.is_valid():
-                    serializer_image.save()
-                    # Update the company object with the company image
-                    company_obj.company_image = serializer_image.data['company_image']
-                    company_obj.save()
+            
+            serializer.save(business_stream_id=business_streamObject)
+            user_id = company.objects.last()
+            userlogObject = company.objects.get(pk=user_id.id)
+            
+            log_Data={
+                # 'company_id':user_id,
+                'company_image':request.data['company_image']
+            }
+
+            
+            logserializer = company_image_serializer(data=log_Data)
+
+            if logserializer.is_valid():
+                print("EXCUTED")
+                logserializer.save(company_id=userlogObject)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -270,6 +271,39 @@ class joblocation(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class educationdetail(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = education_detail.objects.all()
+    serializer_class = education_detail_serializer
+
+    def get(self, request, format=None):
+        user_data = education_detail.objects.all().order_by('-createdDate')
+        serializer = education_detail_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+class experincedetail(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = experience_detail.objects.all()
+    serializer_class = experience_detail_serializer
+
+    def get(self, request, format=None):
+        user_data = experience_detail.objects.all().order_by('-createdDate')
+        serializer = experience_detail_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+class jobtype(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = job_type.objects.all()
+    serializer_class = job_type_serializer
+
+    def get(self, request, format=None):
+        user_data = job_type.objects.all().order_by('-createdDate')
+        serializer = job_type_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
 class seekerprofile(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
 
@@ -280,20 +314,37 @@ class seekerprofile(APIView):
         user_data = seeker_profile.objects.all().order_by('-createdDate')
         serializer = seeker_profile_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
+
     
     def post(self, request, format=None):
+        if 'user_account_id' in request.data:
+            business_streamObject = seeker_profile.objects.get(pk=request.data['user_account_id'])
+        else:
+            
+            business_streamObject = None
 
-        user_account_id = request.data.get('user_account_idss')
-        userObject = None 
-        if user_account_id:
-            userObject = seeker_profile.objects.get(pk=user_account_id)
-            request.data['user_account_id'] = userObject.id 
         serializer = seeker_profile_serializer(data=request.data)
-
+        
         if serializer.is_valid():
-            serializer.save(user_account_id=userObject)
+            
+            serializer.save(user_account_id=business_streamObject)
+            # user_id = company.objects.last()
+            # userlogObject = company.objects.get(pk=user_id.id)
+            
+            # log_Data={
+            #     # 'company_id':user_id,
+            #     'company_image':request.data['company_image']
+            # }
+
+            
+            # logserializer = company_image_serializer(data=log_Data)
+
+            # if logserializer.is_valid():
+            #     print("EXCUTED")
+            #     logserializer.save(company_id=userlogObject)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
