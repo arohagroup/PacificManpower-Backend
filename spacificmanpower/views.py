@@ -174,6 +174,7 @@ class companyadddetails(APIView):
             
             serializer.save(business_stream_id=business_streamObject)
             user_id = company.objects.last()
+            print(user_id)
             userlogObject = company.objects.get(pk=user_id.id)
             
             log_Data={
@@ -226,11 +227,41 @@ class postjob(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        serializer = job_post_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Extract data from request.data
+        street_address = request.data.get('street_address')
+        city = request.data.get('city')
+        state = request.data.get('state')
+        country = request.data.get('country')
+        zip = request.data.get('zip')
+        jobtypeid=request.data.get('job_type_id')
+        companyid=request.data.get('company_id')
+
+        joblocation = job_location(street_address=street_address, city=city, state=state, country=country,zip=zip)
+        joblocation.save()
+
+        job_type_id = job_type.objects.get(id=jobtypeid)
+        company_id = company.objects.get(id=companyid)
+        is_company_name_hidden = request.data.get('is_company_name_hidden')
+        job_description = request.data.get('job_description')
+        job_location_id = joblocation.id
+        created_date=request.data.get('created_date')
+        is_active = request.data.get('is_active')
+
+        job_location_instance = job_location.objects.get(id=job_location_id)
+
+        jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,
+                         job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active)
+        jobpost.save()
+
+
+        skill_level=request.data.get('skill_level')
+        job_post_id=jobpost.id
+        job_post_instance = job_post.objects.get(id=job_post_id)
+        
+        jobpostskillset=job_post_skill_set(skill_level=skill_level,job_post_id=job_post_instance)
+        jobpostskillset.save()
+
+        return Response({'message': 'Job_location data created successfully.'})
 
 class editjob(APIView):
     def get_object(self, pk):

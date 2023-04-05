@@ -125,8 +125,8 @@ class job_post_skill_set_serializer(serializers.ModelSerializer):
     
     skill_set_id=serializers.ReadOnlyField(source='skill_set_id.id')
     class Meta:
-        model=job_type
-        fields=['id','skill_set_id','createdDate','modifiedDate']
+        model=job_post_skill_set
+        fields=['id','skill_set_id','skill_level','createdDate','modifiedDate']
 
 class job_type_serializer(serializers.ModelSerializer):
     class Meta:
@@ -140,8 +140,7 @@ class job_post_serializer(serializers.ModelSerializer):
     class Meta:
         model=job_post
         fields=['id','posted_by_id','job_type_id','company_id','is_company_name_hidden','created_date',
-                'job_description','is_active','street_address','city','state','country'
-                ,'zip','createdDate','modifiedDate']
+                'job_description','is_active','job_location_id','createdDate','modifiedDate']
 
 class job_location_serializer(serializers.ModelSerializer):
     class Meta:
