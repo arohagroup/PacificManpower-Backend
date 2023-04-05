@@ -115,7 +115,7 @@ class job_post(models.Model):
     is_company_name_hidden=models.BooleanField()
     created_date=models.DateTimeField()
     job_description=models.CharField(max_length=500)
-    job_location_id = models.ForeignKey('job_location',related_name='job_location_id', on_delete=models.CASCADE,default=None)
+    # job_location_id = models.ForeignKey('job_location',related_name='job_location_id', on_delete=models.CASCADE,default=None)
     is_active=models.BooleanField()
     street_address=models.CharField(max_length=100)
     city=models.CharField(max_length=50)

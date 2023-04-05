@@ -140,7 +140,7 @@ class job_post_serializer(serializers.ModelSerializer):
     class Meta:
         model=job_post
         fields=['id','posted_by_id','job_type_id','company_id','is_company_name_hidden','created_date',
-                'job_description','job_location_id','is_active','street_address','city','state','country'
+                'job_description','is_active','street_address','city','state','country'
                 ,'zip','createdDate','modifiedDate']
 
 class job_location_serializer(serializers.ModelSerializer):

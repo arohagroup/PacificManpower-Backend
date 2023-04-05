@@ -34,7 +34,9 @@ urlpatterns = [
 
     path('post_job/',views.postjob.as_view()),
     path('post_job/<int:pk>/',views.editjob.as_view()),
+    
     path('job_type/',views.jobtype.as_view()),
+    path('jobskillset/',views.skillset.as_view()),
 
     path('job_location/',views.joblocation.as_view()),
 ]
