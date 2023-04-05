@@ -160,36 +160,20 @@ class companyadddetails(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
+        company_name = request.data.get('street_address')
+        profile_description = request.data.get('city')
+        business_stream_id = request.data.get('business_stream_id')
 
-        if 'business_stream_id' in request.data:
-          
-            business_streamObject = business_stream.objects.get(pk=request.data['business_stream_id'])
-        else:
-            
-            business_streamObject = None
+        establishment_date = request.data.get('establishment_date')
+        company_website_url = request.data.get('company_website_url')
 
-        serializer = company_serializer(data=request.data)
-        
-        if serializer.is_valid():
-            
-            serializer.save(business_stream_id=business_streamObject)
-            user_id = company.objects.last()
-            print(user_id)
-            userlogObject = company.objects.get(pk=user_id.id)
-            
-            log_Data={
-                # 'company_id':user_id,
-                'company_image':request.data['company_image']
-            }
+        job_type_id = job_type.objects.get(id=business_stream_id)
 
-            
-            logserializer = company_image_serializer(data=log_Data)
+        company = company(company_name=company_name, profile_description=profile_description, business_stream_id=business_stream_id, 
+                              establishment_date=establishment_date,company_website_url=company_website_url)
+        company.save()  
 
-            if logserializer.is_valid():
-                print("EXCUTED")
-                logserializer.save(company_id=userlogObject)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class companyprofile(APIView):
