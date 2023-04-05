@@ -253,7 +253,7 @@ class postjob(APIView):
                          job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active)
         jobpost.save()
 
-
+        print(jobpost.id)
         skill_level=request.data.get('skill_level')
         job_post_id=jobpost.id
         job_post_instance = job_post.objects.get(id=job_post_id)
