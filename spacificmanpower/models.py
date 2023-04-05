@@ -41,14 +41,14 @@ class business_stream(models.Model):
 class company(models.Model):
     company_name=models.CharField(max_length=100)    
     profile_description=models.CharField(max_length=1000)
-    business_stream_id = models.ForeignKey('business_stream',related_name='business_stream_id', on_delete=models.CASCADE,default=None)
+    business_stream_id = models.ForeignKey('business_stream',related_name='business_stream_id', on_delete=models.CASCADE,default=None,null=True)
     establishment_date=models.DateField()
     company_website_url=models.CharField(max_length=500)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
 class company_image(models.Model):
-    company_id = models.ForeignKey('company',related_name='company_id_company_image', on_delete=models.CASCADE,default=None)
+    company_id = models.ForeignKey('company',related_name='company_id_company_image', on_delete=models.CASCADE,default=None,null=True)
     company_image=models.ImageField(max_length=200, blank=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
@@ -109,7 +109,7 @@ class skill_set(models.Model):
 #Job Post Management
 
 class job_post(models.Model):
-    posted_by_id = models.ForeignKey('job_post_activity',related_name='posted_by_id', on_delete=models.CASCADE,default=None)
+    posted_by_id = models.ForeignKey('job_post_activity',related_name='posted_by_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
     job_type_id = models.ForeignKey('job_type',related_name='job_type_id', on_delete=models.CASCADE,default=None)
     company_id = models.ForeignKey('company',related_name='company_id', on_delete=models.CASCADE,default=None)
     is_company_name_hidden=models.BooleanField()

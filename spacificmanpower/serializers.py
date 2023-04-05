@@ -66,11 +66,11 @@ class company_serializer(serializers.ModelSerializer):
     business_stream_id=serializers.ReadOnlyField(source='business_stream_id.id')
     class Meta:
         model=company
-        fields=['id','company_name','profile_description','business_stream_id','establishment_date','company_image','company_website_url','createdDate','modifiedDate']
+        fields=['id','company_name','profile_description','business_stream_id','establishment_date','company_website_url','createdDate','modifiedDate']
 
 class company_image_serializer(serializers.ModelSerializer):
 
-    business_id=serializers.ReadOnlyField(source='business_id.id')
+    company_id=serializers.ReadOnlyField(source='company_id.id')
     class Meta:
         model=company_image
         fields=['id','company_id','company_image','createdDate','modifiedDate']
@@ -97,8 +97,8 @@ class seeker_profile_serializer(serializers.ModelSerializer):
     user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
     class Meta:
         model=seeker_profile
-        fields=['id','user_account_id','first_name','last_name','current_salary','is_annually_monthly','currency'
-                ,'description','createdDate','modifiedDate']
+        fields=['user_account_id','first_name','last_name','current_salary','is_annually_monthly','currency'
+                ,'createdDate','modifiedDate']
         
 class seeker_skill_set_serializer(serializers.ModelSerializer):
     

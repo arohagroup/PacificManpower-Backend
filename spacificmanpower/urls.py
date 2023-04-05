@@ -23,7 +23,15 @@ urlpatterns = [
     path('forgot_password/<int:pk>/',views.forgotpassword.as_view()),
 
     path('business_stream/',views.businessstream.as_view()),
-    
+
     path('company_save_details/',views.companyadddetails.as_view()),
+    path('company_save_image/',views.companysaveimage.as_view()),
     path('company_save_details/<int:pk>/',views.companyprofile.as_view()),
+
+    path('seeker_profile/',views.seekerprofile.as_view()),
+
+    path('post_job/',views.postjob.as_view()),
+    path('post_job/<int:pk>/',views.editjob.as_view()),
+
+    path('job_location/',views.joblocation.as_view()),
 ]
