@@ -38,5 +38,7 @@ urlpatterns = [
     path('job_type/',views.jobtype.as_view()),
     path('jobskillset/',views.skillset.as_view()),
 
+    path('skillset/',views.skills.as_view()),  
+
     path('job_location/',views.joblocation.as_view()),
 ]

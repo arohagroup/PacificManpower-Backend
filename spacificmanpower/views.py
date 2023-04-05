@@ -293,6 +293,17 @@ class experincedetail(APIView):
         serializer = experience_detail_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
+class skills(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = skill_set.objects.all()
+    serializer_class = skill_set_serializer
+
+    def get(self, request, format=None):
+        user_data = skill_set.objects.all().order_by('-createdDate')
+        serializer = skill_set_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
 class skillset(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
 
