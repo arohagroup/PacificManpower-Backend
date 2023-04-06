@@ -228,13 +228,15 @@ class postjob(APIView):
         zip = request.data.get('zip')
         jobtypeid=request.data.get('job_type_id')
         companyid=request.data.get('company_id')
-        user_account_id=request.data.get('user_account_id')
+        useraccountid=request.data.get('user_account_id')
+        
 
         joblocation = job_location(street_address=street_address, city=city, state=state, country=country,zip=zip)
         joblocation.save()
 
         job_type_id = job_type.objects.get(id=jobtypeid)
         company_id = company.objects.get(id=companyid)
+        user_account_id=user_account.objects.get(id=useraccountid)
         is_company_name_hidden = request.data.get('is_company_name_hidden')
         job_description = request.data.get('job_description')
         job_location_id = joblocation.id
@@ -396,6 +398,7 @@ class seekerprofile(APIView):
         useraccountid=request.data.get('user_account_id')
 
         user_account_id=user_account.objects.get(id=useraccountid)
+
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
         current_salary = request.data.get('current_salary')
