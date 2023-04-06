@@ -295,12 +295,46 @@ class editjob(APIView):
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):
-        userObject = job_post.objects.get(pk=request.data['id'])
-        addmoreUser = self.get_object(pk)
-        serializer = job_post_serializer(addmoreUser, data=request.data)
-        if serializer.is_valid():
-            serializer.save(staff=userObject)
-            return Response(serializer.data)
+        jobpost = self.get_object(pk)
+        
+        # Update job_location fields
+        joblocation = jobpost.job_location_id
+        joblocation.street_address = request.data.get('street_address', joblocation.street_address)
+        joblocation.city = request.data.get('city', joblocation.city)
+        joblocation.state = request.data.get('state', joblocation.state)
+        joblocation.country = request.data.get('country', joblocation.country)
+        joblocation.zip = request.data.get('zip', joblocation.zip)
+        joblocation.save()
+
+        # Update job_post fields
+        jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
+        jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
+        jobpost.is_company_name_hidden = request.data.get('is_company_name_hidden', jobpost.is_company_name_hidden)
+        jobpost.job_description = request.data.get('job_description', jobpost.job_description)
+        jobpost.job_location_id = joblocation
+        jobpost.created_date = request.data.get('created_date', jobpost.created_date)
+        jobpost.is_active = request.data.get('is_active', jobpost.is_active)
+        jobpost.save()
+
+        # Update job_post_skill_set fields
+        jobpostskillset = job_post_skill_set.objects.get(job_post_id=jobpost.id)
+        jobpostskillset.skill_set_id = skill_set.objects.get(id=request.data.get('skill_set_id', jobpostskillset.skill_set_id.id))
+        jobpostskillset.skill_level = request.data.get('skill_level', jobpostskillset.skill_level)
+        jobpostskillset.save()
+
+        # Update job_post_activity fields
+        jobpostactivity = job_post_activity.objects.get(job_post_id=jobpost.id)
+        jobpostactivity.user_account_id = user_account.objects.get(id=request.data.get('user_account_id', jobpostactivity.user_account_id.id))
+        jobpostactivity.apply_date = request.data.get('apply_date', jobpostactivity.apply_date)
+        jobpostactivity.save()
+
+        # Update user_log fields
+        userlog = user_log.objects.last()
+        userlog.last_job_apply_date = jobpostactivity.apply_date
+        userlog.save()
+
+        serializer = job_post_serializer(jobpost)
+        return Response(serializer.data)
         
     
 class joblocation(APIView):
@@ -519,3 +553,24 @@ class updatenews(APIView):
         data = self.get_object(pk)
         data.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class editseekrprofile(APIView):
+    def get_object(self, pk):
+        try:
+            return seeker_profile.objects.get(pk=pk)
+        except seeker_profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = seeker_profile_serializer(data)
+        return Response(serializer.data)
+    
+    def put(self, request, pk, format=None):
+        userObject = seeker_profile.objects.get(pk=request.data['id'])
+        addmoreUser = self.get_object(pk)
+        serializer = seeker_profile_serializer(addmoreUser, data=request.data)
+        if serializer.is_valid():
+            serializer.save(staff=userObject)
+            return Response(serializer.data)

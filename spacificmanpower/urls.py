@@ -29,6 +29,7 @@ urlpatterns = [
     path('company_save_details/<int:pk>/',views.companyprofile.as_view()),
 
     path('seeker_profile/',views.seekerprofile.as_view()),
+    path('seeker_profile/<int:pk>/',views.editseekrprofile.as_view()),
     path('education_detail/',views.educationdetail.as_view()),
     path('experince_detail/',views.experincedetail.as_view()),
 
