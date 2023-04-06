@@ -105,19 +105,26 @@ class userlog(APIView):
     
 class userlogin(APIView):
     def post(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        email = request.data.get('email')
+        password = request.data.get('password')
 
         try:
             user = user_account.objects.get(email=email)
+            user_logData = user_log.objects.last()
         except user_account.DoesNotExist:
-            return JsonResponse({'message': 'User does not exist'}, status=404)
+            # User does not exist
+            return Response({"message": "User account doesn't exists"}, status=status.HTTP_404_NOT_FOUND)
 
-        user_auth = authenticate(request, username=user.email, password=password)
-        if user_auth is not None:
-            return JsonResponse({'message': 'Login successful'}, status=200)
+        # Check the password
+        if user.password == password:
+            # Passwords match, user is authenticated
+            user_logData.last_login_date = datetime.datetime.now()
+            user_logData.save()
+
+            return Response({"message": "User authenticated"}, status=status.HTTP_200_OK)
         else:
-            return JsonResponse({'message': 'Invalid email or password'}, status=401)
+            # Passwords do not match
+            return Response({"message": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
         
 class forgotpassword(APIView):
     def post(self, request, *args, **kwargs):
