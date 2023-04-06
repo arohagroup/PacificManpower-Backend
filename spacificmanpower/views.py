@@ -447,9 +447,7 @@ class seekerprofile(APIView):
         skillsetid=request.data.get('skill_set_id')
         
         skill_set_id=skill_set.objects.get(id=skillsetid)
-        
-        user_account_id=user_account.objects.get(id=useraccountid)
-        
+        user_account_id=user_account.objects.get(id=useraccountid) 
         skill_level = request.data.get('skill_level')
 
         seekerskillset=seeker_skill_set(user_account_id=user_account_id,skill_set_id=skill_set_id,skill_level=skill_level)

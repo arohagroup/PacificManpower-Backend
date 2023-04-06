@@ -95,7 +95,7 @@ class seeker_profile(models.Model):
 
 class seeker_skill_set(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_idsss', on_delete=models.CASCADE,default=None)
-    skill_set_id=models.IntegerField()# i need to add here forenkhkey from below table
+    skill_set_id=models.ForeignKey('skill_set',related_name='skill_set_id_seeker', on_delete=models.CASCADE,default=None)# i need to add here forenkhkey from below table
     skill_level=models.IntegerField()
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)

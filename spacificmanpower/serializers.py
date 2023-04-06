@@ -103,6 +103,7 @@ class seeker_profile_serializer(serializers.ModelSerializer):
 class seeker_skill_set_serializer(serializers.ModelSerializer):
     
     user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
+    skill_set_id=serializers.ReadOnlyField(source='skill_set_id.id')
     class Meta:
         model=seeker_skill_set
         fields=['id','user_account_id','skill_set_id','skill_level','createdDate','modifiedDate']
