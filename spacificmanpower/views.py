@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status,viewsets
 from django.http import Http404
+from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import check_password
 # Create your views here.
 
@@ -103,6 +104,8 @@ class userlog(APIView):
         serializer = user_log_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
+
+
 class userlogin(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -121,10 +124,16 @@ class userlogin(APIView):
             user_logData.last_login_date = datetime.datetime.now()
             user_logData.save()
 
-            return Response({"message": "User authenticated"}, status=status.HTTP_200_OK)
+            # Get the user ID
+            user_id = user.id
+
+            # Generate and return a token for the authenticated user
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key, "user_id": user_id}, status=status.HTTP_200_OK)
         else:
             # Passwords do not match
             return Response({"message": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
+
         
 class forgotpassword(APIView):
     def post(self, request, *args, **kwargs):
@@ -259,9 +268,10 @@ class postjob(APIView):
         jobpostskillset=job_post_skill_set(skill_set_id=skill_set_id,skill_level=skill_level,job_post_id=job_post_instance)
         jobpostskillset.save()
 
-        jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_instance)
-        jobpostactivity.save()
 
+
+        jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_instance,apply_date=datetime.datetime.now())
+        jobpostactivity.save()
         # user_log_instance = user_log.objects.get(user_account_id=user_account_id)
         # user_log_instance.last_job_apply_date = datetime.datetime.now()
         # user_log_instance.save()
