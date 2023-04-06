@@ -148,3 +148,11 @@ class job_location_serializer(serializers.ModelSerializer):
         model=job_location
         fields=['id','street_address','city','state','country','zip','createdDate','modifiedDate']
 
+class trending_news_serializer(serializers.ModelSerializer):
+   
+    user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
+    class Meta:
+        model=trending_news
+        fields=['id','news_title','news_description','news_image','user_account_id',
+                'createdDate','modifiedDate']
+

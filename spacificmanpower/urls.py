@@ -45,4 +45,7 @@ urlpatterns = [
     path('skillset/',views.skills.as_view()),  
 
     path('job_location/',views.joblocation.as_view()),
+
+    path('trendingnews/',views.trendingnews.as_view()),
+    path('trendingnews/<int:pk>/',views.updatenews.as_view()),
 ]

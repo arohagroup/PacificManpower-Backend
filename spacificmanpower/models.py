@@ -89,7 +89,7 @@ class seeker_profile(models.Model):
     current_salary = models.IntegerField(blank=True)
     is_annually_monthly=models.CharField(max_length=100,blank=True)
     currency=models.CharField(max_length=50,blank=True)
-    createdDate = models.DateTimeField(auto_now_add=True, blank=True)
+    createdDate = models.DateTimeField(auto_now_add=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
 
@@ -151,3 +151,11 @@ class job_post_skill_set(models.Model):
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
     # primary_key = ('skill_set_id', 'job_post_id')
+
+class trending_news(models.Model):
+    news_title=models.CharField(max_length=100)
+    news_description=models.CharField(max_length=50)
+    news_image=models.ImageField(max_length=50)
+    user_account_id=models.ForeignKey('user_account',related_name='user_account_id_trending_news', on_delete=models.CASCADE,default=None)
+    createdDate = models.DateTimeField(auto_now_add=True, blank=True)
+    modifiedDate = models.DateTimeField(auto_now=True)

@@ -447,5 +447,51 @@ class seekerprofile(APIView):
         seekerskillset=seeker_skill_set(user_account_id=user_account_id,skill_set_id=skill_set_id,skill_level=skill_level)
         seekerskillset.save()
 
-
         return Response(status=status.HTTP_201_CREATED)
+    
+class trendingnews(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = trending_news.objects.all()
+    serializer_class = trending_news_serializer
+
+    def get(self, request, format=None):
+        user_data = trending_news.objects.all().order_by('-createdDate')
+        serializer = trending_news_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+
+        user_account_id=request.data.get('user_account_id')
+        news_title = request.data.get('news_title')
+        news_description = request.data.get('news_description')
+        news_image = request.data.get('news_image')
+
+        trending_news=trending_news(user_account_id=user_account_id,news_title=news_title,news_description=news_description,
+                         news_image=news_image)
+        trending_news.save()
+
+class updatenews(APIView):
+    def get_object(self, pk):
+        try:
+            return trending_news.objects.get(pk=pk)
+        except trending_news.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = trending_news_serializer(data)
+        return Response(serializer.data)
+    
+    def put(self, request, pk, format=None):
+        userObject = trending_news.objects.get(pk=request.data['id'])
+        addmoreUser = self.get_object(pk)
+        serializer = trending_news_serializer(addmoreUser, data=request.data)
+        if serializer.is_valid():
+            serializer.save(staff=userObject)
+            return Response(serializer.data)
+        
+    def delete(self, request, pk, format=None):
+        data = self.get_object(pk)
+        data.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
