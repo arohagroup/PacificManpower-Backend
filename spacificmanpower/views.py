@@ -2,6 +2,9 @@ import datetime
 from django.shortcuts import render
 from .serializers import *
 from .models import *
+from django.contrib.auth import authenticate
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -101,27 +104,25 @@ class userlog(APIView):
         return Response(serializer.data)
     
 class userlogin(APIView):
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        try:
-            user = user_account.objects.get(email=email)
-            user_logData = user_log.objects.last()
-        except user_account.DoesNotExist:
-            # User does not exist
-            return Response({"message": "User account doesn't exists"}, status=status.HTTP_404_NOT_FOUND)
-
-        # Check the password
-        if user.password == password:
-            # Passwords match, user is authenticated
-            user_logData.last_login_date = datetime.datetime.now()
-            user_logData.save()
-
-            return Response({"message": "User authenticated"}, status=status.HTTP_200_OK)
-        else:
-            # Passwords do not match
-            return Response({"message": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
+    def login(request):
+        if request.method == 'POST':
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                return JsonResponse({'message': 'User does not exist'}, status=404)
+            
+            # Use Django's built-in authenticate() function to check if the email and password match
+            user = authenticate(username=user.username, password=password)
+            
+            if user is not None:
+                # If the email and password match, return a 200 status code
+                return JsonResponse({'message': 'Login successful'}, status=200)
+            else:
+                # If the email and password don't match, return a 401 status code
+                return JsonResponse({'message': 'Invalid email or password'}, status=401)
         
 class forgotpassword(APIView):
     def post(self, request, *args, **kwargs):
