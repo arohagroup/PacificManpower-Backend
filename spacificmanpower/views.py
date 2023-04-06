@@ -180,7 +180,7 @@ class companyadddetails(APIView):
         company_image_instance = company_image(company_id=company_id_instance, company_image=company_image_data)
         company_image_instance.save()
 
-        return Response({'message': 'company data created successfully.'})
+        return Response(status=status.HTTP_201_CREATED)
 
 class companyprofile(APIView):
     def get_object(self, pk):
@@ -250,7 +250,7 @@ class postjob(APIView):
         jobpostskillset=job_post_skill_set(skill_level=skill_level,job_post_id=job_post_instance)
         jobpostskillset.save()
 
-        return Response({'message': 'job post data created successfully.'})
+        return Response(status=status.HTTP_201_CREATED)
 
 class editjob(APIView):
     def get_object(self, pk):
@@ -404,4 +404,4 @@ class seekerprofile(APIView):
                          end_date=end_date,job_title=job_title,company_name=company_name,job_location_city=job_location_city,job_location_state=job_location_state,job_location_country=job_location_country,description=description)
         experincedetail.save()
 
-        return Response({'message': 'seeker profile data created successfully.'})
+        return Response(status=status.HTTP_201_CREATED)
