@@ -32,8 +32,12 @@ urlpatterns = [
     path('education_detail/',views.educationdetail.as_view()),
     path('experince_detail/',views.experincedetail.as_view()),
 
+    path('seeker_skill_set/',views.seekerskillset.as_view()),
+
     path('post_job/',views.postjob.as_view()),
     path('post_job/<int:pk>/',views.editjob.as_view()),
+
+    path('jobpostactivity/',views.jobpostactivity.as_view()),
     
     path('job_type/',views.jobtype.as_view()),
     path('jobskillset/',views.skillset.as_view()),

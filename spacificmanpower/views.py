@@ -225,6 +225,7 @@ class postjob(APIView):
         zip = request.data.get('zip')
         jobtypeid=request.data.get('job_type_id')
         companyid=request.data.get('company_id')
+        user_account_id=request.data.get('user_account_id')
 
         joblocation = job_location(street_address=street_address, city=city, state=state, country=country,zip=zip)
         joblocation.save()
@@ -249,6 +250,15 @@ class postjob(APIView):
         
         jobpostskillset=job_post_skill_set(skill_level=skill_level,job_post_id=job_post_instance)
         jobpostskillset.save()
+
+        jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_instance)
+        jobpostactivity.save()
+
+        user_log_instance = user_log.objects.get(user_account_id=user_account_id)
+        user_log_instance.last_job_apply_date = instance.date_of_job_application
+        user_log_instance.save()
+
+
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -300,6 +310,28 @@ class educationdetail(APIView):
     def get(self, request, format=None):
         user_data = education_detail.objects.all().order_by('-createdDate')
         serializer = education_detail_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+class seekerskillset(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = seeker_skill_set.objects.all()
+    serializer_class = seeker_skill_set_serializer
+
+    def get(self, request, format=None):
+        user_data = seeker_skill_set.objects.all().order_by('-createdDate')
+        serializer = seeker_skill_set_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+class jobpostactivity(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = job_post_activity.objects.all()
+    serializer_class = job_post_activity_serializer
+
+    def get(self, request, format=None):
+        user_data = job_post_activity.objects.all().order_by('-createdDate')
+        serializer = job_post_activity_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
 class experincedetail(APIView):
@@ -403,5 +435,16 @@ class seekerprofile(APIView):
         experincedetail=experience_detail(user_account_id=user_account_id,is_current_job=is_current_job,start_date=start_date,
                          end_date=end_date,job_title=job_title,company_name=company_name,job_location_city=job_location_city,job_location_state=job_location_state,job_location_country=job_location_country,description=description)
         experincedetail.save()
+
+        useraccountid=request.data.get('user_account_id')
+        skillsetid=request.data.get('skill_set_id')
+        
+        user_account_id=user_account.objects.get(id=useraccountid)
+        skill_set_id = skill_set.objects.get(id=skillsetid)
+        skill_level = request.data.get('skill_level')
+
+        seekerskillset=seeker_skill_set(user_account_id=user_account_id,skill_set_id=skill_set_id,skill_level=skill_level)
+        seekerskillset.save()
+
 
         return Response(status=status.HTTP_201_CREATED)

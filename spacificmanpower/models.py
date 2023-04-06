@@ -87,7 +87,7 @@ class seeker_profile(models.Model):
     first_name=models.CharField(max_length=50)
     last_name=models.CharField(max_length=50)
     current_salary = models.IntegerField(blank=True)
-    is_annually_monthly=models.BooleanField(blank=True)
+    is_annually_monthly=models.CharField(max_length=100,blank=True)
     currency=models.CharField(max_length=50,blank=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
@@ -124,7 +124,7 @@ class job_post(models.Model):
 class job_post_activity(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_idssss', on_delete=models.CASCADE,default=None)
     job_post_id = models.ForeignKey('job_post',related_name='job_post_id', on_delete=models.CASCADE,default=None)
-    apply_date=models.DateTimeField()
+    apply_date=models.DateTimeField(auto_now_add=True, blank=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
     # primary_key = ('user_account_id', 'job_post_id')
