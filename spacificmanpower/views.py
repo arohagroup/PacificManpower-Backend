@@ -250,7 +250,9 @@ class postjob(APIView):
         jobpost.save()
 
         skill_level=request.data.get('skill_level')
-        skill_set_id=request.data.get('skill_set_id')
+        skillsetid=request.data.get('skill_set_id')
+        
+        skill_set_id=skill_set.objects.get(id=skillsetid)
         job_post_id=jobpost.id
         job_post_instance = job_post.objects.get(id=job_post_id)
         
@@ -260,9 +262,9 @@ class postjob(APIView):
         jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_instance)
         jobpostactivity.save()
 
-        user_log_instance = user_log.objects.get(user_account_id=user_account_id)
-        user_log_instance.last_job_apply_date = datetime.datetime.now()
-        user_log_instance.save()
+        # user_log_instance = user_log.objects.get(user_account_id=user_account_id)
+        # user_log_instance.last_job_apply_date = datetime.datetime.now()
+        # user_log_instance.save()
         
         return Response(status=status.HTTP_201_CREATED)
 
@@ -471,14 +473,16 @@ class trendingnews(APIView):
     
     def post(self, request, format=None):
 
-        user_account_id=request.data.get('user_account_id')
+        useraccountid=request.data.get('user_account_id')
+        
+        user_account_id=user_account.objects.get(id=useraccountid)
         news_title = request.data.get('news_title')
         news_description = request.data.get('news_description')
         news_image = request.data.get('news_image')
 
-        trending_news=trending_news(user_account_id=user_account_id,news_title=news_title,news_description=news_description,
+        trendingnews=trending_news(user_account_id=user_account_id,news_title=news_title,news_description=news_description,
                          news_image=news_image)
-        trending_news.save()
+        trendingnews.save()
 
 class updatenews(APIView):
     def get_object(self, pk):
