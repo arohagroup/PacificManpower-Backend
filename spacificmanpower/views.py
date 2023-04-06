@@ -441,6 +441,11 @@ class seekerprofile(APIView):
         skillsetid=request.data.get('skill_set_id')
         
         user_account_id=user_account.objects.get(id=useraccountid)
+        # try:
+        #     user = skill_set.objects.get(email=email)
+        # except skill_set.DoesNotExist:
+        #     user = None
+
         skill_set_id = skill_set.objects.get(id=skillsetid)
         skill_level = request.data.get('skill_level')
 

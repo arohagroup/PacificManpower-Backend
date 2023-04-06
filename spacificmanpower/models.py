@@ -89,7 +89,7 @@ class seeker_profile(models.Model):
     current_salary = models.IntegerField(blank=True)
     is_annually_monthly=models.CharField(max_length=100,blank=True)
     currency=models.CharField(max_length=50,blank=True)
-    createdDate = models.DateTimeField(auto_now_add=True)
+    createdDate = models.DateTimeField(auto_now_add=True,blank=True, null=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
 

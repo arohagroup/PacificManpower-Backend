@@ -74,6 +74,10 @@ class JobPostSkillSet(admin.ModelAdmin):
     list_display = ('id','skill_set_id','job_post_id','skill_level','createdDate','modifiedDate')
     list_display_links = ('id','skill_set_id') # adds links to id and name fields
 
+class TrendingNewsAdmin(admin.ModelAdmin):
+    list_display = ('id','user_account_id','news_title','news_description','news_image','createdDate','modifiedDate')
+    list_display_links = ('id','user_account_id') # adds links to id and name fields
+
 admin.site.register(user_type,UserTypeAdmin)
 admin.site.register(user_account, UserAccountAdmin)
 admin.site.register(user_log, UserLogAdmin)
@@ -90,3 +94,4 @@ admin.site.register(job_post_activity, JobPostActivityAdmin)
 admin.site.register(job_type, JobTypeAdmin)
 admin.site.register(job_location, JobLocationAdmin)
 admin.site.register(job_post_skill_set, JobPostSkillSet)
+admin.site.register(trending_news, TrendingNewsAdmin)
