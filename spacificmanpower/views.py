@@ -180,11 +180,7 @@ class companyadddetails(APIView):
         company_image_instance = company_image(company_id=company_id_instance, company_image=company_image_data)
         company_image_instance.save()
 
-
-        return Response({'message': 'Job_location data created successfully.'})
-
-
-
+        return Response({'message': 'company data created successfully.'})
 
 class companyprofile(APIView):
     def get_object(self, pk):
@@ -254,7 +250,7 @@ class postjob(APIView):
         jobpostskillset=job_post_skill_set(skill_level=skill_level,job_post_id=job_post_instance)
         jobpostskillset.save()
 
-        return Response({'message': 'Job_location data created successfully.'})
+        return Response({'message': 'job post data created successfully.'})
 
 class editjob(APIView):
     def get_object(self, pk):
@@ -363,36 +359,49 @@ class seekerprofile(APIView):
 
     
     def post(self, request, format=None):
-        if 'user_account_id' in request.data:
-            business_streamObject = seeker_profile.objects.get(pk=request.data['user_account_id'])
-        else:
-            
-            business_streamObject = None
+        useraccountid=request.data.get('user_account_id')
 
-        serializer = seeker_profile_serializer(data=request.data)
+        user_account_id=user_account.objects.get(id=useraccountid)
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        current_salary = request.data.get('current_salary')
+        is_annually_monthly = request.data.get('is_annually_monthly')
+        currency = request.data.get('currency')
+
+        seekerprofile=seeker_profile(user_account_id=user_account_id,first_name=first_name,last_name=last_name,
+                         current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency)
+        seekerprofile.save()
+
+        useraccountid=request.data.get('user_account_id')
         
-        if serializer.is_valid():
-            
-            serializer.save(user_account_id=business_streamObject)
-            # user_id = company.objects.last()
-            # userlogObject = company.objects.get(pk=user_id.id)
-            
-            # log_Data={
-            #     # 'company_id':user_id,
-            #     'company_image':request.data['company_image']
-            # }
+        user_account_id=user_account.objects.get(id=useraccountid)
+        certificate_degree_name = request.data.get('certificate_degree_name')
+        major = request.data.get('major')
+        institute_university_name = request.data.get('institute_university_name')
+        starting_date = request.data.get('starting_date')
+        completion_date = request.data.get('completion_date')
+        percentage = request.data.get('percentage')
+        cgpa = request.data.get('cgpa')
 
-            
-            # logserializer = company_image_serializer(data=log_Data)
+        educationdetail=education_detail(user_account_id=user_account_id,certificate_degree_name=certificate_degree_name,major=major,
+                         institute_university_name=institute_university_name,starting_date=starting_date,completion_date=completion_date,percentage=percentage,cgpa=cgpa)
+        educationdetail.save()
 
-            # if logserializer.is_valid():
-            #     print("EXCUTED")
-            #     logserializer.save(company_id=userlogObject)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        useraccountid=request.data.get('user_account_id')
+        
+        user_account_id=user_account.objects.get(id=useraccountid)
+        is_current_job = request.data.get('is_current_job')
+        start_date = request.data.get('start_date')
+        end_date = request.data.get('end_date')
+        job_title = request.data.get('job_title')
+        company_name = request.data.get('company_name')
+        job_location_city = request.data.get('job_location_city')
+        job_location_state = request.data.get('job_location_state')
+        job_location_country = request.data.get('job_location_country')
+        description = request.data.get('description')
 
+        experincedetail=experience_detail(user_account_id=user_account_id,is_current_job=is_current_job,start_date=start_date,
+                         end_date=end_date,job_title=job_title,company_name=company_name,job_location_city=job_location_city,job_location_state=job_location_state,job_location_country=job_location_country,description=description)
+        experincedetail.save()
 
-
-
-
-
+        return Response({'message': 'seeker profile data created successfully.'})
