@@ -444,15 +444,12 @@ class seekerprofile(APIView):
         experincedetail.save()
 
         useraccountid=request.data.get('user_account_id')
-        skillsetid=request.data.get('skill_set_name')
+        skillsetid=request.data.get('skill_set_id')
+        
+        skill_set_id=skill_set.objects.get(id=skillsetid)
         
         user_account_id=user_account.objects.get(id=useraccountid)
-        # try:
-        #     skill_set_id = skill_set.objects.get(id=skillsetid)
-        # except skill_set.DoesNotExist:
-        #     skill_set_id = None
-
-        skill_set_id = skill_set.objects.get(id=skillsetid)
+        
         skill_level = request.data.get('skill_level')
 
         seekerskillset=seeker_skill_set(user_account_id=user_account_id,skill_set_id=skill_set_id,skill_level=skill_level)
