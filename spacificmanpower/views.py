@@ -160,18 +160,28 @@ class companyadddetails(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        company_name = request.data.get('street_address')
-        profile_description = request.data.get('city')
+        company_name = request.data.get('company_name')
+        profile_description = request.data.get('profile_description')
         business_stream_id = request.data.get('business_stream_id')
 
         establishment_date = request.data.get('establishment_date')
         company_website_url = request.data.get('company_website_url')
 
-        job_type_id = job_type.objects.get(id=business_stream_id)
+        business_stream_id = business_stream.objects.get(id=business_stream_id)
 
-        company = company(company_name=company_name, profile_description=profile_description, business_stream_id=business_stream_id, 
+        company_data = company(company_name=company_name, profile_description=profile_description, business_stream_id=business_stream_id, 
                               establishment_date=establishment_date,company_website_url=company_website_url)
-        company.save()  
+        company_data.save() 
+
+        company_id = company_data.id
+        company_id_instance = company.objects.get(id=company_id)
+        company_image_data = request.data.get('company_image')
+
+        company_image_instance = company_image(company_id=company_id_instance, company_image=company_image_data)
+        company_image_instance.save()
+
+
+        return Response({'message': 'Job_location data created successfully.'})
 
 
 
@@ -237,7 +247,6 @@ class postjob(APIView):
                          job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active)
         jobpost.save()
 
-        print(jobpost.id)
         skill_level=request.data.get('skill_level')
         job_post_id=jobpost.id
         job_post_instance = job_post.objects.get(id=job_post_id)
