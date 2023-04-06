@@ -481,6 +481,8 @@ class trendingnews(APIView):
                          news_image=news_image)
         trendingnews.save()
 
+        return Response(status=status.HTTP_201_CREATED)
+
 class updatenews(APIView):
     def get_object(self, pk):
         try:
