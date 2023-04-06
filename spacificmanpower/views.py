@@ -104,25 +104,20 @@ class userlog(APIView):
         return Response(serializer.data)
     
 class userlogin(APIView):
-    def login(request):
-        if request.method == 'POST':
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            
-            try:
-                user = User.objects.get(email=email)
-            except User.DoesNotExist:
-                return JsonResponse({'message': 'User does not exist'}, status=404)
-            
-            # Use Django's built-in authenticate() function to check if the email and password match
-            user = authenticate(username=user.username, password=password)
-            
-            if user is not None:
-                # If the email and password match, return a 200 status code
-                return JsonResponse({'message': 'Login successful'}, status=200)
-            else:
-                # If the email and password don't match, return a 401 status code
-                return JsonResponse({'message': 'Invalid email or password'}, status=401)
+    def post(self, request):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        try:
+            user = user_account.objects.get(email=email)
+        except user_account.DoesNotExist:
+            return JsonResponse({'message': 'User does not exist'}, status=404)
+
+        user_auth = authenticate(request, username=user.email, password=password)
+        if user_auth is not None:
+            return JsonResponse({'message': 'Login successful'}, status=200)
+        else:
+            return JsonResponse({'message': 'Invalid email or password'}, status=401)
         
 class forgotpassword(APIView):
     def post(self, request, *args, **kwargs):
