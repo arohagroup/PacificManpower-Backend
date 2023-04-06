@@ -255,11 +255,9 @@ class postjob(APIView):
         jobpostactivity.save()
 
         user_log_instance = user_log.objects.get(user_account_id=user_account_id)
-        user_log_instance.last_job_apply_date = instance.date_of_job_application
+        user_log_instance.last_job_apply_date = datetime.datetime.now()
         user_log_instance.save()
-
-
-
+        
         return Response(status=status.HTTP_201_CREATED)
 
 class editjob(APIView):
