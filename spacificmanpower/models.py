@@ -155,7 +155,7 @@ class job_post_skill_set(models.Model):
 class trending_news(models.Model):
     news_title=models.CharField(max_length=100)
     news_description=models.CharField(max_length=50)
-    news_image=models.ImageField(max_length=50)
+    news_image=models.ImageField(max_length=200, blank=True,null=True)
     user_account_id=models.ForeignKey('user_account',related_name='user_account_id_trending_news', on_delete=models.CASCADE,default=None)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)

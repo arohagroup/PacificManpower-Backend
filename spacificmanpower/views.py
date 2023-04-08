@@ -540,14 +540,19 @@ class updatenews(APIView):
         data = self.get_object(pk)
         serializer = trending_news_serializer(data)
         return Response(serializer.data)
-    
+
     def put(self, request, pk, format=None):
-        userObject = trending_news.objects.get(pk=request.data['id'])
-        addmoreUser = self.get_object(pk)
-        serializer = trending_news_serializer(addmoreUser, data=request.data)
+        # Get the object to update
+        obj = self.get_object(pk)
+        
+        # Update the object with the request data
+        serializer = trending_news_serializer(obj, data=request.data)
         if serializer.is_valid():
-            serializer.save(staff=userObject)
-            return Response(serializer.data)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # If the serializer is not valid, return an error response
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, pk, format=None):
         data = self.get_object(pk)
@@ -567,10 +572,49 @@ class editseekrprofile(APIView):
         serializer = seeker_profile_serializer(data)
         return Response(serializer.data)
     
-    def put(self, request, pk, format=None):
-        userObject = seeker_profile.objects.get(pk=request.data['id'])
-        addmoreUser = self.get_object(pk)
-        serializer = seeker_profile_serializer(addmoreUser, data=request.data)
-        if serializer.is_valid():
-            serializer.save(staff=userObject)
-            return Response(serializer.data)
+    def put(self, request, format=None):
+        user_account_id = request.data.get('user_account_id')
+
+        try:
+            seeker_profile = seeker_profile.objects.get(user_account_id=user_account_id)
+            education_detail = education_detail.objects.get(user_account_id=user_account_id)
+            experience_detail = experience_detail.objects.get(user_account_id=user_account_id)
+            seeker_skill_set = seeker_skill_set.objects.get(user_account_id=user_account_id)
+
+            seeker_profile.first_name = request.data.get('first_name', seeker_profile.first_name)
+            seeker_profile.last_name = request.data.get('last_name', seeker_profile.last_name)
+            seeker_profile.current_salary = request.data.get('current_salary', seeker_profile.current_salary)
+            seeker_profile.is_annually_monthly = request.data.get('is_annually_monthly', seeker_profile.is_annually_monthly)
+            seeker_profile.currency = request.data.get('currency', seeker_profile.currency)
+            seeker_profile.save()
+
+            education_detail.certificate_degree_name = request.data.get('certificate_degree_name', education_detail.certificate_degree_name)
+            education_detail.major = request.data.get('major', education_detail.major)
+            education_detail.institute_university_name = request.data.get('institute_university_name', education_detail.institute_university_name)
+            education_detail.starting_date = request.data.get('starting_date', education_detail.starting_date)
+            education_detail.completion_date = request.data.get('completion_date', education_detail.completion_date)
+            education_detail.percentage = request.data.get('percentage', education_detail.percentage)
+            education_detail.cgpa = request.data.get('cgpa', education_detail.cgpa)
+            education_detail.save()
+
+            experience_detail.is_current_job = request.data.get('is_current_job', experience_detail.is_current_job)
+            experience_detail.start_date = request.data.get('start_date', experience_detail.start_date)
+            experience_detail.end_date = request.data.get('end_date', experience_detail.end_date)
+            experience_detail.job_title = request.data.get('job_title', experience_detail.job_title)
+            experience_detail.company_name = request.data.get('company_name', experience_detail.company_name)
+            experience_detail.job_location_city = request.data.get('job_location_city', experience_detail.job_location_city)
+            experience_detail.job_location_state = request.data.get('job_location_state', experience_detail.job_location_state)
+            experience_detail.job_location_country = request.data.get('job_location_country', experience_detail.job_location_country)
+            experience_detail.description = request.data.get('description', experience_detail.description)
+            experience_detail.save()
+
+            skill_set_id = request.data.get('skill_set_id', seeker_skill_set.skill_set_id)
+            skill_level = request.data.get('skill_level', seeker_skill_set.skill_level)
+            seeker_skill_set.skill_set_id = skill_set_id
+            seeker_skill_set.skill_level = skill_level
+            seeker_skill_set.save()
+
+            return Response(status=status.HTTP_200_OK)
+
+        except (seeker_profile.DoesNotExist, education_detail.DoesNotExist, experience_detail.DoesNotExist, seeker_skill_set.DoesNotExist):
+            return Response(status=status.HTTP_404_NOT_FOUND)
