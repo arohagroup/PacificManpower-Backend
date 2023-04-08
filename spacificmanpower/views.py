@@ -273,7 +273,7 @@ class postjob(APIView):
         jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_instance,apply_date=datetime.datetime.now())
         jobpostactivity.save()
 
-        userlog=user_log(last_job_apply_date=datetime.datetime.now())
+        userlog=user_log(user_account_id=user_account_id,last_job_apply_date=datetime.datetime.now())
         userlog.save()
 
         # user_log_instance = user_log.objects.get(user_account_id=user_account_id)
