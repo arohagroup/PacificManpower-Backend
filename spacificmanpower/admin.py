@@ -41,7 +41,7 @@ class ExperinceDetailAdmin(admin.ModelAdmin):
     list_display_links = ('id','user_account_id') # adds links to id and name fields
 
 class SeekerProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_account_id','first_name','last_name','current_salary','is_annually_monthly',
+    list_display = ('user_account_id','first_name','last_name','current_salary','is_annually_monthly','uploaded_cv',
                     'currency','createdDate','modifiedDate')
     list_display_links = ('user_account_id','first_name') # adds links to id and name fields
 

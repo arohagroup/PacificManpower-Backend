@@ -12,6 +12,7 @@ from rest_framework import status,viewsets
 from django.http import Http404
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import check_password
+from django.http import HttpResponse
 # Create your views here.
 
 
@@ -107,32 +108,21 @@ class userlog(APIView):
 
 
 class userlogin(APIView):
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
+    def login(request):
+        if request.method == 'POST':
+            email = request.POST.get('email')
+            password = request.POST.get('password')
 
-        try:
-            user = user_account.objects.get(email=email)
-            user_logData = user_log.objects.last()
-        except user_account.DoesNotExist:
-            # User does not exist
-            return Response({"message": "User account doesn't exists"}, status=status.HTTP_404_NOT_FOUND)
+            try:
+                user = user_account.objects.get(email=email, password=password)
+                # If the query succeeds, a matching user account was found
+                return HttpResponse('Login successful')
+            except user_account.DoesNotExist:
+                # If the query fails, there is no matching user account
+                return HttpResponse('Invalid email or password')
 
-        # Check the password
-        if user.password == password:
-            # Passwords match, user is authenticated
-            user_logData.last_login_date = datetime.datetime.now()
-            user_logData.save()
-
-            # Get the user ID
-            user_id = user.id
-
-            # Generate and return a token for the authenticated user
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key, "user_id": user_id}, status=status.HTTP_200_OK)
-        else:
-            # Passwords do not match
-            return Response({"message": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
+        # If the request method is not POST, return an empty response
+        return HttpResponse()
 
         
 class forgotpassword(APIView):
@@ -454,9 +444,10 @@ class seekerprofile(APIView):
         current_salary = request.data.get('current_salary')
         is_annually_monthly = request.data.get('is_annually_monthly')
         currency = request.data.get('currency')
+        uploaded_cv = request.data.get('uploaded_cv')
 
         seekerprofile=seeker_profile(user_account_id=user_account_id,first_name=first_name,last_name=last_name,
-                         current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency)
+                         current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency,uploaded_cv=uploaded_cv)
         seekerprofile.save()
 
         useraccountid=request.data.get('user_account_id')
@@ -586,6 +577,7 @@ class editseekrprofile(APIView):
             seeker_profile.current_salary = request.data.get('current_salary', seeker_profile.current_salary)
             seeker_profile.is_annually_monthly = request.data.get('is_annually_monthly', seeker_profile.is_annually_monthly)
             seeker_profile.currency = request.data.get('currency', seeker_profile.currency)
+            seeker_profile.uploaded_cv = request.data.get('uploaded_cv', seeker_profile.uploaded_cv)
             seeker_profile.save()
 
             education_detail.certificate_degree_name = request.data.get('certificate_degree_name', education_detail.certificate_degree_name)
