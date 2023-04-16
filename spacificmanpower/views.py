@@ -1,17 +1,12 @@
 import datetime
-from django.shortcuts import render
 from .serializers import *
 from .models import *
-from django.contrib.auth import authenticate
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status,viewsets
 from django.http import Http404
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
 # Create your views here.
 
@@ -194,6 +189,88 @@ class companyprofile(APIView):
     def get(self, request, pk, format=None):
         data = self.get_object(pk)
         serializer = company_serializer(data)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        try:
+            company_obj = company.objects.get(pk=id)
+        except company.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # Update company fields
+        company_name = request.data.get('company_name', company_obj.company_name)
+        profile_description = request.data.get('profile_description', company_obj.profile_description)
+        business_stream_id = request.data.get('business_stream_id', company_obj.business_stream_id)
+        establishment_date = request.data.get('establishment_date', company_obj.establishment_date)
+        company_website_url = request.data.get('company_website_url', company_obj.company_website_url)
+
+        company_obj.company_name = company_name
+        company_obj.profile_description = profile_description
+        company_obj.business_stream_id = business_stream_id
+        company_obj.establishment_date = establishment_date
+        company_obj.company_website_url = company_website_url
+        company_obj.save()
+
+        # Update company image, if applicable
+        company_image_obj = company_image.objects.filter(company_id=company_obj.id).first()
+        if company_image_obj:
+            company_image = request.data.get('company_image', None)
+            if company_image:
+                company_image_obj.company_image = company_image
+                company_image_obj.save()
+
+        return Response(status=status.HTTP_200_OK)
+        
+    def delete(self, request, pk, format=None):
+        try:
+            company_obj = company.objects.get(pk=id)
+        except company.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # Delete company image, if applicable
+        company_image_obj = company_image.objects.filter(company_id=company_obj.id).first()
+        if company_image_obj:
+            company_image_obj.delete()
+
+        # Delete company object
+        company_obj.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class postjoblocation(APIView):
+    def get_object(self, pk):
+        try:
+            return job_location.objects.get(pk=pk)
+        except job_location.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = job_location_serializer(data)
+        return Response(serializer.data)
+
+class postjobcompany(APIView):
+    def get_object(self, pk):
+        try:
+            return company.objects.get(pk=pk)
+        except company.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = company_serializer(data)
+        return Response(serializer.data)
+    
+class postjobjobype(APIView):
+    def get_object(self, pk):
+        try:
+            return job_type.objects.get(pk=pk)
+        except job_type.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = job_type_serializer(data)
         return Response(serializer.data)
     
 class companysaveimage(APIView):
