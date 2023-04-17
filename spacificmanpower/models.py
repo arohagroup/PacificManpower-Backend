@@ -113,6 +113,7 @@ class job_post(models.Model):
     posted_by_id = models.ForeignKey('job_post_activity',related_name='posted_by_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
     job_type_id = models.ForeignKey('job_type',related_name='job_type_id', on_delete=models.CASCADE,default=None)
     company_id = models.ForeignKey('company',related_name='company_id', on_delete=models.CASCADE,default=None)
+    company_image = models.ForeignKey('company_image',related_name='company_image', on_delete=models.CASCADE,default=None,null=True,blank=True)
     is_company_name_hidden=models.BooleanField()
     job_title=models.CharField(max_length=20)
     created_date=models.DateTimeField(auto_now_add=True, blank=True)
