@@ -298,6 +298,7 @@ class postjob(APIView):
         jobtypeid=request.data.get('job_type_id')
         companyid=request.data.get('company_id')
         useraccountid=request.data.get('user_account_id')
+        job_title=request.data.get('job_title')
         
 
         joblocation = job_location(street_address=street_address, city=city, state=state, country=country,zip=zip)
@@ -314,7 +315,7 @@ class postjob(APIView):
 
         job_location_instance = job_location.objects.get(id=job_location_id)
 
-        jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,
+        jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,job_title=job_title,
                          job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active)
         jobpost.save()
 
@@ -371,6 +372,7 @@ class editjob(APIView):
         jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
         jobpost.is_company_name_hidden = request.data.get('is_company_name_hidden', jobpost.is_company_name_hidden)
         jobpost.job_description = request.data.get('job_description', jobpost.job_description)
+        jobpost.job_title = request.data.get('job_title', jobpost.job_title)
         jobpost.job_location_id = joblocation
         jobpost.created_date = request.data.get('created_date', jobpost.created_date)
         jobpost.is_active = request.data.get('is_active', jobpost.is_active)
