@@ -342,6 +342,8 @@ class postjob(APIView):
         # user_log_instance.save()
         
         return Response(status=status.HTTP_201_CREATED)
+    
+
 
 class editjob(APIView):
     def get_object(self, pk):
@@ -397,6 +399,18 @@ class editjob(APIView):
 
         serializer = job_post_serializer(jobpost)
         return Response(serializer.data)
+    
+    def delete(self, request, pk, format=None):
+        jobpost = self.get_object(pk)
+        jobpost.delete()
+
+        # Delete job_location, job_post_skill_set, job_post_activity data associated with jobpost
+        job_location.objects.filter(id=jobpost.job_location_id.id).delete()
+        job_post_skill_set.objects.filter(job_post_id=jobpost.id).delete()
+        job_post_activity.objects.filter(job_post_id=jobpost.id).delete()
+        user_log.objects.filter(last_job_apply_date__isnull=False).latest('id').delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
         
     
 class joblocation(APIView):
