@@ -27,7 +27,7 @@ class CompanyAdmin(admin.ModelAdmin):
 
 
 class CompanyImageAdmin(admin.ModelAdmin):
-    list_display = ('id','company_id','company_image','createdDate','modifiedDate')
+    list_display = ('id','company_id','companyimage','createdDate','modifiedDate')
     list_display_links = ('id','company_id') # adds links to id and name fields
 
 class EducationDetailAdmin(admin.ModelAdmin):

@@ -49,7 +49,7 @@ class company(models.Model):
 
 class company_image(models.Model):
     company_id = models.ForeignKey('company',related_name='company_id_company_image', on_delete=models.CASCADE,default=None,null=True)
-    company_image=models.ImageField(max_length=200, blank=True)
+    companyimage=models.ImageField(max_length=200, blank=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 

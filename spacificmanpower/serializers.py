@@ -73,7 +73,7 @@ class company_image_serializer(serializers.ModelSerializer):
     company_id=serializers.ReadOnlyField(source='company_id.id')
     class Meta:
         model=company_image
-        fields=['id','company_id','company_image','createdDate','modifiedDate']
+        fields=['id','company_id','companyimage','createdDate','modifiedDate']
 
 #Seeker Profile Builder
 class education_detail_serializer(serializers.ModelSerializer):

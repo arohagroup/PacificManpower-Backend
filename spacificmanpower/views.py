@@ -192,32 +192,20 @@ class companyprofile(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        try:
-            company_obj = company.objects.get(pk=pk)
-        except company.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        company_name = request.data.get('company_name')
+        profile_description = request.data.get('profile_description')
+        establishment_date = request.data.get('establishment_date')
+        company_website_url = request.data.get('company_website_url')
+        companyimage = request.data.get('companyimage')
+        company_id=request.data.get('company_id')
+        business_stream_id=request.data.get('business_stream_id')        
 
-        # Update company fields
-        company_name = request.data.get('company_name', company_obj.company_name)
-        profile_description = request.data.get('profile_description', company_obj.profile_description)
-        business_stream_id = request.data.get('business_stream_id', company_obj.business_stream_id)
-        establishment_date = request.data.get('establishment_date', company_obj.establishment_date)
-        company_website_url = request.data.get('company_website_url', company_obj.company_website_url)
+        companysave = company(company_name=company_name, profile_description=profile_description, 
+                              establishment_date=establishment_date, company_website_url=company_website_url,business_stream_id=business_stream_id)
+        companysave.save()
 
-        company_obj.company_name = company_name
-        company_obj.profile_description = profile_description
-        company_obj.business_stream_id = business_stream_id
-        company_obj.establishment_date = establishment_date
-        company_obj.company_website_url = company_website_url
-        company_obj.save()
-
-        # Update company image, if applicable
-        company_image_obj = company_image.objects.filter(company_id=company_obj.id).first()
-        if company_image_obj:
-            company_image = request.data.get('company_image', None)
-            if company_image:
-                company_image_obj.company_image = company_image
-                company_image_obj.save()
+        companysaveimage=company_image(company_id=company_id,companyimage=companyimage)
+        companysaveimage.save()
 
         return Response(status=status.HTTP_200_OK)
 
