@@ -193,7 +193,7 @@ class companyprofile(APIView):
 
     def put(self, request, pk, format=None):
         try:
-            company_obj = company.objects.get(pk=id)
+            company_obj = company.objects.get(pk=pk)
         except company.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -220,6 +220,7 @@ class companyprofile(APIView):
                 company_image_obj.save()
 
         return Response(status=status.HTTP_200_OK)
+
         
     def delete(self, request, pk, format=None):
         try:
