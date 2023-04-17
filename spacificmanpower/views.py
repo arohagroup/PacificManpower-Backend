@@ -200,22 +200,17 @@ class companyprofile(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        company_name = request.data.get('company_name')
-        profile_description = request.data.get('profile_description')
-        establishment_date = request.data.get('establishment_date')
-        company_website_url = request.data.get('company_website_url')
-        companyimage = request.data.get('companyimage')
-        company_id=request.data.get('company_id')
-        business_stream_id=request.data.get('business_stream_id')        
+        userObject = company.objects.get(pk=request.data['id'])
+        addmoreUser = self.get_object(pk)
+        serializer = company_serializer(addmoreUser, data=request.data)
+        if serializer.is_valid():
+            serializer.save(staff=userObject)
 
-        companysave = company(company_name=company_name, profile_description=profile_description, 
-                              establishment_date=establishment_date, company_website_url=company_website_url,business_stream_id=business_stream_id)
-        companysave.save()
-
-        companysaveimage=company_image(company_id=company_id,companyimage=companyimage)
-        companysaveimage.save()
-
-        return Response(status=status.HTTP_200_OK)
+            if 'companyimage' in request.data:
+                company_image_object, _ = company_image.objects.get_or_create(company_id=userObject)
+                company_image_object.companyimage = request.data['companyimage']
+                company_image_object.save()
+            return Response(serializer.data)
 
         
     def delete(self, request, pk, format=None):
