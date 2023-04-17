@@ -200,7 +200,7 @@ class companyprofile(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        userObject = company.objects.get(pk=request.data['id'])
+        userObject = company.objects.get(pk=pk)
         addmoreUser = self.get_object(pk)
         serializer = company_serializer(addmoreUser, data=request.data)
         if serializer.is_valid():
@@ -211,6 +211,8 @@ class companyprofile(APIView):
                 company_image_object.companyimage = request.data['companyimage']
                 company_image_object.save()
             return Response(serializer.data)
+
+
 
         
     def delete(self, request, pk, format=None):
