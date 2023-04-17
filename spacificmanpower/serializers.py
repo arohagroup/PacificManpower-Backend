@@ -135,19 +135,25 @@ class job_type_serializer(serializers.ModelSerializer):
         model=job_type
         fields=['id','job_type','createdDate','modifiedDate']
 
-class job_post_serializer(serializers.ModelSerializer):
-    posted_by_id=serializers.ReadOnlyField(source='posted_by_id.id')
-    job_type_id=serializers.ReadOnlyField(source='job_type_id.id')
-    company_id=serializers.ReadOnlyField(source='company_id.id')
-    class Meta:
-        model=job_post
-        fields=['id','posted_by_id','job_type_id','company_id','is_company_name_hidden','job_title','created_date',
-                'job_description','is_active','job_location_id','createdDate','modifiedDate']
+
 
 class job_location_serializer(serializers.ModelSerializer):
     class Meta:
         model=job_location
         fields=['id','street_address','city','state','country','zip','createdDate','modifiedDate']
+
+class job_post_serializer(serializers.ModelSerializer):
+    # posted_by_id=serializers.ReadOnlyField(source='posted_by_id.id')
+    # job_type_id=serializers.ReadOnlyField(source='job_type_id.id')
+    # company_id=company(source='company_id.id')
+    posted_by_id=job_post_activity_serializer()
+    job_type_id=job_type_serializer()
+    company_id=company_serializer()
+    job_location_id=job_location_serializer()
+    class Meta:
+        model=job_post
+        fields=['id','posted_by_id','job_type_id','company_id','is_company_name_hidden','job_title','created_date',
+                'job_description','is_active','job_location_id','createdDate','modifiedDate']
 
 class trending_news_serializer(serializers.ModelSerializer):
    
