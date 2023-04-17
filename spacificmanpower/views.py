@@ -372,7 +372,12 @@ class editjob(APIView):
         # Update job_post fields
         jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
         jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
-        jobpost.is_company_name_hidden = request.data.get('is_company_name_hidden', jobpost.is_company_name_hidden)
+        # jobpost.is_company_name_hidden = request.data.get('is_company_name_hidden', jobpost.is_company_name_hidden)
+        is_company_name_hidden_str = request.data.get('is_company_name_hidden', str(jobpost.is_company_name_hidden)).lower()
+        if is_company_name_hidden_str == 'true':
+            jobpost.is_company_name_hidden = True
+        elif is_company_name_hidden_str == 'false':
+            jobpost.is_company_name_hidden = False
         jobpost.job_description = request.data.get('job_description', jobpost.job_description)
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
         jobpost.job_location_id = joblocation
