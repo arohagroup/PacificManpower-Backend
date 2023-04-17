@@ -401,14 +401,18 @@ class editjob(APIView):
         return Response(serializer.data)
     
     def delete(self, request, pk, format=None):
-        jobpost = self.get_object(pk)
-        jobpost.delete()
+        try:
+            company_obj = job_location.objects.get(pk=pk)
+        except job_location.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        # Delete job_location, job_post_skill_set, job_post_activity data associated with jobpost
-        job_location.objects.filter(id=jobpost.job_location_id.id).delete()
-        job_post_skill_set.objects.filter(job_post_id=jobpost.id).delete()
-        job_post_activity.objects.filter(job_post_id=jobpost.id).delete()
-        user_log.objects.filter(last_job_apply_date__isnull=False).latest('id').delete()
+        # # Delete company image, if applicable
+        # company_image_obj = company_image.objects.filter(company_id=company_obj.id).first()
+        # if company_image_obj:
+        #     company_image_obj.delete()
+
+        # Delete company object
+        company_obj.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
         
