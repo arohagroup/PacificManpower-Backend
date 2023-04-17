@@ -602,18 +602,26 @@ class updatenews(APIView):
         serializer = trending_news_serializer(data)
         return Response(serializer.data)
 
+    # def put(self, request, pk, format=None):
+    #     # Get the object to update
+    #     obj = self.get_object(pk)
+        
+    #     # Update the object with the request data
+    #     serializer = trending_news_serializer(obj, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    #     # If the serializer is not valid, return an error response
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def put(self, request, pk, format=None):
-        # Get the object to update
-        obj = self.get_object(pk)
-        
-        # Update the object with the request data
-        serializer = trending_news_serializer(obj, data=request.data)
+        userObject = trending_news.objects.get(pk=pk)
+        addmoreUser = self.get_object(pk)
+        serializer = trending_news_serializer(addmoreUser, data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        # If the serializer is not valid, return an error response
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save(staff=userObject)
+            return Response(serializer.data)
         
     def delete(self, request, pk, format=None):
         data = self.get_object(pk)
