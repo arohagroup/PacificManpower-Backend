@@ -180,9 +180,9 @@ class companyadddetails(APIView):
 
         company_id = company_data.id
         company_id_instance = company.objects.get(id=company_id)
-        company_image_data = request.data.get('company_image')
+        company_image_data = request.data.get('companyimage')
 
-        company_image_instance = company_image(company_id=company_id_instance, company_image=company_image_data)
+        company_image_instance = company_image(company_id=company_id_instance, companyimage=company_image_data)
         company_image_instance.save()
 
         return Response(status=status.HTTP_201_CREATED)
