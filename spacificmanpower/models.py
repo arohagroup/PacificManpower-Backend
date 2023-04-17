@@ -114,6 +114,7 @@ class job_post(models.Model):
     job_type_id = models.ForeignKey('job_type',related_name='job_type_id', on_delete=models.CASCADE,default=None)
     company_id = models.ForeignKey('company',related_name='company_id', on_delete=models.CASCADE,default=None)
     is_company_name_hidden=models.BooleanField()
+    job_title=models.CharField(max_length=20)
     created_date=models.DateTimeField(auto_now_add=True, blank=True)
     job_description=models.CharField(max_length=500)
     job_location_id = models.ForeignKey('job_location',related_name='job_location_id', on_delete=models.CASCADE,default=None)
