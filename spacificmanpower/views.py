@@ -213,11 +213,9 @@ class companyprofile(APIView):
             return Response(serializer.data)
 
 
-
-        
     def delete(self, request, pk, format=None):
         try:
-            company_obj = company.objects.get(pk=id)
+            company_obj = company.objects.get(pk=pk)
         except company.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -230,6 +228,7 @@ class companyprofile(APIView):
         company_obj.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class postjoblocation(APIView):
     def get_object(self, pk):
