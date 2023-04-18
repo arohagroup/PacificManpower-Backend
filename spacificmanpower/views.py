@@ -373,7 +373,11 @@ class editjob(APIView):
         jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
         
         is_company_name_hidden_str = request.data.get('is_company_name_hidden')
-        is_company_name_hidden = literal_eval(is_company_name_hidden_str) if isinstance(is_company_name_hidden_str, str) else is_company_name_hidden_str
+        try:
+            is_company_name_hidden = literal_eval(is_company_name_hidden_str)
+        except ValueError:
+            is_company_name_hidden = False # Set a default value
+
         jobpost.is_company_name_hidden = is_company_name_hidden
         jobpost.job_description = request.data.get('job_description', jobpost.job_description)
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
