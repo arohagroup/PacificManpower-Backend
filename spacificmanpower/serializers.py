@@ -150,7 +150,7 @@ class job_post_serializer(serializers.ModelSerializer):
     job_type_id=job_type_serializer()
     company_id=company_serializer()
     job_location_id=job_location_serializer()
-    company_image=company_image_serializer()
+    company_image = company_image_serializer(source='company_id.companyimage_set.first')
     class Meta:
         model=job_post
         fields=['id','posted_by_id','job_type_id','company_id','company_image','is_company_name_hidden','job_title','created_date',
