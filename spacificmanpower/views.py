@@ -52,6 +52,9 @@ class usersaveaccount(APIView):
     
     def post(self, request, format=None):
 
+        email_address = request.data.get('email_address')
+        if user_account.objects.filter(email_address=email_address).exists():
+            return Response({"message": "Email address already exists"}, status=status.HTTP_400_BAD_REQUEST)
         user_type_id = request.data.get('user_type_id')
         if user_type_id:
             userObject = user_type.objects.get(pk=user_type_id)
