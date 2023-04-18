@@ -372,13 +372,13 @@ class editjob(APIView):
         jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
         jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
         
-        # is_company_name_hidden_str = request.data.get('is_company_name_hidden')
-        # try:
-        #     is_company_name_hidden = literal_eval(is_company_name_hidden_str)
-        # except ValueError:
-        #     is_company_name_hidden = False # Set a default value
+        is_company_name_hidden_str = request.data.get('is_company_name_hidden')
+        try:
+            is_company_name_hidden = literal_eval(is_company_name_hidden_str)
+        except ValueError:
+            is_company_name_hidden = False # Set a default value
 
-        # jobpost.is_company_name_hidden = is_company_name_hidden
+        jobpost.is_company_name_hidden = is_company_name_hidden
         jobpost.job_description = request.data.get('job_description', jobpost.job_description)
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
         jobpost.job_location_id = joblocation
@@ -408,12 +408,21 @@ class editjob(APIView):
     
     def delete(self, request, pk, format=None):
         try:
-            company_obj = job_post.objects.get(pk=pk)
+            jobpost = job_post.objects.get(pk=pk)
         except job_post.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        if jobpost.company_id:
+            jobpost.company_id.delete()
 
-        company_obj.delete()
+        if jobpost.company_image:
+            jobpost.company_image.delete()
+        
+        if jobpost.job_location_id:
+            jobpost.job_location_id.delete()
 
+        jobpost.delete()
+        
         return Response(status=status.HTTP_204_NO_CONTENT)
         
     
