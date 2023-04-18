@@ -10,6 +10,7 @@ from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
 from django.utils.crypto import get_random_string
 from ast import literal_eval
+import ast
 # Create your views here.
 
 
@@ -374,19 +375,16 @@ class editjob(APIView):
         # Update job_post fields
         jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
         jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
-        
+        # jobpost.is_company_name_hidden = request.data.get('is_company_name_hidden',jobpost.is_company_name_hidden)
         is_company_name_hidden_str = request.data.get('is_company_name_hidden')
-        try:
-            is_company_name_hidden = literal_eval(is_company_name_hidden_str)
-        except ValueError:
-            is_company_name_hidden = False # Set a default value
-
-        jobpost.is_company_name_hidden = is_company_name_hidden
+        jobpost.is_company_name_hidden = ast.literal_eval(is_company_name_hidden_str.title())
         jobpost.job_description = request.data.get('job_description', jobpost.job_description)
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
         jobpost.job_location_id = joblocation
         jobpost.created_date = request.data.get('created_date', jobpost.created_date)
         jobpost.is_active = request.data.get('is_active', jobpost.is_active)
+        is_active_str = request.data.get('is_active')
+        jobpost.is_active = ast.literal_eval(is_active_str.title())
         jobpost.save()
 
         # Update job_post_skill_set fields
