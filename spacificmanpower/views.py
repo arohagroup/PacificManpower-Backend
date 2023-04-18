@@ -122,7 +122,7 @@ class userlogin(APIView):
             user_logData.last_login_date = datetime.datetime.now()
             user_logData.save()
             unique_id = get_random_string(length=32)
-            return Response({"userid": user.id,"username":user.first_name,"token": unique_id},status=status.HTTP_200_OK)
+            return Response({"userid": user.id,"user_type_id": user.user_type_id.id,"username":user.first_name,"token": unique_id},status=status.HTTP_200_OK)
         else:
             # Passwords do not match
             return Response({"message": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
