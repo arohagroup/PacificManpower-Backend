@@ -372,13 +372,13 @@ class editjob(APIView):
         jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
         jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
         
-        is_company_name_hidden_str = request.data.get('is_company_name_hidden')
-        try:
-            is_company_name_hidden = literal_eval(is_company_name_hidden_str)
-        except ValueError:
-            is_company_name_hidden = False # Set a default value
+        # is_company_name_hidden_str = request.data.get('is_company_name_hidden')
+        # try:
+        #     is_company_name_hidden = literal_eval(is_company_name_hidden_str)
+        # except ValueError:
+        #     is_company_name_hidden = False # Set a default value
 
-        jobpost.is_company_name_hidden = is_company_name_hidden
+        # jobpost.is_company_name_hidden = is_company_name_hidden
         jobpost.job_description = request.data.get('job_description', jobpost.job_description)
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
         jobpost.job_location_id = joblocation
@@ -408,16 +408,10 @@ class editjob(APIView):
     
     def delete(self, request, pk, format=None):
         try:
-            company_obj = job_location.objects.get(pk=pk)
-        except job_location.DoesNotExist:
+            company_obj = job_post.objects.get(pk=pk)
+        except job_post.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        # # Delete company image, if applicable
-        # company_image_obj = company_image.objects.filter(company_id=company_obj.id).first()
-        # if company_image_obj:
-        #     company_image_obj.delete()
-
-        # Delete company object
         company_obj.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -440,6 +434,44 @@ class joblocation(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class editjoblocation(APIView):
+    def get_object(self, pk):
+        try:
+            return job_location.objects.get(pk=pk)
+        except job_location.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        calendars = self.get_object(pk)
+        serializer = job_location_serializer(calendars)
+        try:
+            data = list()
+            data.append(serializer.data)
+        except Http404:
+            return Response(data)
+        return Response(data)
+
+    def patch(self, request, pk):
+        calendars = self.get_object(pk)
+        serializer = job_location_serializer(calendars, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk, format=None):
+        calendars = self.get_object(pk)
+        serializer = job_location_serializer(calendars, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        calendars = self.get_object(pk)
+        calendars.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
     
 class educationdetail(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
