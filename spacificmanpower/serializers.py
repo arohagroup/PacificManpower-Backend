@@ -142,6 +142,12 @@ class job_location_serializer(serializers.ModelSerializer):
         model=job_location
         fields=['id','street_address','city','state','country','zip','createdDate','modifiedDate']
 
+class experince_type_serializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model=experince_type
+        fields=['id','experince_type','createdDate','modifiedDate']
+
 class job_post_serializer(serializers.ModelSerializer):
     # posted_by_id=serializers.ReadOnlyField(source='posted_by_id.id')
     # job_type_id=serializers.ReadOnlyField(source='job_type_id.id')
@@ -150,10 +156,11 @@ class job_post_serializer(serializers.ModelSerializer):
     job_type_id=job_type_serializer()
     company_id=company_serializer()
     job_location_id=job_location_serializer()
+    experince_type_id=experince_type_serializer()
     class Meta:
         model=job_post
-        fields=['id','posted_by_id','job_type_id','company_id','is_company_name_hidden','job_title','created_date',
-                'job_description','is_active','job_location_id','createdDate','modifiedDate']
+        fields=['id','posted_by_id','job_type_id','company_id','experince_type_id','is_company_name_hidden','job_title','created_date',
+                'job_description','is_active','job_location_id','salary','createdDate','modifiedDate']
 
 class trending_news_serializer(serializers.ModelSerializer):
    
@@ -168,4 +175,6 @@ class contact_us_serializer(serializers.ModelSerializer):
     class Meta:
         model=contact_us
         fields=['id','name','email','message','createdDate','modifiedDate']
+
+
 

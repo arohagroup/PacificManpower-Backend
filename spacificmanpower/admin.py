@@ -54,8 +54,8 @@ class SkillSetAdmin(admin.ModelAdmin):
     list_display_links = ('id','skill_set_name') # adds links to id and name fields
 
 class JobPostAdmin(admin.ModelAdmin):
-    list_display = ('id','posted_by_id','job_type_id','company_id','is_company_name_hidden','job_title','created_date',
-                    'job_description','job_location_id','is_active','createdDate','modifiedDate')
+    list_display = ('id','posted_by_id','job_type_id','company_id','experince_type_id','is_company_name_hidden','job_title','created_date',
+                    'job_description','job_location_id','salary','is_active','createdDate','modifiedDate')
     list_display_links = ('id','posted_by_id') # adds links to id and name fields
 
 class JobPostActivityAdmin(admin.ModelAdmin):
@@ -82,6 +82,10 @@ class ContactUs(admin.ModelAdmin):
     list_display = ('id','name','email','message','createdDate','modifiedDate')
     list_display_links = ('id','name') # adds links to id and name fields
 
+class ExperinceTypeAdmin(admin.ModelAdmin):
+    list_display = ('id','experince_type','createdDate','modifiedDate')
+    list_display_links = ('id','experince_type') # adds links to id and name fields
+
 admin.site.register(user_type,UserTypeAdmin)
 admin.site.register(user_account, UserAccountAdmin)
 admin.site.register(user_log, UserLogAdmin)
@@ -100,3 +104,4 @@ admin.site.register(job_location, JobLocationAdmin)
 admin.site.register(job_post_skill_set, JobPostSkillSet)
 admin.site.register(trending_news, TrendingNewsAdmin)
 admin.site.register(contact_us, ContactUs)
+admin.site.register(experince_type, ExperinceTypeAdmin)

@@ -113,10 +113,12 @@ class job_post(models.Model):
     posted_by_id = models.ForeignKey('job_post_activity',related_name='posted_by_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
     job_type_id = models.ForeignKey('job_type',related_name='job_type_id', on_delete=models.CASCADE,default=None)
     company_id = models.ForeignKey('company',related_name='company_id', on_delete=models.CASCADE,default=None)
+    experince_type_id = models.ForeignKey('experince_type',related_name='experince_type_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
     is_company_name_hidden=models.BooleanField()
     job_title=models.CharField(max_length=20)
     created_date=models.DateTimeField(auto_now_add=True, blank=True)
     job_description=models.CharField(max_length=500)
+    salary=models.IntegerField(max_length=30)
     job_location_id = models.ForeignKey('job_location',related_name='job_location_id', on_delete=models.CASCADE,default=None)
     is_active=models.BooleanField()
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
@@ -134,6 +136,11 @@ class job_post_activity(models.Model):
 
 class job_type(models.Model):
     job_type=models.CharField(max_length=20)
+    createdDate = models.DateTimeField(auto_now_add=True, blank=True)
+    modifiedDate = models.DateTimeField(auto_now=True)
+
+class experince_type(models.Model):
+    experince_type=models.CharField(max_length=20)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
