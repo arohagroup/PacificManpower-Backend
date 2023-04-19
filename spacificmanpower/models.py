@@ -170,13 +170,13 @@ class trending_news(models.Model):
     modifiedDate = models.DateTimeField(auto_now=True)
 
 class contact_us(models.Model):
-    name=models.CharField(max_length=10)
+    name=models.CharField(max_length=25)
     email=models.CharField(max_length=15)
     message=models.CharField(max_length=400)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
 class subscribe(models.Model):
-    email=models.CharField(max_length=15)
+    email=models.CharField(max_length=25)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
