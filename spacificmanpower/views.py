@@ -827,7 +827,15 @@ class filteredjobbyparttime(APIView):
 class filteredjobbyfulltime(APIView):
     def get(self, request, format=None, *args, **kwargs):
 
-        filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='part time')
+        filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='full time')
+
+        serializer = job_post_serializer(filtered_data, many=True)
+        return Response(serializer.data)
+    
+class filteredjobbyfreelancer(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+
+        filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='freelancer')
 
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)

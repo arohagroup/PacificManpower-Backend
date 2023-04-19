@@ -175,3 +175,8 @@ class contact_us(models.Model):
     message=models.CharField(max_length=400)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
+
+class subscribe(models.Model):
+    email=models.CharField(max_length=15)
+    createdDate = models.DateTimeField(auto_now_add=True, blank=True)
+    modifiedDate = models.DateTimeField(auto_now=True)

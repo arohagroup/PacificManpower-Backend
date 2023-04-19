@@ -176,5 +176,8 @@ class contact_us_serializer(serializers.ModelSerializer):
         model=contact_us
         fields=['id','name','email','message','createdDate','modifiedDate']
 
-
-
+class subscribe_serializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model=subscribe
+        fields=['id','email','createdDate','modifiedDate']
