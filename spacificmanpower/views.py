@@ -771,3 +771,16 @@ class editseekrprofile(APIView):
 
         except (seeker_profile.DoesNotExist, education_detail.DoesNotExist, experience_detail.DoesNotExist, seeker_skill_set.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+class showCI(APIView):
+    def get_object(self, pk):
+        try:
+            return company.objects.get(pk=pk)
+        except company.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        company_obj = self.get_object(pk)
+        images = company_image.objects.filter(company_id=company_obj)
+        serializer = company_image_serializer(images, many=True)
+        return Response(serializer.data)
