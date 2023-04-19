@@ -54,7 +54,7 @@ class SkillSetAdmin(admin.ModelAdmin):
     list_display_links = ('id','skill_set_name') # adds links to id and name fields
 
 class JobPostAdmin(admin.ModelAdmin):
-    list_display = ('id','posted_by_id','job_type_id','company_id','company_image','is_company_name_hidden','job_title','created_date',
+    list_display = ('id','posted_by_id','job_type_id','company_id','is_company_name_hidden','job_title','created_date',
                     'job_description','job_location_id','is_active','createdDate','modifiedDate')
     list_display_links = ('id','posted_by_id') # adds links to id and name fields
 

@@ -150,10 +150,9 @@ class job_post_serializer(serializers.ModelSerializer):
     job_type_id=job_type_serializer()
     company_id=company_serializer()
     job_location_id=job_location_serializer()
-    company_image_id=company_image_serializer()
     class Meta:
         model=job_post
-        fields=['id','posted_by_id','job_type_id','company_id','company_image_id','is_company_name_hidden','job_title','created_date',
+        fields=['id','posted_by_id','job_type_id','company_id','is_company_name_hidden','job_title','created_date',
                 'job_description','is_active','job_location_id','createdDate','modifiedDate']
 
 class trending_news_serializer(serializers.ModelSerializer):
