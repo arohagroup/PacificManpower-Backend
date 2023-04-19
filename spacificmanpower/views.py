@@ -395,22 +395,22 @@ class editjob(APIView):
         jobpost.is_active = ast.literal_eval(is_active_str.title())
         jobpost.save()
 
-        # Update job_post_skill_set fields
-        jobpostskillset = job_post_skill_set.objects.get(job_post_id=jobpost.id)
-        jobpostskillset.skill_set_id = skill_set.objects.get(id=request.data.get('skill_set_id', jobpostskillset.skill_set_id.id))
-        jobpostskillset.skill_level = request.data.get('skill_level', jobpostskillset.skill_level)
-        jobpostskillset.save()
+        # # Update job_post_skill_set fields
+        # jobpostskillset = job_post_skill_set.objects.get(job_post_id=jobpost.id)
+        # jobpostskillset.skill_set_id = skill_set.objects.get(id=request.data.get('skill_set_id', jobpostskillset.skill_set_id.id))
+        # jobpostskillset.skill_level = request.data.get('skill_level', jobpostskillset.skill_level)
+        # jobpostskillset.save()
 
-        # Update job_post_activity fields
-        jobpostactivity = job_post_activity.objects.get(job_post_id=jobpost.id)
-        jobpostactivity.user_account_id = user_account.objects.get(id=request.data.get('user_account_id', jobpostactivity.user_account_id.id))
-        jobpostactivity.apply_date = request.data.get('apply_date', jobpostactivity.apply_date)
-        jobpostactivity.save()
+        # # Update job_post_activity fields
+        # jobpostactivity = job_post_activity.objects.get(job_post_id=jobpost.id)
+        # jobpostactivity.user_account_id = user_account.objects.get(id=request.data.get('user_account_id', jobpostactivity.user_account_id.id))
+        # jobpostactivity.apply_date = request.data.get('apply_date', jobpostactivity.apply_date)
+        # jobpostactivity.save()
 
         # Update user_log fields
-        userlog = user_log.objects.last()
-        userlog.last_job_apply_date = jobpostactivity.apply_date
-        userlog.save()
+        # userlog = user_log.objects.last()
+        # userlog.last_job_apply_date = jobpostactivity.apply_date
+        # userlog.save()
 
         serializer = job_post_serializer(jobpost)
         return Response(serializer.data)
