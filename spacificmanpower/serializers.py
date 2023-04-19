@@ -162,4 +162,10 @@ class trending_news_serializer(serializers.ModelSerializer):
         model=trending_news
         fields=['id','news_title','news_description','news_image','user_account_id',
                 'createdDate','modifiedDate']
+        
+class contact_us_serializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model=contact_us
+        fields=['id','name','email','message','createdDate','modifiedDate']
 

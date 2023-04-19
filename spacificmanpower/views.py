@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from django.utils.crypto import get_random_string
 from ast import literal_eval
 import ast
+from django.db.models import Q
 # Create your views here.
 
 
@@ -784,3 +785,33 @@ class showCI(APIView):
         images = company_image.objects.filter(company_id=company_obj)
         serializer = company_image_serializer(images, many=True)
         return Response(serializer.data)
+    
+
+class contactus(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = contact_us.objects.all()
+    serializer_class = contact_us_serializer
+
+    def get(self, request, format=None):
+        user_data = contact_us.objects.all().order_by('-createdDate')
+        serializer = contact_us_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = contact_us_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class joblistbycompany(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+
+        filtered_data = job_post.objects.filter( 
+            job_title__iexact=self.kwargs['job_title'],
+            job_location_id__country__iexact=self.kwargs['country'])
+
+        serializer = job_post_serializer(filtered_data, many=True)
+        return Response(serializer.data)
+

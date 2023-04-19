@@ -78,6 +78,10 @@ class TrendingNewsAdmin(admin.ModelAdmin):
     list_display = ('id','user_account_id','news_title','news_description','news_image','createdDate','modifiedDate')
     list_display_links = ('id','user_account_id') # adds links to id and name fields
 
+class ContactUs(admin.ModelAdmin):
+    list_display = ('id','name','email','message','createdDate','modifiedDate')
+    list_display_links = ('id','name') # adds links to id and name fields
+
 admin.site.register(user_type,UserTypeAdmin)
 admin.site.register(user_account, UserAccountAdmin)
 admin.site.register(user_log, UserLogAdmin)
@@ -95,3 +99,4 @@ admin.site.register(job_type, JobTypeAdmin)
 admin.site.register(job_location, JobLocationAdmin)
 admin.site.register(job_post_skill_set, JobPostSkillSet)
 admin.site.register(trending_news, TrendingNewsAdmin)
+admin.site.register(contact_us, ContactUs)

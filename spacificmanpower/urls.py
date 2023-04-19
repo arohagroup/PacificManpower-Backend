@@ -38,6 +38,7 @@ urlpatterns = [
     path('post_job/',views.postjob.as_view()),
     path('post_job/<int:pk>/',views.editjob.as_view()),
     path('postjobCI/<int:pk>/',views.showCI.as_view()),
+    path('filteredjob/<str:job_title>/<str:country>/', views.joblistbycompany.as_view()),
     # path('postjobcompany/<int:pk>/',views.postjobcompany.as_view()),
     # path('postjob_jobtype/<int:pk>/',views.postjobjobype.as_view()),
 
@@ -53,4 +54,6 @@ urlpatterns = [
 
     path('trendingnews/',views.trendingnews.as_view()),
     path('trendingnews/<int:pk>/',views.updatenews.as_view()),
+
+    path('contactus/',views.contactus.as_view()),
 ]
