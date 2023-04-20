@@ -841,6 +841,7 @@ class filteredjobbyfreelancer(APIView):
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)
     
+    
 class subscribeemail(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
 

@@ -31,6 +31,8 @@ urlpatterns = [
     path('seeker_profile/',views.seekerprofile.as_view()),
     path('seeker_profile/<int:pk>/',views.editseekrprofile.as_view()),
     path('education_detail/',views.educationdetail.as_view()),
+    # path('education_detail/<int:pk>/',views.educationdetailfiltered.as_view()),
+
     path('experince_detail/',views.experincedetail.as_view()),
 
     path('seeker_skill_set/',views.seekerskillset.as_view()),
