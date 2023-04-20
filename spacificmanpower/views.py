@@ -336,14 +336,6 @@ class postjob(APIView):
         jobpostskillset=job_post_skill_set(skill_set_id=skill_set_id,skill_level=skill_level,job_post_id=job_post_instance)
         jobpostskillset.save()
 
-
-
-        jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_instance,apply_date=datetime.datetime.now())
-        jobpostactivity.save()
-
-        userlog=user_log(user_account_id=user_account_id,last_job_apply_date=datetime.datetime.now())
-        userlog.save()
-
         # user_log_instance = user_log.objects.get(user_account_id=user_account_id)
         # user_log_instance.last_job_apply_date = datetime.datetime.now()
         # user_log_instance.save()
@@ -639,6 +631,32 @@ class seekerprofile(APIView):
 
         seekerskillset=seeker_skill_set(user_account_id=user_account_id,skill_set_id=skill_set_id,skill_level=skill_level)
         seekerskillset.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+    
+class applyjob(APIView):
+    queryset = job_post_activity.objects.all()
+    serializer_class = job_post_activity_serializer
+
+    def get(self, request, format=None):
+        user_data = job_post_activity.objects.all().order_by('-createdDate')
+        serializer = job_post_activity_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+
+        useraccountid=request.data.get('user_account_id')
+        
+        user_account_id=user_account.objects.get(id=useraccountid)
+        
+        jobpostid=request.data.get('job_post_id')
+        job_post_id = job_post.objects.get(id=jobpostid)
+
+        jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_id,apply_date=datetime.datetime.now())
+        jobpostactivity.save()
+
+        userlog=user_log(user_account_id=user_account_id,last_job_apply_date=datetime.datetime.now())
+        userlog.save()
 
         return Response(status=status.HTTP_201_CREATED)
     
