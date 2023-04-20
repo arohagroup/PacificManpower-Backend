@@ -740,6 +740,17 @@ class updatenews(APIView):
         data.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+class educationdetailIND(APIView):
+    def get_object(self, pk):
+        try:
+            return education_detail.objects.get(pk=pk)
+        except education_detail.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = education_detail_serializer(data)
+        return Response(serializer.data)
 
 class editseekrprofile(APIView):
     def get_object(self, pk):
