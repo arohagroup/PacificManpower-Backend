@@ -608,7 +608,16 @@ class seekerprofile(APIView):
         useraccountid=request.data.get('user_account_id')
         
         user_account_id=user_account.objects.get(id=useraccountid)
-        is_current_job = request.data.get('is_current_job')
+        # is_current_job = request.data.get('is_current_job')
+        is_current_job = request.data.get('is_current_job', None)
+        if is_current_job is not None:
+            if is_current_job.lower() == 'true':
+                is_current_job = True
+            elif is_current_job.lower() == 'false':
+                is_current_job = False
+            else:
+                # Handle invalid input
+                pass
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
         job_title = request.data.get('job_title')
@@ -648,7 +657,7 @@ class applyjob(APIView):
         useraccountid=request.data.get('user_account_id')
         
         user_account_id=user_account.objects.get(id=useraccountid)
-        
+
         jobpostid=request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
 
