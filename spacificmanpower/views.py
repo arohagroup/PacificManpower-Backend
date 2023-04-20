@@ -540,6 +540,13 @@ class skills(APIView):
         serializer = skill_set_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
+    def post(self, request, format=None):
+        serializer = skill_set_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class skillset(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
 
