@@ -582,6 +582,7 @@ class seekerprofile(APIView):
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
         current_salary = request.data.get('current_salary')
+        print(current_salary)
         is_annually_monthly = request.data.get('is_annually_monthly')
         currency = request.data.get('currency')
         uploaded_cv = request.data.get('uploaded_cv')
