@@ -86,7 +86,7 @@ class seeker_profile(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_idss', on_delete=models.CASCADE,default=None,primary_key=True)
     first_name=models.CharField(max_length=50)
     last_name=models.CharField(max_length=50)
-    current_salary = models.IntegerField(blank=True,null=True)
+    current_salary = models.IntegerField(blank=True)
     is_annually_monthly=models.CharField(max_length=100,blank=True)
     currency=models.CharField(max_length=50,blank=True)
     uploaded_cv=models.FileField(null=True,blank=True)
