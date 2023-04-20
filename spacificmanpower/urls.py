@@ -34,6 +34,7 @@ urlpatterns = [
     path('education_detail/<int:pk>/',views.educationdetailIND.as_view()),
 
     path('experince_detail/',views.experincedetail.as_view()),
+    path('experince_detail/<int:pk>/',views.experincedetailIND.as_view()),
 
     path('seeker_skill_set/',views.seekerskillset.as_view()),
 

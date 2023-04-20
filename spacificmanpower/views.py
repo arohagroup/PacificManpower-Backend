@@ -751,6 +751,19 @@ class educationdetailIND(APIView):
         data = self.get_object(pk)
         serializer = education_detail_serializer(data)
         return Response(serializer.data)
+    
+class experincedetailIND(APIView):
+    def get_object(self, pk):
+        try:
+            return experience_detail.objects.get(pk=pk)
+        except experience_detail.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = experience_detail_serializer(data)
+        return Response(serializer.data)
+
 
 class editseekrprofile(APIView):
     def get_object(self, pk):
