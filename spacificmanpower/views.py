@@ -514,16 +514,16 @@ class seekerskillset(APIView):
         serializer = seeker_skill_set_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
-class jobpostactivity(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
+# class jobpostactivity(APIView):
+#     # Return a list of all userreg objects serialized using userregSerializer
 
-    queryset = job_post_activity.objects.all()
-    serializer_class = job_post_activity_serializer
+#     queryset = job_post_activity.objects.all()
+#     serializer_class = job_post_activity_serializer
 
-    def get(self, request, format=None):
-        user_data = job_post_activity.objects.all().order_by('-createdDate')
-        serializer = job_post_activity_serializer(user_data, many=True, context={'request': request})
-        return Response(serializer.data)
+#     def get(self, request, format=None):
+#         user_data = job_post_activity.objects.all().order_by('-createdDate')
+#         serializer = job_post_activity_serializer(user_data, many=True, context={'request': request})
+#         return Response(serializer.data)
     
 class experincedetail(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
@@ -766,6 +766,30 @@ class educationdetailIND(APIView):
     def get(self, request, pk, format=None):
         data = self.get_object(pk)
         serializer = education_detail_serializer(data)
+        return Response(serializer.data)
+    
+class skillsetIND(APIView):
+    def get_object(self, pk):
+        try:
+            return job_post_skill_set.objects.get(pk=pk)
+        except job_post_skill_set.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = job_post_skill_set_serializer(data)
+        return Response(serializer.data)
+    
+class skillssetIND(APIView):
+    def get_object(self, pk):
+        try:
+            return skill_set.objects.get(pk=pk)
+        except skill_set.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = skill_set_serializer(data)
         return Response(serializer.data)
     
 class experincedetailIND(APIView):

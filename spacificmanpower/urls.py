@@ -50,12 +50,15 @@ urlpatterns = [
     path('applyjob/',views.applyjob.as_view()),
     path('applyjob/<int:pk>/',views.applyjobIND.as_view()),
 
-    path('jobpostactivity/',views.jobpostactivity.as_view()),
+    # path('jobpostactivity/',views.jobpostactivity.as_view()),
     
     path('job_type/',views.jobtype.as_view()),
-    path('jobskillset/',views.skillset.as_view()),
 
-    path('skillset/',views.skills.as_view()),  
+    path('jobskillset/',views.skillset.as_view()),
+    path('jobskillset/<int:pk>/',views.skillsetIND.as_view()),
+
+    path('skillset/',views.skills.as_view()), 
+    path('skillset/<int:pk>/',views.skillssetIND.as_view()),  
 
     path('job_location/',views.joblocation.as_view()),
     path('job_location/<int:pk>/',views.editjoblocation.as_view()),
