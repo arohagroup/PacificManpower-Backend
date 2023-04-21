@@ -97,8 +97,7 @@ class seeker_profile_serializer(serializers.ModelSerializer):
     user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
     class Meta:
         model=seeker_profile
-        fields=['user_account_id','first_name','last_name','current_salary','is_annually_monthly','currency','uploaded_cv'
-                ,'createdDate','modifiedDate']
+        fields=['user_account_id','first_name','last_name','current_salary','is_annually_monthly','currency','uploaded_cv','createdDate','modifiedDate']
         
 class seeker_skill_set_serializer(serializers.ModelSerializer):
     

@@ -496,6 +496,13 @@ class educationdetail(APIView):
         serializer = education_detail_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
+    def post(self, request, format=None):
+        serializer = education_detail_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class seekerskillset(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
 
@@ -582,6 +589,7 @@ class seekerprofile(APIView):
 
     
     def post(self, request, format=None):
+        print(request.data)
         useraccountid=request.data.get('user_account_id')
 
         user_account_id=user_account.objects.get(id=useraccountid)
@@ -603,6 +611,7 @@ class seekerprofile(APIView):
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
         institute_university_name = request.data.get('institute_university_name')
+        
         starting_date = request.data.get('starting_date')
         completion_date = request.data.get('completion_date')
         percentage = request.data.get('percentage')
@@ -786,7 +795,7 @@ class editseekrprofile(APIView):
     
     def put(self, request, format=None):
         user_account_id = request.data.get('user_account_id')
-
+        print(request.data)
         try:
             seeker_profile = seeker_profile.objects.get(user_account_id=user_account_id)
             education_detail = education_detail.objects.get(user_account_id=user_account_id)
