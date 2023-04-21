@@ -327,7 +327,7 @@ class postjob(APIView):
         jobpost.save()
 
         skill_level=request.data.get('skill_level')
-        skillsetid=request.data.get('skill_set_id')
+        skillsetid=request.data.getlist('skill_set_id')
         
         skill_set_id=skill_set.objects.get(id=skillsetid)
         job_post_id=jobpost.id
@@ -778,6 +778,30 @@ class experincedetailIND(APIView):
     def get(self, request, pk, format=None):
         data = self.get_object(pk)
         serializer = experience_detail_serializer(data)
+        return Response(serializer.data)
+    
+class seekerskillsetIND(APIView):
+    def get_object(self, pk):
+        try:
+            return seeker_skill_set.objects.get(pk=pk)
+        except seeker_skill_set.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = seeker_skill_set_serializer(data)
+        return Response(serializer.data)
+    
+class applyjobIND(APIView):
+    def get_object(self, pk):
+        try:
+            return job_post_activity.objects.get(pk=pk)
+        except job_post_activity.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = job_post_activity_serializer(data)
         return Response(serializer.data)
 
 

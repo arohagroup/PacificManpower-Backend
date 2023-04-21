@@ -180,3 +180,9 @@ class subscribe_serializer(serializers.ModelSerializer):
     class Meta:
         model=subscribe
         fields=['id','email','createdDate','modifiedDate']
+
+class applyjob_serializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model=job_post_activity
+        fields=['id','user_account_id','job_post_id','apply_date','createdDate','modifiedDate']

@@ -37,6 +37,7 @@ urlpatterns = [
     path('experince_detail/<int:pk>/',views.experincedetailIND.as_view()),
 
     path('seeker_skill_set/',views.seekerskillset.as_view()),
+    path('seeker_skill_set/<int:pk>/',views.seekerskillsetIND.as_view()),
 
     path('post_job/',views.postjob.as_view()),
     path('post_job/<int:pk>/',views.editjob.as_view()),
@@ -47,6 +48,7 @@ urlpatterns = [
     path('filteredjobbyfreelancer/<str:job_type>/', views.filteredjobbyfreelancer.as_view()),
 
     path('applyjob/',views.applyjob.as_view()),
+    path('applyjob/<int:pk>/',views.applyjobIND.as_view()),
 
     path('jobpostactivity/',views.jobpostactivity.as_view()),
     

@@ -103,7 +103,7 @@ class seeker_skill_set(models.Model):
     # primary_key = ('user_account_id', 'skill_set_id')
 
 class skill_set(models.Model):
-    skill_set_name=models.CharField(max_length=50)
+    skill_set_name=models.CharField(max_length=200)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
@@ -118,7 +118,7 @@ class job_post(models.Model):
     job_title=models.CharField(max_length=20)
     created_date=models.DateTimeField(auto_now_add=True, blank=True)
     job_description=models.CharField(max_length=500)
-    salary=models.IntegerField(max_length=30)
+    salary=models.IntegerField(max_length=30,blank=True,null=True)
     job_location_id = models.ForeignKey('job_location',related_name='job_location_id', on_delete=models.CASCADE,default=None)
     is_active=models.BooleanField()
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
