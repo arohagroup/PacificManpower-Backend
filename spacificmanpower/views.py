@@ -97,6 +97,8 @@ class edituseraccount(APIView):
             serializer.save(staff=userObject)
             return Response(serializer.data)
         
+        return Response(status=status.HTTP_201_CREATED)
+        
     
         
 class userlog(APIView):
