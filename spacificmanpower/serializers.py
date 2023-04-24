@@ -116,7 +116,7 @@ class skill_set_serializer(serializers.ModelSerializer):
 class job_post_activity_serializer(serializers.ModelSerializer):
     
     user_account_id=user_account_serializer()
-    job_post_id=serializers.ReadOnlyField(source='job_post_id.id')
+    job_post_id=job_post()
     class Meta:
         model=job_post_activity
         fields=['id','user_account_id','job_post_id','apply_date','status','createdDate','modifiedDate']
