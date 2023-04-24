@@ -90,12 +90,14 @@ class edituseraccount(APIView):
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):
-        userObject = user_account.objects.get(pk=request.data['id'])
+        userObject = user_account.objects.get(pk=pk)
         addmoreUser = self.get_object(pk)
         serializer = user_account_serializer(addmoreUser, data=request.data)
         if serializer.is_valid():
             serializer.save(staff=userObject)
             return Response(serializer.data)
+        
+    
         
 class userlog(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
@@ -674,10 +676,12 @@ class applyjob(APIView):
         
         user_account_id=user_account.objects.get(id=useraccountid)
 
+        status=request.data.get('status')
+
         jobpostid=request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
 
-        jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_id,apply_date=datetime.datetime.now())
+        jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_id,apply_date=datetime.datetime.now(),status=status)
         jobpostactivity.save()
 
         userlog=user_log(user_account_id=user_account_id,last_job_apply_date=datetime.datetime.now())
