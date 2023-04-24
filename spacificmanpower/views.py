@@ -327,7 +327,7 @@ class postjob(APIView):
         jobpost.save()
 
         skill_level=request.data.get('skill_level')
-        skillsetid=request.data.getlist('skill_set_id')
+        skillsetid=request.data.get('skill_set_id')
         
         skill_set_id=skill_set.objects.get(id=skillsetid)
         job_post_id=jobpost.id
