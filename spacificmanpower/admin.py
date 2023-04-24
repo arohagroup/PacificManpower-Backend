@@ -59,7 +59,7 @@ class JobPostAdmin(admin.ModelAdmin):
     list_display_links = ('id','posted_by_id') # adds links to id and name fields
 
 class JobPostActivityAdmin(admin.ModelAdmin):
-    list_display = ('id','user_account_id','job_post_id','apply_date','createdDate','modifiedDate')
+    list_display = ('id','user_account_id','job_post_id','apply_date','status','createdDate','modifiedDate')
     list_display_links = ('id','user_account_id') # adds links to id and name fields
 
 class JobTypeAdmin(admin.ModelAdmin):
