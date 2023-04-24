@@ -667,11 +667,11 @@ class seekerprofile(APIView):
     
 class applyjob(APIView):
     queryset = job_post_activity.objects.all()
-    serializer_class = job_post_activity_serializer
+    serializer_class = job_post_activity_serializertest
 
     def get(self, request, format=None):
         user_data = job_post_activity.objects.all().order_by('-createdDate')
-        serializer = job_post_activity_serializer(user_data, many=True, context={'request': request})
+        serializer = job_post_activity_serializertest(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
     def post(self, request, format=None):
