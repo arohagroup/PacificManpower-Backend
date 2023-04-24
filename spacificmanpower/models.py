@@ -155,7 +155,7 @@ class job_location(models.Model):
     modifiedDate = models.DateTimeField(auto_now=True)
 
 class job_post_skill_set(models.Model):
-    skill_set_id = models.ForeignKey('skill_set',related_name='skill_set_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
+    skill_set_id = models.ForeignKey('skill_set',related_name='skill_set_id', on_delete=models.CASCADE,default=None,null=True,blank=True,max_length=20)
     job_post_id = models.ForeignKey('job_post',related_name='job_post_id_job_post_skill_set', on_delete=models.CASCADE,default=None)
     skill_level=models.IntegerField()
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
