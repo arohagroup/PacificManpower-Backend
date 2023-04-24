@@ -650,15 +650,18 @@ class seekerprofile(APIView):
                          end_date=end_date,job_title=job_title,company_name=company_name,job_location_city=job_location_city,job_location_state=job_location_state,job_location_country=job_location_country,description=description)
         experincedetail.save()
 
-        useraccountid=request.data.get('user_account_id')
-        skillsetid=request.data.get('skill_set_id')
-        
-        skill_set_id=skill_set.objects.get(id=skillsetid)
-        user_account_id=user_account.objects.get(id=useraccountid) 
-        skill_level = request.data.get('skill_level')
+        skillsetids = request.data.get('skill_set_id').split(',') # split the string into a list of ids
+        user_account_id = request.data.get('user_account_id')
 
-        seekerskillset=seeker_skill_set(user_account_id=user_account_id,skill_set_id=skill_set_id,skill_level=skill_level)
-        seekerskillset.save()
+        for skillsetid in skillsetids:
+            try:
+                skill_set_id = skill_set.objects.get(id=int(skillsetid))
+                skill_level = request.data.get('skill_level') # get the skill_level from the request data
+                seekerskillset = seeker_skill_set(user_account_id=user_account_id, skill_set_id=skill_set_id, skill_level=skill_level)
+                seekerskillset.save() # save the seeker_skill_set object to the database
+            except skill_set.DoesNotExist:
+                # handle the case where the skill_set object does not exist
+                pass
 
         return Response(status=status.HTTP_201_CREATED)
     
@@ -883,11 +886,26 @@ class editseekrprofile(APIView):
             experience_detail.description = request.data.get('description', experience_detail.description)
             experience_detail.save()
 
-            skill_set_id = request.data.get('skill_set_id', seeker_skill_set.skill_set_id)
-            skill_level = request.data.get('skill_level', seeker_skill_set.skill_level)
-            seeker_skill_set.skill_set_id = skill_set_id
-            seeker_skill_set.skill_level = skill_level
-            seeker_skill_set.save()
+            skill_set_ids = request.data.get('skill_set_id', None) # get the updated skill_set_id(s) from the request data
+            skill_level = request.data.get('skill_level', None) # get the updated skill_level from the request data
+
+            if skill_set_ids is not None:
+                skill_set_ids = skill_set_ids.split(',') # split the string into a list of ids
+
+            if skill_set_ids:
+                seeker_skill_set.skill_set.clear() # clear the existing skill_set objects
+                for skill_set_id in skill_set_ids:
+                    try:
+                        skill_set_obj = skill_set.objects.get(id=int(skill_set_id))
+                        seeker_skill_set.skill_set.add(skill_set_obj) # add the updated skill_set object to the many-to-many relationship
+                    except skill_set.DoesNotExist:
+                        # handle the case where the skill_set object does not exist
+                        pass
+
+            if skill_level is not None:
+                seeker_skill_set.skill_level = skill_level # update the skill_level field
+
+            seeker_skill_set.save() # save the updated seeker_skill_set object to the database
 
             return Response(status=status.HTTP_200_OK)
 
