@@ -13,6 +13,7 @@ from ast import literal_eval
 import ast
 from django.db.models import Q
 from django.core.mail import BadHeaderError, send_mail
+from django.shortcuts import get_object_or_404
 # Create your views here.
 
 
@@ -761,15 +762,21 @@ class updatenews(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 class educationdetailIND(APIView):
-    def get_object(self, pk):
-        try:
-            return education_detail.objects.get(pk=pk)
-        except education_detail.DoesNotExist:
-            raise Http404
+    def get_user_account(self, pk):
+        # Get the experience_detail record using its ID
+        education_detail_record = get_object_or_404(education_detail, pk=pk)
+
+        # Get the user_account record associated with the education_detail record
+        user_account_record = education_detail_record.user_account_id
+
+        return user_account_record
 
     def get(self, request, pk, format=None):
-        data = self.get_object(pk)
-        serializer = education_detail_serializer(data)
+        # Retrieve the user_account record using the education_detail ID
+        user_account_record = self.get_user_account(pk)
+
+        # Serialize the user_account record and return the response
+        serializer = user_account_serializer(user_account_record)
         return Response(serializer.data)
     
 class skillsetIND(APIView):
@@ -797,15 +804,21 @@ class skillssetIND(APIView):
         return Response(serializer.data)
     
 class experincedetailIND(APIView):
-    def get_object(self, pk):
-        try:
-            return experience_detail.objects.get(pk=pk)
-        except experience_detail.DoesNotExist:
-            raise Http404
+    def get_user_account(self, pk):
+        # Get the experience_detail record using its ID
+        experience_detail_record = get_object_or_404(experience_detail, pk=pk)
+
+        # Get the user_account record associated with the experience_detail record
+        user_account_record = experience_detail_record.user_account_id
+
+        return user_account_record
 
     def get(self, request, pk, format=None):
-        data = self.get_object(pk)
-        serializer = experience_detail_serializer(data)
+        # Retrieve the user_account record using the experience_detail ID
+        user_account_record = self.get_user_account(pk)
+
+        # Serialize the user_account record and return the response
+        serializer = user_account_serializer(user_account_record)
         return Response(serializer.data)
     
 class seekerskillsetIND(APIView):
