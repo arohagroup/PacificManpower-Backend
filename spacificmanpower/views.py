@@ -90,14 +90,12 @@ class edituseraccount(APIView):
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):
-        userObject = user_account.objects.get(pk=pk)
-        addmoreUser = self.get_object(pk)
-        serializer = user_account_serializer(addmoreUser, data=request.data)
+        dataGot = self.get_object(pk)
+        serializer = user_account_serializer(dataGot, data=request.data)
         if serializer.is_valid():
-            serializer.save(staff=userObject)
+            serializer.save()
             return Response(serializer.data)
-        
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     
         
