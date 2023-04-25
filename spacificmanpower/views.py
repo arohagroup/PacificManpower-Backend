@@ -14,6 +14,11 @@ import ast
 from django.db.models import Q
 from django.core.mail import BadHeaderError, send_mail
 from django.shortcuts import get_object_or_404
+from smtplib import SMTP_SSL as SMTP
+from email.mime.text import MIMEText
+from dateutil.parser import parse
+from pytz import timezone
+
 # Create your views here.
 
 
@@ -621,13 +626,24 @@ class seekerprofile(APIView):
         major = request.data.get('major')
         institute_university_name = request.data.get('institute_university_name')
         
-        starting_date = request.data.get('starting_date')
-        completion_date = request.data.get('completion_date')
+        # starting_date = request.data.get('starting_date')
+        # completion_date = request.data.get('completion_date')
+        starting_date_str = request.data.get('starting_date')
+        completion_date_str = request.data.get('completion_date')
+
+        # Parse the datetime strings to datetime objects
+        starting_date = parse(starting_date_str)
+        completion_date = parse(completion_date_str)
+
+        # Set the timezone to UTC
+        timezone_utc = timezone('UTC')
+        starting_date_utc = timezone_utc.localize(starting_date)
+        completion_date_utc = timezone_utc.localize(completion_date)
         percentage = request.data.get('percentage')
         cgpa = request.data.get('cgpa')
 
         educationdetail=education_detail(user_account_id=user_account_id,certificate_degree_name=certificate_degree_name,major=major,
-                         institute_university_name=institute_university_name,starting_date=starting_date,completion_date=completion_date,percentage=percentage,cgpa=cgpa)
+                         institute_university_name=institute_university_name,starting_date=starting_date_utc,completion_date=completion_date_utc,percentage=percentage,cgpa=cgpa)
         educationdetail.save()
 
         # user_account_id=request.data.get('user_account_id')
@@ -887,8 +903,21 @@ class editseekrprofile(APIView):
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
         institute_university_name = request.data.get('institute_university_name')
-        starting_date = request.data.get('starting_date')
-        completion_date = request.data.get('completion_date')
+        # starting_date = request.data.get('starting_date')
+        # completion_date = request.data.get('completion_date')
+
+        starting_date_str = request.data.get('starting_date')
+        completion_date_str = request.data.get('completion_date')
+
+        # Parse the datetime strings to datetime objects
+        starting_date = parse(starting_date_str)
+        completion_date = parse(completion_date_str)
+
+        # Set the timezone to UTC
+        timezone_utc = timezone('UTC')
+        starting_date_utc = timezone_utc.localize(starting_date)
+        completion_date_utc = timezone_utc.localize(completion_date)
+
         percentage = request.data.get('percentage')
         cgpa = request.data.get('cgpa')
 
@@ -897,8 +926,8 @@ class editseekrprofile(APIView):
         educationdetail.certificate_degree_name = certificate_degree_name
         educationdetail.major = major
         educationdetail.institute_university_name = institute_university_name
-        educationdetail.starting_date = starting_date
-        educationdetail.completion_date = completion_date
+        educationdetail.starting_date = starting_date_utc
+        educationdetail.completion_date = completion_date_utc
         educationdetail.percentage = percentage
         educationdetail.cgpa = cgpa
 
@@ -1050,6 +1079,74 @@ class subscribeemail(APIView):
         if serializer.is_valid():
             serializer.save()
             
+            # Email sending code starts here
+            SMTPserver = 'shared42.accountservergroup.com'
+            sender = 'ashwini@arohagroup.com'
+            destination = 'zeeyan@arohagroup.com'
+
+            USERNAME = "ashwini@arohagroup.com"
+            PASSWORD = "I2GJS.]rYk^s321"
+
+            text_subtype = 'html'
+            content = """\
+                <html>
+                  <head>
+                    <style>
+                        table,tr,td{
+                            border: 1px solid;
+                            border-collapse: collapse;
+                            padding: 1%;
+                        }
+                        tr td:first-child { 
+                            width: 200px;
+                        }
+                        tr td:nth-child(2) { 
+                            width: 500px;
+                        }
+                    </style>
+                  </head>
+                  <body>
+                    <p>
+                    <img alt="Aroha Logo" class="pointerCursor" src="https://arohagroup.com/wp-content/uploads/2022/07/arohagrouplogo-01.svg" style="width:10%;"><br><br>
+                    <p2>Hi,</p2>
+                    <br>
+                    <br>
+                    <p2>Here is the test mail</p2>
+                    <br><br>
+                    <p2>You can add content here</p2><br>
+                    <br>
+                    <table> 
+                        <tr>
+                            <td>column 1</td>
+                            <td>value 1</td>
+                        </tr>
+                        <tr>
+                            <td>column 2</td>
+                            <td>value 2</td>
+                        </tr>
+                    </table><br>
+                    <p2>Thanks</p2><br>
+                    <p2>Aroha Team</p2>
+
+                  </body>
+                </html>
+                """
+
+            subject = "Test Mail"
+
+            msg = MIMEText(content, text_subtype)
+            msg['Subject'] = subject
+            msg['From'] = sender
+            msg['To'] = destination
+
+            conn = SMTP(SMTPserver)
+            conn.set_debuglevel(False)
+            conn.login(USERNAME, PASSWORD)
+            try:
+                conn.sendmail(sender, destination, msg.as_string())
+            finally:
+                conn.quit()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
