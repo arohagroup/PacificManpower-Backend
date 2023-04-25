@@ -16,8 +16,7 @@ from django.core.mail import BadHeaderError, send_mail
 from django.shortcuts import get_object_or_404
 from smtplib import SMTP_SSL as SMTP
 from email.mime.text import MIMEText
-from dateutil.parser import parse
-from pytz import timezone
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -619,37 +618,19 @@ class seekerprofile(APIView):
                          current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency,uploaded_cv=uploaded_cv)
         seekerprofile.save()
 
-        # useraccountid=request.data.get('user_account_id')
-        
-        # user_account_id=user_account.objects.get(id=useraccountid)
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
         institute_university_name = request.data.get('institute_university_name')
         
-        # starting_date = request.data.get('starting_date')
-        # completion_date = request.data.get('completion_date')
-        starting_date_str = request.data.get('starting_date')
-        completion_date_str = request.data.get('completion_date')
-
-        # Parse the datetime strings to datetime objects
-        starting_date = parse(starting_date_str)
-        completion_date = parse(completion_date_str)
-
-        # Set the timezone to UTC
-        timezone_utc = timezone('UTC')
-        starting_date_utc = timezone_utc.localize(starting_date)
-        completion_date_utc = timezone_utc.localize(completion_date)
+        starting_date = request.data.get('starting_date')
+        completion_date = request.data.get('completion_date')
         percentage = request.data.get('percentage')
         cgpa = request.data.get('cgpa')
 
         educationdetail=education_detail(user_account_id=user_account_id,certificate_degree_name=certificate_degree_name,major=major,
-                         institute_university_name=institute_university_name,starting_date=starting_date_utc,completion_date=completion_date_utc,percentage=percentage,cgpa=cgpa)
+                         institute_university_name=institute_university_name,starting_date=starting_date,completion_date=completion_date,percentage=percentage,cgpa=cgpa)
         educationdetail.save()
 
-        # user_account_id=request.data.get('user_account_id')
-        
-        # user_account_id=user_account.objects.get(id=useraccountid)
-        # is_current_job = request.data.get('is_current_job')
         is_current_job = request.data.get('is_current_job', None)
         if is_current_job is not None:
             if is_current_job.lower() == 'true':
@@ -690,7 +671,18 @@ class seekerprofile(APIView):
                 # handle the case where the skill_set object does not exist
                 pass
 
-        return Response({'status': 'success'},status=status.HTTP_201_CREATED)
+        seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
+        educationdetaildata = serializers.serialize('json', [educationdetail, ])
+        experincedetaildata = serializers.serialize('json', [experincedetail, ])
+        seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
+
+        data = {
+            'seeker_profile': seekerprofiledata,
+            'education_detail': educationdetaildata,
+            'experience_detail': experincedetaildata,
+            'seekerskillsetdata': seekerskillsetdata
+        }
+        return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
     
 class applyjob(APIView):
     queryset = job_post_activity.objects.all()
@@ -903,21 +895,8 @@ class editseekrprofile(APIView):
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
         institute_university_name = request.data.get('institute_university_name')
-        # starting_date = request.data.get('starting_date')
-        # completion_date = request.data.get('completion_date')
-
-        starting_date_str = request.data.get('starting_date')
-        completion_date_str = request.data.get('completion_date')
-
-        # Parse the datetime strings to datetime objects
-        starting_date = parse(starting_date_str)
-        completion_date = parse(completion_date_str)
-
-        # Set the timezone to UTC
-        timezone_utc = timezone('UTC')
-        starting_date_utc = timezone_utc.localize(starting_date)
-        completion_date_utc = timezone_utc.localize(completion_date)
-
+        starting_date = request.data.get('starting_date')
+        completion_date = request.data.get('completion_date')
         percentage = request.data.get('percentage')
         cgpa = request.data.get('cgpa')
 
@@ -926,8 +905,8 @@ class editseekrprofile(APIView):
         educationdetail.certificate_degree_name = certificate_degree_name
         educationdetail.major = major
         educationdetail.institute_university_name = institute_university_name
-        educationdetail.starting_date = starting_date_utc
-        educationdetail.completion_date = completion_date_utc
+        educationdetail.starting_date = starting_date
+        educationdetail.completion_date = completion_date
         educationdetail.percentage = percentage
         educationdetail.cgpa = cgpa
 
@@ -991,7 +970,18 @@ class editseekrprofile(APIView):
                 # handle the case where the skill_set object does not exist
                 pass
 
-        return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
+        seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
+        educationdetaildata = serializers.serialize('json', [educationdetail, ])
+        experincedetaildata = serializers.serialize('json', [experincedetail, ])
+        seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
+
+        data = {
+            'seeker_profile': seekerprofiledata,
+            'education_detail': educationdetaildata,
+            'experience_detail': experincedetaildata,
+            'seekerskillsetdata': seekerskillsetdata
+        }
+        return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
 
 
 class showCI(APIView):
