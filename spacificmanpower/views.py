@@ -592,10 +592,10 @@ class seekerprofile(APIView):
 
     
     def post(self, request, format=None):
-        print(request.data)
+        
         useraccountid=request.data.get('user_account_id')
-
         user_account_id=user_account.objects.get(id=useraccountid)
+        print(user_account_id)
 
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
@@ -608,9 +608,9 @@ class seekerprofile(APIView):
                          current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency,uploaded_cv=uploaded_cv)
         seekerprofile.save()
 
-        useraccountid=request.data.get('user_account_id')
+        # useraccountid=request.data.get('user_account_id')
         
-        user_account_id=user_account.objects.get(id=useraccountid)
+        # user_account_id=user_account.objects.get(id=useraccountid)
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
         institute_university_name = request.data.get('institute_university_name')
@@ -624,9 +624,9 @@ class seekerprofile(APIView):
                          institute_university_name=institute_university_name,starting_date=starting_date,completion_date=completion_date,percentage=percentage,cgpa=cgpa)
         educationdetail.save()
 
-        useraccountid=request.data.get('user_account_id')
+        # user_account_id=request.data.get('user_account_id')
         
-        user_account_id=user_account.objects.get(id=useraccountid)
+        # user_account_id=user_account.objects.get(id=useraccountid)
         # is_current_job = request.data.get('is_current_job')
         is_current_job = request.data.get('is_current_job', None)
         if is_current_job is not None:
@@ -639,6 +639,11 @@ class seekerprofile(APIView):
                 pass
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
+
+        if start_date == "":
+            start_date = None
+        if end_date == "":
+            end_date = None
         job_title = request.data.get('job_title')
         company_name = request.data.get('company_name')
         job_location_city = request.data.get('job_location_city')
@@ -651,7 +656,7 @@ class seekerprofile(APIView):
         experincedetail.save()
 
         skillsetids = request.data.get('skill_set_id').split(',') # split the string into a list of ids
-        user_account_id = request.data.get('user_account_id')
+        # user_account_id = request.data.get('user_account_id')
 
         for skillsetid in skillsetids:
             try:
@@ -849,7 +854,7 @@ class editseekrprofile(APIView):
         serializer = seeker_profile_serializer(data)
         return Response(serializer.data)
     
-    def put(self, request, format=None):
+    def put(self, request,pk, format=None):
         user_account_id = request.data.get('user_account_id')
         print(request.data)
         try:
