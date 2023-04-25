@@ -962,6 +962,8 @@ class editseekrprofile(APIView):
                 # handle the case where the skill_set object does not exist
                 pass
 
+    Response(status=status.HTTP_201_CREATED)
+
 
 class showCI(APIView):
     def get_object(self, pk):
