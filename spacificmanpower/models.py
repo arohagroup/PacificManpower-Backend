@@ -70,8 +70,8 @@ class education_detail(models.Model):
 class experience_detail(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_ids', on_delete=models.CASCADE,default=None)
     is_current_job=models.BooleanField()
-    start_date=models.DateField(blank=True,null=True)
-    end_date=models.DateField(blank=True,null=True)
+    start_date=models.DateTimeField(blank=True,null=True)
+    end_date=models.DateTimeField(blank=True,null=True)
     job_title=models.CharField(max_length=50,blank=True,null=True)
     company_name=models.CharField(max_length=100,blank=True,null=True)
     job_location_city=models.CharField(max_length=50,blank=True,null=True)

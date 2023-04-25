@@ -539,6 +539,13 @@ class experincedetail(APIView):
         serializer = experience_detail_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
+    def post(self, request, format=None):
+        serializer = experience_detail_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class skills(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
 
@@ -592,10 +599,9 @@ class seekerprofile(APIView):
 
     
     def post(self, request, format=None):
-        
+        print(request.data)
         useraccountid=request.data.get('user_account_id')
         user_account_id=user_account.objects.get(id=useraccountid)
-        print(user_account_id)
 
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
@@ -854,68 +860,108 @@ class editseekrprofile(APIView):
         serializer = seeker_profile_serializer(data)
         return Response(serializer.data)
     
-    def put(self, request,pk, format=None):
-        user_account_id = request.data.get('user_account_id')
+    def put(self, request, pk, format=None):
         print(request.data)
-        try:
-            seeker_profile = seeker_profile.objects.get(user_account_id=user_account_id)
-            education_detail = education_detail.objects.get(user_account_id=user_account_id)
-            experience_detail = experience_detail.objects.get(user_account_id=user_account_id)
-            seeker_skill_set = seeker_skill_set.objects.get(user_account_id=user_account_id)
+        useraccountid = request.data.get('user_account_id')
+        user_account_id = user_account.objects.get(id=useraccountid)
 
-            seeker_profile.first_name = request.data.get('first_name', seeker_profile.first_name)
-            seeker_profile.last_name = request.data.get('last_name', seeker_profile.last_name)
-            seeker_profile.current_salary = request.data.get('current_salary', seeker_profile.current_salary)
-            seeker_profile.is_annually_monthly = request.data.get('is_annually_monthly', seeker_profile.is_annually_monthly)
-            seeker_profile.currency = request.data.get('currency', seeker_profile.currency)
-            seeker_profile.uploaded_cv = request.data.get('uploaded_cv', seeker_profile.uploaded_cv)
-            seeker_profile.save()
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        current_salary = request.data.get('current_salary')
+        is_annually_monthly = request.data.get('is_annually_monthly')
+        currency = request.data.get('currency')
+        uploaded_cv = request.data.get('uploaded_cv')
 
-            education_detail.certificate_degree_name = request.data.get('certificate_degree_name', education_detail.certificate_degree_name)
-            education_detail.major = request.data.get('major', education_detail.major)
-            education_detail.institute_university_name = request.data.get('institute_university_name', education_detail.institute_university_name)
-            education_detail.starting_date = request.data.get('starting_date', education_detail.starting_date)
-            education_detail.completion_date = request.data.get('completion_date', education_detail.completion_date)
-            education_detail.percentage = request.data.get('percentage', education_detail.percentage)
-            education_detail.cgpa = request.data.get('cgpa', education_detail.cgpa)
-            education_detail.save()
+        seekerprofile = seeker_profile.objects.get(pk=pk)
 
-            experience_detail.is_current_job = request.data.get('is_current_job', experience_detail.is_current_job)
-            experience_detail.start_date = request.data.get('start_date', experience_detail.start_date)
-            experience_detail.end_date = request.data.get('end_date', experience_detail.end_date)
-            experience_detail.job_title = request.data.get('job_title', experience_detail.job_title)
-            experience_detail.company_name = request.data.get('company_name', experience_detail.company_name)
-            experience_detail.job_location_city = request.data.get('job_location_city', experience_detail.job_location_city)
-            experience_detail.job_location_state = request.data.get('job_location_state', experience_detail.job_location_state)
-            experience_detail.job_location_country = request.data.get('job_location_country', experience_detail.job_location_country)
-            experience_detail.description = request.data.get('description', experience_detail.description)
-            experience_detail.save()
+        seekerprofile.user_account_id = user_account_id
+        seekerprofile.first_name = first_name
+        seekerprofile.last_name = last_name
+        seekerprofile.current_salary = current_salary
+        seekerprofile.is_annually_monthly = is_annually_monthly
+        seekerprofile.currency = currency
+        seekerprofile.uploaded_cv = uploaded_cv
 
-            skill_set_ids = request.data.get('skill_set_id', None) # get the updated skill_set_id(s) from the request data
-            skill_level = request.data.get('skill_level', None) # get the updated skill_level from the request data
+        seekerprofile.save()
 
-            if skill_set_ids is not None:
-                skill_set_ids = skill_set_ids.split(',') # split the string into a list of ids
+        certificate_degree_name = request.data.get('certificate_degree_name')
+        major = request.data.get('major')
+        institute_university_name = request.data.get('institute_university_name')
+        starting_date = request.data.get('starting_date')
+        completion_date = request.data.get('completion_date')
+        percentage = request.data.get('percentage')
+        cgpa = request.data.get('cgpa')
 
-            if skill_set_ids:
-                seeker_skill_set.skill_set.clear() # clear the existing skill_set objects
-                for skill_set_id in skill_set_ids:
-                    try:
-                        skill_set_obj = skill_set.objects.get(id=int(skill_set_id))
-                        seeker_skill_set.skill_set.add(skill_set_obj) # add the updated skill_set object to the many-to-many relationship
-                    except skill_set.DoesNotExist:
-                        # handle the case where the skill_set object does not exist
-                        pass
+        educationdetail = education_detail.objects.get(user_account_id=user_account_id)
+        
+        educationdetail.certificate_degree_name = certificate_degree_name
+        educationdetail.major = major
+        educationdetail.institute_university_name = institute_university_name
+        educationdetail.starting_date = starting_date
+        educationdetail.completion_date = completion_date
+        educationdetail.percentage = percentage
+        educationdetail.cgpa = cgpa
 
-            if skill_level is not None:
-                seeker_skill_set.skill_level = skill_level # update the skill_level field
+        educationdetail.save()
 
-            seeker_skill_set.save() # save the updated seeker_skill_set object to the database
+        is_current_job = request.data.get('is_current_job', None)
+        if is_current_job is not None:
+            if is_current_job.lower() == 'true':
+                is_current_job = True
+            elif is_current_job.lower() == 'false':
+                is_current_job = False
+            else:
+                # Handle invalid input
+                pass
+        
+        start_date = request.data.get('start_date')
+        end_date = request.data.get('end_date')
 
-            return Response(status=status.HTTP_200_OK)
+        if start_date == "":
+            start_date = None
+        if end_date == "":
+            end_date = None
+        
+        job_title = request.data.get('job_title')
+        company_name = request.data.get('company_name')
+        job_location_city = request.data.get('job_location_city')
+        job_location_state = request.data.get('job_location_state')
+        job_location_country = request.data.get('job_location_country')
+        description = request.data.get('description')
 
-        except (seeker_profile.DoesNotExist, education_detail.DoesNotExist, experience_detail.DoesNotExist, seeker_skill_set.DoesNotExist):
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        experincedetail = experience_detail.objects.get(user_account_id=user_account_id)
+
+        experincedetail.is_current_job = is_current_job
+        experincedetail.start_date = start_date
+        experincedetail.end_date = end_date
+        experincedetail.job_title = job_title
+        experincedetail.company_name = company_name
+        experincedetail.job_location_city = job_location_city
+        experincedetail.job_location_state = job_location_state
+        experincedetail.job_location_country = job_location_country
+        experincedetail.description = description
+
+        experincedetail.save()
+
+        skillsetids = request.data.get('skill_set_id').split(',')
+        
+        # Delete existing records
+        seeker_skill_set.objects.filter(user_account_id=user_account_id).delete()
+
+        # for skillsetid in skillsetids:
+        #     try:
+        #         skill_set_id = skill_set.objects.get(id=int(skillsetid))
+
+        for skillsetid in skillsetids:
+            try:
+                skill_set_id = skill_set.objects.get(id=int(skillsetid))
+                skill_level = request.data.get('skill_level') # get the skill_level from the request data
+                seekerskillset = seeker_skill_set(user_account_id=user_account_id, skill_set_id=skill_set_id, skill_level=skill_level)
+                seekerskillset.save() # save the seeker_skill_set object to the database
+            except skill_set.DoesNotExist:
+                # handle the case where the skill_set object does not exist
+                pass
+
 
 class showCI(APIView):
     def get_object(self, pk):
