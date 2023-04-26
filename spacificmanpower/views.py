@@ -4,7 +4,8 @@ from .models import *
 from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status,viewsets,serializers
+from django.core import serializers
+from rest_framework import status,viewsets
 from django.http import Http404
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
@@ -17,6 +18,7 @@ from django.shortcuts import get_object_or_404
 from smtplib import SMTP_SSL as SMTP
 from email.mime.text import MIMEText
 from django.http import JsonResponse
+from datetime import datetime
 
 # Create your views here.
 
@@ -132,7 +134,7 @@ class userlogin(APIView):
         # Check the password
         if user.password == password:
             # Passwords match, user is authenticated
-            user_logData.last_login_date = datetime.datetime.now()
+            user_logData.last_login_date = datetime.now()
             user_logData.save()
             unique_id = get_random_string(length=32)
             return Response({"userid": user.id,"user_type_id": user.user_type_id.id,"username":user.first_name,"token": unique_id},status=status.HTTP_200_OK)
@@ -624,6 +626,10 @@ class seekerprofile(APIView):
         
         starting_date = request.data.get('starting_date')
         completion_date = request.data.get('completion_date')
+        
+        starting_date = datetime.strptime(starting_date, '%Y-%m-%d').date()
+        completion_date = datetime.strptime(completion_date, '%Y-%m-%d').date()
+
         percentage = request.data.get('percentage')
         cgpa = request.data.get('cgpa')
 
@@ -642,6 +648,9 @@ class seekerprofile(APIView):
                 pass
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
+
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
 
         if start_date == "":
             start_date = None
@@ -897,6 +906,9 @@ class editseekrprofile(APIView):
         institute_university_name = request.data.get('institute_university_name')
         starting_date = request.data.get('starting_date')
         completion_date = request.data.get('completion_date')
+
+        starting_date = datetime.strptime(starting_date, '%Y-%m-%d').date()
+        completion_date = datetime.strptime(completion_date, '%Y-%m-%d').date()
         percentage = request.data.get('percentage')
         cgpa = request.data.get('cgpa')
 
@@ -927,8 +939,13 @@ class editseekrprofile(APIView):
 
         if start_date == "":
             start_date = None
+        else:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+
         if end_date == "":
             end_date = None
+        else:
+            end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
         
         job_title = request.data.get('job_title')
         company_name = request.data.get('company_name')
