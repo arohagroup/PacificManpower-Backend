@@ -684,16 +684,16 @@ class seekerprofile(APIView):
                 # handle the case where the skill_set object does not exist
                 pass
 
-        # seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
-        # educationdetaildata = serializers.serialize('json', [educationdetail, ])
-        # experincedetaildata = serializers.serialize('json', [experincedetail, ])
-        # seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
+        seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
+        educationdetaildata = serializers.serialize('json', [educationdetail, ])
+        experincedetaildata = serializers.serialize('json', [experincedetail, ])
+        seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
 
         data = {
-            # 'seeker_profile': seekerprofiledata,
-            # 'education_detail': educationdetaildata,
-            # 'experience_detail': experincedetaildata,
-            # 'seekerskillsetdata': seekerskillsetdata
+            'seeker_profile': seekerprofiledata,
+            'education_detail': educationdetaildata,
+            'experience_detail': experincedetaildata,
+            'seekerskillsetdata': seekerskillsetdata
         }
         # return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
         return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
@@ -990,16 +990,16 @@ class editseekrprofile(APIView):
                     pass
 
 
-        # seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
-        # educationdetaildata = serializers.serialize('json', [educationdetail, ])
-        # experincedetaildata = serializers.serialize('json', [experincedetail, ])
-        # seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
+        seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
+        educationdetaildata = serializers.serialize('json', [educationdetail, ])
+        experincedetaildata = serializers.serialize('json', [experincedetail, ])
+        seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
 
         data = {
-            # 'seeker_profile': seekerprofiledata,
-            # 'education_detail': educationdetaildata,
-            # 'experience_detail': experincedetaildata,
-            # 'seekerskillsetdata': seekerskillsetdata
+            'seeker_profile': seekerprofiledata,
+            'education_detail': educationdetaildata,
+            'experience_detail': experincedetaildata,
+            'seekerskillsetdata': seekerskillsetdata
         }
         return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
 
