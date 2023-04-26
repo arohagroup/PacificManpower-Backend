@@ -649,13 +649,17 @@ class seekerprofile(APIView):
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
 
-        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+        
+        
 
         if start_date == "":
             start_date = None
+        else:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
         if end_date == "":
             end_date = None
+        else:
+            end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
         job_title = request.data.get('job_title')
         company_name = request.data.get('company_name')
         job_location_city = request.data.get('job_location_city')
