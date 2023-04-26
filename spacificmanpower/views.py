@@ -1160,7 +1160,7 @@ class subscribeemail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-class getintouch(APIView):
+class getInTouch(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = getintouch.objects.all()
@@ -1173,78 +1173,82 @@ class getintouch(APIView):
     
     def post(self, request, format=None):
 
-        serializer = getintouch_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        useraccountid=request.data.get('user_account_id')
+        user_account_id=user_account.objects.get(id=useraccountid)
+
+        email = request.data.get('email')
+        name = request.data.get('name')
+        message = request.data.get('message')
+
+        getInTouch=getintouch(user_account_id=user_account_id,email=email,name=name,message=message)
+        getInTouch.save()
             
-            # Email sending code starts here
-            SMTPserver = 'shared42.accountservergroup.com'
-            sender = 'ashwini@arohagroup.com'
-            destination = 'zeeyan@arohagroup.com'
+        # Email sending code starts here
+        SMTPserver = 'shared42.accountservergroup.com'
+        sender = 'ashwini@arohagroup.com'
+        destination = 'zeeyan@arohagroup.com'
 
-            USERNAME = "ashwini@arohagroup.com"
-            PASSWORD = "I2GJS.]rYk^s321"
+        USERNAME = "ashwini@arohagroup.com"
+        PASSWORD = "I2GJS.]rYk^s321"
 
-            text_subtype = 'html'
-            content = """\
-                <html>
-                  <head>
-                    <style>
-                        table,tr,td{
-                            border: 1px solid;
-                            border-collapse: collapse;
-                            padding: 1%;
-                        }
-                        tr td:first-child { 
-                            width: 200px;
-                        }
-                        tr td:nth-child(2) { 
-                            width: 500px;
-                        }
-                    </style>
-                  </head>
-                  <body>
-                    <p>
-                    
-                    <p2>Hi,</p2>
-                    <br>
-                    <br>
-                    <p2>Below the information about the user who is interested</p2>
-                    <br><br>
-                    <p2>You can add content here</p2><br>
-                    <br>
-                    <table> 
-                        <tr>
-                            <td>column 1</td>
-                            <td>value 1</td>
-                        </tr>
-                        <tr>
-                            <td>column 2</td>
-                            <td>value 2</td>
-                        </tr>
-                    </table><br>
-                    <p2>Thanks</p2><br>
-                    <p2>Aroha Team</p2>
+        text_subtype = 'html'
+        content = """\
+            <html>
+              <head>
+                <style>
+                table,tr,td{
+                    border: 1px solid;
+                    border-collapse: collapse;
+                    padding: 1%;
+                };
+                tr td:first-child { 
+                    width: 200px;
+                };
+                tr td:nth-child(2) { 
+                    width: 500px;
+                };
+                </style>
+              </head>
+              <body>
+                <p>
 
-                  </body>
-                </html>
-                """
+                <p2>Hi,</p2>
+                <br>
+                <br>
+                <p2>Below the information about the user who is interested</p2>
+                <br><br>
+                <table> 
+                <tr>
+                    <td>Name</td>
+                    <td>{request.data['name']}</td>
+                </tr>
+                <tr>
+                    <td>Email address</td>
+                    <td>v{request.data['email']}</td>
+                </tr>
+                 <tr>
+                    <td>Message</td>
+                    <td>v{request.data['message']}</td>
+                </tr>
+                </table><br>
+              </body>
+            </html>
+            """
 
-            subject = "Test Mail"
+        subject = "Test Mail"
 
-            msg = MIMEText(content, text_subtype)
-            msg['Subject'] = subject
-            msg['From'] = sender
-            msg['To'] = destination
+        msg = MIMEText(content, text_subtype)
+        msg['Subject'] = subject
+        msg['From'] = sender
+        msg['To'] = destination
 
-            conn = SMTP(SMTPserver)
-            conn.set_debuglevel(False)
-            conn.login(USERNAME, PASSWORD)
-            try:
-                conn.sendmail(sender, destination, msg.as_string())
-            finally:
-                conn.quit()
+        conn = SMTP(SMTPserver)
+        conn.set_debuglevel(False)
+        conn.login(USERNAME, PASSWORD)
+        try:
+            conn.sendmail(sender, destination, msg.as_string())
+        finally:
+            conn.quit()
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'email sent': True}, status=status.HTTP_201_CREATED)
 
