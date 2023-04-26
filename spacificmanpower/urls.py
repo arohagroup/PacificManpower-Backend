@@ -69,5 +69,5 @@ urlpatterns = [
     path('contactus/',views.contactus.as_view()),
 
     path('subscribe/',views.subscribeemail.as_view()),
-    path('recruitmentservice/',views.recruitmentservice.as_view()),
+
 ]
