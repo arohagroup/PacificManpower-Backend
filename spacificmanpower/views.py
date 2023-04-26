@@ -605,7 +605,7 @@ class seekerprofile(APIView):
 
     
     def post(self, request, format=None):
-        serializer = seeker_profile_serializer(data=request.data)
+        serializer = seeker_profile(data=request.data)
         if serializer.is_valid():
             useraccountid=request.data.get('user_account_id')
             user_account_id=user_account.objects.get(id=useraccountid)
@@ -1004,7 +1004,7 @@ class editseekrprofile(APIView):
             #     'experience_detail': experincedetaildata,
             #     'seekerskillsetdata': seekerskillsetdata
             # }
-            return JsonResponse(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
