@@ -690,13 +690,13 @@ class seekerprofile(APIView):
         seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
 
         data = {
-            'seeker_profile': seekerprofiledata,
-            'education_detail': educationdetaildata,
-            'experience_detail': experincedetaildata,
-            'seekerskillsetdata': seekerskillsetdata
+            # 'seeker_profile': seekerprofiledata,
+            # 'education_detail': educationdetaildata,
+            # 'experience_detail': experincedetaildata,
+            # 'seekerskillsetdata': seekerskillsetdata
         }
         # return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
-        return JsonResponse(status=status.HTTP_201_CREATED)
+        return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
     
 class applyjob(APIView):
     queryset = job_post_activity.objects.all()
@@ -996,12 +996,12 @@ class editseekrprofile(APIView):
         seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
 
         data = {
-            'seeker_profile': seekerprofiledata,
-            'education_detail': educationdetaildata,
-            'experience_detail': experincedetaildata,
-            'seekerskillsetdata': seekerskillsetdata
+            # 'seeker_profile': seekerprofiledata,
+            # 'education_detail': educationdetaildata,
+            # 'experience_detail': experincedetaildata,
+            # 'seekerskillsetdata': seekerskillsetdata
         }
-        return JsonResponse(status=status.HTTP_201_CREATED)
+        return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
 
 
 class showCI(APIView):
