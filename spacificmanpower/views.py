@@ -605,7 +605,7 @@ class seekerprofile(APIView):
 
     
     def post(self, request, format=None):
-        serializer = seeker_profile(data=request.data)
+        serializer = seeker_profile_serializer(data=request.data)
         if serializer.is_valid():
             useraccountid=request.data.get('user_account_id')
             user_account_id=user_account.objects.get(id=useraccountid)
@@ -697,7 +697,7 @@ class seekerprofile(APIView):
                 'seekerskillsetdata': seekerskillsetdata
             }
             # return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
-            return JsonResponse(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
 class applyjob(APIView):
@@ -1041,7 +1041,7 @@ class contactus(APIView):
         name = request.data.get('name')
         message = request.data.get('message')
 
-        getInTouch=getintouch(user_account_id=user_account_id,email=email,name=name,message=message)
+        getInTouch=contact_us(user_account_id=user_account_id,email=email,name=name,message=message)
         getInTouch.save()
             
         # Email sending code starts here

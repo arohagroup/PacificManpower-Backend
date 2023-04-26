@@ -190,10 +190,10 @@ class trending_news_serializer(serializers.ModelSerializer):
                 'createdDate','modifiedDate']
         
 class contact_us_serializer(serializers.ModelSerializer):
-   
+    user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
     class Meta:
         model=contact_us
-        fields=['id','name','email','message','createdDate','modifiedDate']
+        fields=['id','user_account_id','name','email','message','createdDate','modifiedDate']
 
 class subscribe_serializer(serializers.ModelSerializer):
     user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
@@ -201,11 +201,6 @@ class subscribe_serializer(serializers.ModelSerializer):
         model=subscribe
         fields=['id','user_account_id','email','createdDate','modifiedDate']
 
-class getintouch_serializer(serializers.ModelSerializer):
-    user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
-    class Meta:
-        model=getintouch
-        fields=['id','user_account_id','name','email','message','createdDate','modifiedDate']
 
 class applyjob_serializer(serializers.ModelSerializer):
    

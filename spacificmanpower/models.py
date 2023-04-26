@@ -171,6 +171,7 @@ class trending_news(models.Model):
     modifiedDate = models.DateTimeField(auto_now=True)
 
 class contact_us(models.Model):
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_contact_us', on_delete=models.CASCADE,default=None)
     name=models.CharField(max_length=25)
     email=models.CharField(max_length=15)
     message=models.CharField(max_length=400)
@@ -183,10 +184,3 @@ class subscribe(models.Model):
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
-class getintouch(models.Model):
-    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_getintouch', on_delete=models.CASCADE,default=None)
-    name=models.CharField(max_length=25)
-    email=models.CharField(max_length=25)
-    message=models.CharField(max_length=435)
-    createdDate = models.DateTimeField(auto_now_add=True, blank=True)
-    modifiedDate = models.DateTimeField(auto_now=True)

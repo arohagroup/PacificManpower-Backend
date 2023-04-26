@@ -79,8 +79,8 @@ class TrendingNewsAdmin(admin.ModelAdmin):
     list_display_links = ('id','user_account_id') # adds links to id and name fields
 
 class ContactUs(admin.ModelAdmin):
-    list_display = ('id','name','email','message','createdDate','modifiedDate')
-    list_display_links = ('id','name') # adds links to id and name fields
+    list_display = ('id','user_account_id','name','email','message','createdDate','modifiedDate')
+    list_display_links = ('id','user_account_id') # adds links to id and name fields
 
 class ExperinceTypeAdmin(admin.ModelAdmin):
     list_display = ('id','experince_type','createdDate','modifiedDate')
@@ -90,9 +90,6 @@ class SubscribeAdmin(admin.ModelAdmin):
     list_display = ('id','user_account_id','email','createdDate','modifiedDate')
     list_display_links = ('id','user_account_id') # adds links to id and name fields
 
-class GetInTouchAdmin(admin.ModelAdmin):
-    list_display = ('id','user_account_id','name','email','message','createdDate','modifiedDate')
-    list_display_links = ('id','user_account_id') # adds links to id and name fields
 
 class ApplyAdmin(admin.ModelAdmin):
     list_display = ('user_account_id','job_post_id','apply_date','createdDate','modifiedDate')
@@ -118,5 +115,4 @@ admin.site.register(trending_news, TrendingNewsAdmin)
 admin.site.register(contact_us, ContactUs)
 admin.site.register(experince_type, ExperinceTypeAdmin)
 admin.site.register(subscribe, SubscribeAdmin)
-admin.site.register(getintouch, GetInTouchAdmin)
 # admin.site.register(job_post_activity, ApplyAdmin)
