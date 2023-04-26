@@ -76,7 +76,7 @@ class usersaveaccount(APIView):
             user_id = user_account.objects.last()
             userlogObject = user_account.objects.get(pk=user_id.id)
             log_Data={
-                'last_login_date':datetime.datetime.now()
+                'last_login_date':datetime.now()
             }
             logserializer = user_log_serializer(data=log_Data)
             if logserializer.is_valid():
@@ -847,13 +847,13 @@ class experincedetailIND(APIView):
 class seekerskillsetIND(APIView):
     def get_object(self, pk):
         try:
-            return seeker_skill_set.objects.get(pk=pk)
+            return seeker_skill_set.objects.filter(user_account_id=pk)
         except seeker_skill_set.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
         data = self.get_object(pk)
-        serializer = seeker_skill_set_serializer(data)
+        serializer = seeker_skill_set_serializertest(data, many=True)
         return Response(serializer.data)
     
 class applyjobIND(APIView):
@@ -977,20 +977,17 @@ class editseekrprofile(APIView):
         # Delete existing records
         seeker_skill_set.objects.filter(user_account_id=user_account_id).delete()
 
-        # for skillsetid in skillsetids:
-        #     try:
-        #         skill_set_id = skill_set.objects.get(id=int(skillsetid))
-
         for skillsetid in skillsetids:
             if skillsetid:
                 try:
                     skill_set_id = skill_set.objects.get(id=int(skillsetid))
-                    skill_level = request.data.get('skill_level') # get the skill_level from the request data
+                    skill_level = request.data.get('skill_level')
                     seekerskillset = seeker_skill_set(user_account_id=user_account_id, skill_set_id=skill_set_id, skill_level=skill_level)
-                    seekerskillset.save() # save the seeker_skill_set object to the database
+                    seekerskillset.save() 
                 except skill_set.DoesNotExist:
-                    # handle the case where the skill_set object does not exist
+                    
                     pass
+
 
         seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
         educationdetaildata = serializers.serialize('json', [educationdetail, ])
@@ -1124,6 +1121,95 @@ class subscribeemail(APIView):
                     <br>
                     <br>
                     <p2>Here is the test mail</p2>
+                    <br><br>
+                    <p2>You can add content here</p2><br>
+                    <br>
+                    <table> 
+                        <tr>
+                            <td>column 1</td>
+                            <td>value 1</td>
+                        </tr>
+                        <tr>
+                            <td>column 2</td>
+                            <td>value 2</td>
+                        </tr>
+                    </table><br>
+                    <p2>Thanks</p2><br>
+                    <p2>Aroha Team</p2>
+
+                  </body>
+                </html>
+                """
+
+            subject = "Test Mail"
+
+            msg = MIMEText(content, text_subtype)
+            msg['Subject'] = subject
+            msg['From'] = sender
+            msg['To'] = destination
+
+            conn = SMTP(SMTPserver)
+            conn.set_debuglevel(False)
+            conn.login(USERNAME, PASSWORD)
+            try:
+                conn.sendmail(sender, destination, msg.as_string())
+            finally:
+                conn.quit()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class getintouch(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = getintouch.objects.all()
+    serializer_class = getintouch_serializer
+
+    def get(self, request, format=None):
+        user_data = getintouch.objects.all().order_by('-createdDate')
+        serializer = getintouch_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+
+        serializer = getintouch_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            
+            # Email sending code starts here
+            SMTPserver = 'shared42.accountservergroup.com'
+            sender = 'ashwini@arohagroup.com'
+            destination = 'zeeyan@arohagroup.com'
+
+            USERNAME = "ashwini@arohagroup.com"
+            PASSWORD = "I2GJS.]rYk^s321"
+
+            text_subtype = 'html'
+            content = """\
+                <html>
+                  <head>
+                    <style>
+                        table,tr,td{
+                            border: 1px solid;
+                            border-collapse: collapse;
+                            padding: 1%;
+                        }
+                        tr td:first-child { 
+                            width: 200px;
+                        }
+                        tr td:nth-child(2) { 
+                            width: 500px;
+                        }
+                    </style>
+                  </head>
+                  <body>
+                    <p>
+                    
+                    <p2>Hi,</p2>
+                    <br>
+                    <br>
+                    <p2>Below the information about the user who is interested</p2>
                     <br><br>
                     <p2>You can add content here</p2><br>
                     <br>

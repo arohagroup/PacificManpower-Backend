@@ -69,4 +69,5 @@ urlpatterns = [
     path('contactus/',views.contactus.as_view()),
 
     path('subscribe/',views.subscribeemail.as_view()),
+    path('getintouch/',views.getintouch.as_view()),
 ]

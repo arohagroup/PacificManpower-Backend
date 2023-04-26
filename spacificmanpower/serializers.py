@@ -112,6 +112,16 @@ class skill_set_serializer(serializers.ModelSerializer):
         model=skill_set
         fields=['id','skill_set_name','createdDate','modifiedDate']
 
+class seeker_skill_set_serializertest(serializers.ModelSerializer):
+    
+    user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
+    skill_set_id=skill_set_serializer()
+    class Meta:
+        model=seeker_skill_set
+        fields=['id','user_account_id','skill_set_id','skill_level','createdDate','modifiedDate']
+
+
+
 #Job Post Management
 class job_post_activity_serializer(serializers.ModelSerializer):
     
@@ -186,10 +196,16 @@ class contact_us_serializer(serializers.ModelSerializer):
         fields=['id','name','email','message','createdDate','modifiedDate']
 
 class subscribe_serializer(serializers.ModelSerializer):
-   
+    user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
     class Meta:
         model=subscribe
-        fields=['id','email','createdDate','modifiedDate']
+        fields=['id','user_account_id','email','createdDate','modifiedDate']
+
+class getintouch_serializer(serializers.ModelSerializer):
+    user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
+    class Meta:
+        model=getintouch
+        fields=['id','user_account_id','name','email','message','createdDate','modifiedDate']
 
 class applyjob_serializer(serializers.ModelSerializer):
    

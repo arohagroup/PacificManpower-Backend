@@ -178,6 +178,15 @@ class contact_us(models.Model):
     modifiedDate = models.DateTimeField(auto_now=True)
 
 class subscribe(models.Model):
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_subscribe', on_delete=models.CASCADE,default=None)
     email=models.CharField(max_length=25)
+    createdDate = models.DateTimeField(auto_now_add=True, blank=True)
+    modifiedDate = models.DateTimeField(auto_now=True)
+
+class getintouch(models.Model):
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_getintouch', on_delete=models.CASCADE,default=None)
+    name=models.CharField(max_length=25)
+    email=models.CharField(max_length=25)
+    message=models.CharField(max_length=435)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
