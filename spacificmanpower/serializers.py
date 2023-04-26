@@ -195,6 +195,12 @@ class contact_us_serializer(serializers.ModelSerializer):
         model=contact_us
         fields=['id','user_account_id','name','email','message','createdDate','modifiedDate']
 
+class recservice_serializer(serializers.ModelSerializer):
+    user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
+    class Meta:
+        model=recservice
+        fields=['id','user_account_id','name','email','message','createdDate','modifiedDate']
+
 class subscribe_serializer(serializers.ModelSerializer):
     user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
     class Meta:
