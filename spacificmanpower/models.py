@@ -184,3 +184,4 @@ class subscribe(models.Model):
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
+
