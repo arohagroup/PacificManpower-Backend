@@ -696,7 +696,7 @@ class seekerprofile(APIView):
             'seekerskillsetdata': seekerskillsetdata
         }
         # return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_201_CREATED)
+        return JsonResponse(status=status.HTTP_201_CREATED)
     
 class applyjob(APIView):
     queryset = job_post_activity.objects.all()
@@ -1001,7 +1001,7 @@ class editseekrprofile(APIView):
             'experience_detail': experincedetaildata,
             'seekerskillsetdata': seekerskillsetdata
         }
-        return Response(status=status.HTTP_201_CREATED)
+        return JsonResponse(status=status.HTTP_201_CREATED)
 
 
 class showCI(APIView):
