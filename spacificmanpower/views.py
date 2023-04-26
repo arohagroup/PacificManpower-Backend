@@ -1034,11 +1034,76 @@ class contactus(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        serializer = contact_us_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        useraccountid=request.data.get('user_account_id')
+        user_account_id=user_account.objects.get(id=useraccountid)
+
+        email = request.data.get('email')
+        name = request.data.get('name')
+        message = request.data.get('message')
+
+        getInTouch=getintouch(user_account_id=user_account_id,email=email,name=name,message=message)
+        getInTouch.save()
+            
+        # Email sending code starts here
+        SMTPserver = 'shared42.accountservergroup.com'
+        sender = 'ashwini@arohagroup.com'
+        destination = 'zeeyan@arohagroup.com'
+
+        USERNAME = "ashwini@arohagroup.com"
+        PASSWORD = "I2GJS.]rYk^s321"
+
+        text_subtype = 'html'
+        content = f"""\
+            <html>
+              <head>
+                
+              </head>
+              <body>
+                <p>
+
+                <p2>Hi,</p2>
+                <br>
+                <br>
+                <p2>Below the information about the user who is interested</p2>
+                <br><br>
+                <table> 
+                <tr>
+                    <td>Name : </td>
+                    <td>{request.data['name']}</td>
+                </tr>
+                <br>
+                <tr>
+                    <td>Email address : </td>
+                    <td>v{request.data['email']}</td>
+                </tr>
+                <br>
+                 <tr>
+                    <td>Message : </td>
+                    <td>{request.data['message']}</td>
+                </tr>
+                </table><br>
+              </body>
+            </html>
+            """
+
+        subject = "Test Mail"
+
+        msg = MIMEText(content, text_subtype)
+        msg['Subject'] = subject
+        msg['From'] = sender
+        msg['To'] = destination
+
+        conn = SMTP(SMTPserver)
+        conn.set_debuglevel(False)
+        conn.login(USERNAME, PASSWORD)
+        try:
+            conn.sendmail(sender, destination, msg.as_string())
+        finally:
+            conn.quit()
+
+        return Response({'email sent': True}, status=status.HTTP_201_CREATED)
+
+
     
 class joblistbycompany(APIView):
     def get(self, request, format=None, *args, **kwargs):
@@ -1164,86 +1229,3 @@ class subscribeemail(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
-class getInTouch(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
-
-    queryset = getintouch.objects.all()
-    serializer_class = getintouch_serializer
-
-    def get(self, request, format=None):
-        user_data = getintouch.objects.all().order_by('-createdDate')
-        serializer = getintouch_serializer(user_data, many=True, context={'request': request})
-        return Response(serializer.data)
-    
-    def post(self, request, format=None):
-
-        useraccountid=request.data.get('user_account_id')
-        user_account_id=user_account.objects.get(id=useraccountid)
-
-        email = request.data.get('email')
-        name = request.data.get('name')
-        message = request.data.get('message')
-
-        getInTouch=getintouch(user_account_id=user_account_id,email=email,name=name,message=message)
-        getInTouch.save()
-            
-        # Email sending code starts here
-        SMTPserver = 'shared42.accountservergroup.com'
-        sender = 'ashwini@arohagroup.com'
-        destination = 'zeeyan@arohagroup.com'
-
-        USERNAME = "ashwini@arohagroup.com"
-        PASSWORD = "I2GJS.]rYk^s321"
-
-        text_subtype = 'html'
-        content = f"""\
-            <html>
-              <head>
-                
-              </head>
-              <body>
-                <p>
-
-                <p2>Hi,</p2>
-                <br>
-                <br>
-                <p2>Below the information about the user who is interested</p2>
-                <br><br>
-                <table> 
-                <tr>
-                    <td>Name : </td>
-                    <td>{request.data['name']}</td>
-                </tr>
-                <br>
-                <tr>
-                    <td>Email address : </td>
-                    <td>v{request.data['email']}</td>
-                </tr>
-                <br>
-                 <tr>
-                    <td>Message : </td>
-                    <td>{request.data['message']}</td>
-                </tr>
-                </table><br>
-              </body>
-            </html>
-            """
-
-        subject = "Test Mail"
-
-        msg = MIMEText(content, text_subtype)
-        msg['Subject'] = subject
-        msg['From'] = sender
-        msg['To'] = destination
-
-        conn = SMTP(SMTPserver)
-        conn.set_debuglevel(False)
-        conn.login(USERNAME, PASSWORD)
-        try:
-            conn.sendmail(sender, destination, msg.as_string())
-        finally:
-            conn.quit()
-
-        return Response({'email sent': True}, status=status.HTTP_201_CREATED)
-
