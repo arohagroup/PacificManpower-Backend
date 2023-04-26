@@ -684,10 +684,10 @@ class seekerprofile(APIView):
                 # handle the case where the skill_set object does not exist
                 pass
 
-        seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
-        educationdetaildata = serializers.serialize('json', [educationdetail, ])
-        experincedetaildata = serializers.serialize('json', [experincedetail, ])
-        seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
+        # seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
+        # educationdetaildata = serializers.serialize('json', [educationdetail, ])
+        # experincedetaildata = serializers.serialize('json', [experincedetail, ])
+        # seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
 
         data = {
             # 'seeker_profile': seekerprofiledata,
@@ -990,10 +990,10 @@ class editseekrprofile(APIView):
                     pass
 
 
-        seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
-        educationdetaildata = serializers.serialize('json', [educationdetail, ])
-        experincedetaildata = serializers.serialize('json', [experincedetail, ])
-        seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
+        # seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
+        # educationdetaildata = serializers.serialize('json', [educationdetail, ])
+        # experincedetaildata = serializers.serialize('json', [experincedetail, ])
+        # seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
 
         data = {
             # 'seeker_profile': seekerprofiledata,
