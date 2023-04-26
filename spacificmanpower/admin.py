@@ -95,6 +95,10 @@ class ApplyAdmin(admin.ModelAdmin):
     list_display = ('user_account_id','job_post_id','apply_date','createdDate','modifiedDate')
     list_display_links = ('user_account_id','job_post_id') # adds links to id and name fields
 
+class recserviceAdmin(admin.ModelAdmin):
+    list_display = ('id','user_account_id','name','email','message','createdDate','modifiedDate')
+    list_display_links = ('id','user_account_id') # adds links to id and name fields
+
 admin.site.register(user_type,UserTypeAdmin)
 admin.site.register(user_account, UserAccountAdmin)
 admin.site.register(user_log, UserLogAdmin)
@@ -115,4 +119,5 @@ admin.site.register(trending_news, TrendingNewsAdmin)
 admin.site.register(contact_us, ContactUs)
 admin.site.register(experince_type, ExperinceTypeAdmin)
 admin.site.register(subscribe, SubscribeAdmin)
+admin.site.register(recservice, recserviceAdmin)
 # admin.site.register(job_post_activity, ApplyAdmin)
