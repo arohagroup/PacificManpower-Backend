@@ -4,7 +4,7 @@ from .models import *
 from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status,viewsets
+from rest_framework import status,viewsets,serializers
 from django.http import Http404
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
@@ -961,14 +961,15 @@ class editseekrprofile(APIView):
         #         skill_set_id = skill_set.objects.get(id=int(skillsetid))
 
         for skillsetid in skillsetids:
-            try:
-                skill_set_id = skill_set.objects.get(id=int(skillsetid))
-                skill_level = request.data.get('skill_level') # get the skill_level from the request data
-                seekerskillset = seeker_skill_set(user_account_id=user_account_id, skill_set_id=skill_set_id, skill_level=skill_level)
-                seekerskillset.save() # save the seeker_skill_set object to the database
-            except skill_set.DoesNotExist:
-                # handle the case where the skill_set object does not exist
-                pass
+            if skillsetid:
+                try:
+                    skill_set_id = skill_set.objects.get(id=int(skillsetid))
+                    skill_level = request.data.get('skill_level') # get the skill_level from the request data
+                    seekerskillset = seeker_skill_set(user_account_id=user_account_id, skill_set_id=skill_set_id, skill_level=skill_level)
+                    seekerskillset.save() # save the seeker_skill_set object to the database
+                except skill_set.DoesNotExist:
+                    # handle the case where the skill_set object does not exist
+                    pass
 
         seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
         educationdetaildata = serializers.serialize('json', [educationdetail, ])
