@@ -733,10 +733,10 @@ class applyjob(APIView):
         if not seeker_profile.objects.filter(user_account_id=user_account_id).exists():
             return Response({'message': 'User account not found in seeker_profile table'}, status=status.HTTP_404_NOT_FOUND)
         
-        if not education_detail.objects.filter(created_by=user_account_id).exists():
+        if not education_detail.objects.filter(user_account_id=user_account_id).exists():
             return Response({'message': 'User account not found in education_detail table'}, status=status.HTTP_404_NOT_FOUND)
         
-        if not seeker_skill_set.objects.filter(created_by=user_account_id).exists():
+        if not seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
             return Response({'message': 'User account not found in seeker_skill_set table'}, status=status.HTTP_404_NOT_FOUND)
 
         # Save the new job_post_activity record and user_log record
