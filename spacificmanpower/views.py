@@ -1229,27 +1229,34 @@ class filteredjobbyfreelancer(APIView):
         return Response(serializer.data)
     
     
-# class subscribeemail(APIView):
-#     # Return a list of all userreg objects serialized using userregSerializer
+class subscribeemail(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
 
-#     queryset = subscribe.objects.all()
-#     serializer_class = subscribe_serializer
+    queryset = subscribe.objects.all()
+    serializer_class = subscribe_serializer
 
-#     def get(self, request, format=None):
-#         user_data = subscribe.objects.all().order_by('-createdDate')
-#         serializer = subscribe_serializer(user_data, many=True, context={'request': request})
-#         return Response(serializer.data)
+    def get(self, request, format=None):
+        user_data = subscribe.objects.all().order_by('-createdDate')
+        serializer = subscribe_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
     
-#     def post(self, request, format=None):
+    def post(self, request, format=None):
 
-#         useraccountid=request.data.get('user_account_id')
-#         user_account_id=user_account.objects.get(id=useraccountid)
-    
-#         email = request.data.get('email')
+        useraccountid = request.data.get('user_account_id')
+        user_account_obj = user_account.objects.get(id=useraccountid)
+        email = request.data.get('email')
 
-#         subscribetable=subscribe(user_account_id=user_account_id,email=email)
-#         subscribetable.save()
-            
+        # Save the new subscribe record
+        subscribetable = subscribe(user_account_id=user_account_obj, email=email)
+        subscribetable.save()
+
+        # Update the subscribed_email_id and subscribed fields in the user_account object
+        user_account_obj.subscribed_email_id = email
+        user_account_obj.subscribed = 1
+        user_account_obj.save()
+
+        serializer = subscribe_serializer(subscribetable)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
             # Email sending code starts here
             # SMTPserver = 'shared42.accountservergroup.com'
             # sender = 'ashwini@arohagroup.com'
@@ -1317,7 +1324,3 @@ class filteredjobbyfreelancer(APIView):
             #     conn.sendmail(sender, destination, msg.as_string())
             # finally:
             #     conn.quit()
-
-        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
