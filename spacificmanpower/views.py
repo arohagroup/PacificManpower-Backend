@@ -605,10 +605,23 @@ class seekerprofile(APIView):
 
     
     def post(self, request, format=None):
-        print(request.data)
         useraccountid=request.data.get('user_account_id')
         user_account_id=user_account.objects.get(id=useraccountid)
 
+        if seeker_profile.objects.filter(user_account_id=user_account_id).exists():
+            return JsonResponse({'error': 'Record already exists in seeker_profile table.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if user_account_id already exists in education_detail table
+        if education_detail.objects.filter(user_account_id=user_account_id).exists():
+            return JsonResponse({'error': 'Record already exists in education_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if user_account_id already exists in experience_detail table
+        if experience_detail.objects.filter(user_account_id=user_account_id).exists():
+            return JsonResponse({'error': 'Record already exists in experience_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
+            return JsonResponse({'error': 'Record already exists in seeker_skill_set table.'}, status=status.HTTP_400_BAD_REQUEST)
+    
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
         current_salary = request.data.get('current_salary')
@@ -718,10 +731,10 @@ class applyjob(APIView):
         jobpostid=request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
 
-        jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_id,apply_date=datetime.datetime.now(),status=status)
+        jobpostactivity=job_post_activity(user_account_id=user_account_id,job_post_id=job_post_id,apply_date=datetime.now(),status=status)
         jobpostactivity.save()
 
-        userlog=user_log(user_account_id=user_account_id,last_job_apply_date=datetime.datetime.now())
+        userlog=user_log(user_account_id=user_account_id,last_job_apply_date=datetime.now())
         userlog.save()
 
         return Response(status=status.HTTP_201_CREATED)
@@ -1082,7 +1095,7 @@ class contactus(APIView):
             </html>
             """
 
-        subject = "Test Mail"
+        subject = "Contact Us"
 
         msg = MIMEText(content, text_subtype)
         msg['Subject'] = subject
@@ -1216,22 +1229,26 @@ class filteredjobbyfreelancer(APIView):
         return Response(serializer.data)
     
     
-class subscribeemail(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
+# class subscribeemail(APIView):
+#     # Return a list of all userreg objects serialized using userregSerializer
 
-    queryset = subscribe.objects.all()
-    serializer_class = subscribe_serializer
+#     queryset = subscribe.objects.all()
+#     serializer_class = subscribe_serializer
 
-    def get(self, request, format=None):
-        user_data = subscribe.objects.all().order_by('-createdDate')
-        serializer = subscribe_serializer(user_data, many=True, context={'request': request})
-        return Response(serializer.data)
+#     def get(self, request, format=None):
+#         user_data = subscribe.objects.all().order_by('-createdDate')
+#         serializer = subscribe_serializer(user_data, many=True, context={'request': request})
+#         return Response(serializer.data)
     
-    def post(self, request, format=None):
+#     def post(self, request, format=None):
 
-        serializer = subscribe_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+#         useraccountid=request.data.get('user_account_id')
+#         user_account_id=user_account.objects.get(id=useraccountid)
+    
+#         email = request.data.get('email')
+
+#         subscribetable=subscribe(user_account_id=user_account_id,email=email)
+#         subscribetable.save()
             
             # Email sending code starts here
             # SMTPserver = 'shared42.accountservergroup.com'
@@ -1301,6 +1318,6 @@ class subscribeemail(APIView):
             # finally:
             #     conn.quit()
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

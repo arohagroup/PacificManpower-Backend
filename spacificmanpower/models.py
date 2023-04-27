@@ -18,6 +18,8 @@ class user_account(models.Model):
     gender=models.CharField(max_length=10)
     isactive=models.BooleanField(blank=True)
     contact_number = models.IntegerField()
+    subscribed_email_id=models.CharField(max_length=20,blank=True,null=True)
+    subscribed=models.IntegerField(blank=True,default=0)
     # sms_notification_active=models.BooleanField()
     email_notification_active=models.BooleanField()
     user_image=models.ImageField(max_length=200,blank=True)
