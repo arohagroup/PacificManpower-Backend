@@ -1000,6 +1000,8 @@ class editseekrprofile(APIView):
         # Delete existing records
         seeker_skill_set.objects.filter(user_account_id=user_account_id).delete()
 
+        seekerskillset = None
+        
         for skillsetid in skillsetids:
             if skillsetid:
                 try:
