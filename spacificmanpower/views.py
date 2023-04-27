@@ -934,8 +934,18 @@ class editseekrprofile(APIView):
         starting_date = request.data.get('starting_date')
         completion_date = request.data.get('completion_date')
 
-        starting_date = datetime.strptime(starting_date, '%Y-%m-%d').date()
-        completion_date = datetime.strptime(completion_date, '%Y-%m-%d').date()
+        if starting_date == "":
+            starting_date = None
+        else:
+            starting_date = datetime.strptime(starting_date, '%Y-%m-%d').date()
+
+        if completion_date == "":
+            completion_date = None
+        else:
+            completion_date = datetime.strptime(completion_date, '%Y-%m-%d').date()
+            
+        # starting_date = datetime.strptime(starting_date, '%Y-%m-%d').date()
+        # completion_date = datetime.strptime(completion_date, '%Y-%m-%d').date()
         percentage = request.data.get('percentage')
         cgpa = request.data.get('cgpa')
 
@@ -1001,7 +1011,7 @@ class editseekrprofile(APIView):
         seeker_skill_set.objects.filter(user_account_id=user_account_id).delete()
 
         seekerskillset = None
-        
+
         for skillsetid in skillsetids:
             if skillsetid:
                 try:
@@ -1014,16 +1024,16 @@ class editseekrprofile(APIView):
                     pass
 
 
-        seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
-        educationdetaildata = serializers.serialize('json', [educationdetail, ])
-        experincedetaildata = serializers.serialize('json', [experincedetail, ])
-        seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
+        # seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
+        # educationdetaildata = serializers.serialize('json', [educationdetail, ])
+        # experincedetaildata = serializers.serialize('json', [experincedetail, ])
+        # seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
 
         data = {
-            'seeker_profile': seekerprofiledata,
-            'education_detail': educationdetaildata,
-            'experience_detail': experincedetaildata,
-            'seekerskillsetdata': seekerskillsetdata
+            # 'seeker_profile': seekerprofiledata,
+            # 'education_detail': educationdetaildata,
+            # 'experience_detail': experincedetaildata,
+            # 'seekerskillsetdata': seekerskillsetdata
         }
         return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
 
