@@ -1434,7 +1434,7 @@ class notappliedjob(APIView):
             job_post_ids = job_post_activity.objects.values_list('job_post_id', flat=True)
 
             postedjob = job_post.objects.exclude(id__in=job_post_ids)
-            postedjob_data = [model_to_dict(post) for post in postedjob]
+            postedjob_data = job_post_serializer(postedjob, many=True).data
             # postedjob = job_post.objects.exclude(id__in=job_post_ids).values_list('id', flat=True)
             return Response({"message":postedjob_data})
         else:
