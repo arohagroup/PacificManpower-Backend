@@ -1302,6 +1302,15 @@ class applyjobUserIdTrue(APIView):
         serializer = job_post_activity_serializertest(calendars, many=True)
         return Response(serializer.data)
     
+    def get(self, request, format=None, *args, **kwargs):
+
+        filtered_data = job_post_activity.objects.filter( 
+            user_account_id=self.kwargs['user_account_id'],
+            userstatus=self.kwargs['userstatus'])
+
+        serializer = job_post_activity_serializertest(filtered_data, many=True)
+        return Response(serializer.data)
+    
 class filteredjobbyfulltime(APIView):
     def get(self, request, format=None, *args, **kwargs):
 

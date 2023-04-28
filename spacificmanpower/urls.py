@@ -50,7 +50,7 @@ urlpatterns = [
     path('applyjob/',views.applyjob.as_view()),
     path('applyjob/<int:pk>/',views.applyjobIND.as_view()),
     path('applyjobfilteredTrue/<str:userstatus>/',views.applyjobTrue.as_view()),
-    path('applyjobfilteredTrueUseraccount/<int:pk>/<str:userstatus>/',views.applyjobUserIdTrue.as_view()),
+    path('applyjobfilteredTrueUseraccount/<int:user_account_id>/<str:userstatus>/',views.applyjobUserIdTrue.as_view()),
     # path('applyjobfiltered/<int:pk>/',views.filteredJob.as_view()),
 
     # path('jobpostactivity/',views.jobpostactivity.as_view()),
