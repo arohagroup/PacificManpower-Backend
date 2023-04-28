@@ -21,14 +21,14 @@ class BusinessStreamAdmin(admin.ModelAdmin):
     list_display_links = ('id','business_stream_name') # adds links to id and name fields
 
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('id','company_name','profile_description','company_images','business_stream_id','establishment_date','company_website_url',
+    list_display = ('id','company_name','profile_description','companyimage','business_stream_id','establishment_date','company_website_url',
                     'createdDate','modifiedDate')
     list_display_links = ('id','company_name') # adds links to id and name fields
 
 
-class CompanyImageAdmin(admin.ModelAdmin):
-    list_display = ('id','company_id','companyimage','createdDate','modifiedDate')
-    list_display_links = ('id','company_id') # adds links to id and name fields
+# class CompanyImageAdmin(admin.ModelAdmin):
+#     list_display = ('id','company_id','companyimage','createdDate','modifiedDate')
+#     list_display_links = ('id','company_id') # adds links to id and name fields
 
 class EducationDetailAdmin(admin.ModelAdmin):
     list_display = ('id','user_account_id','certificate_degree_name','major','institute_university_name','starting_date',
@@ -104,7 +104,7 @@ admin.site.register(user_account, UserAccountAdmin)
 admin.site.register(user_log, UserLogAdmin)
 admin.site.register(business_stream, BusinessStreamAdmin)
 admin.site.register(company, CompanyAdmin)
-admin.site.register(company_image, CompanyImageAdmin)
+# admin.site.register(company_image, CompanyImageAdmin)
 admin.site.register(education_detail, EducationDetailAdmin)
 admin.site.register(experience_detail, ExperinceDetailAdmin)
 admin.site.register(seeker_profile, SeekerProfileAdmin)

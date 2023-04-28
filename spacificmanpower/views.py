@@ -189,19 +189,19 @@ class companyadddetails(APIView):
 
         establishment_date = request.data.get('establishment_date')
         company_website_url = request.data.get('company_website_url')
-
+        companyimage = request.data.get('companyimage')
         business_stream_id = business_stream.objects.get(id=business_stream_id)
 
         company_data = company(company_name=company_name, profile_description=profile_description, business_stream_id=business_stream_id, 
-                              establishment_date=establishment_date,company_website_url=company_website_url)
+                              establishment_date=establishment_date,company_website_url=company_website_url,companyimage=companyimage)
         company_data.save() 
 
-        company_id = company_data.id
-        company_id_instance = company.objects.get(id=company_id)
-        company_image_data = request.data.get('companyimage')
+        # company_id = company_data.id
+        # company_id_instance = company.objects.get(id=company_id)
+        # company_image_data = request.data.get('companyimage')
 
-        company_image_instance = company_image(company_id=company_id_instance, companyimage=company_image_data)
-        company_image_instance.save()
+        # company_image_instance = company_image(company_id=company_id_instance, companyimage=company_image_data)
+        # company_image_instance.save()
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -224,10 +224,10 @@ class companyprofile(APIView):
         if serializer.is_valid():
             serializer.save(staff=userObject)
 
-            if 'companyimage' in request.data:
-                company_image_object, _ = company_image.objects.get_or_create(company_id=userObject)
-                company_image_object.companyimage = request.data['companyimage']
-                company_image_object.save()
+            # if 'companyimage' in request.data:
+            #     company_image_object, _ = company_image.objects.get_or_create(company_id=userObject)
+            #     company_image_object.companyimage = request.data['companyimage']
+            #     company_image_object.save()
             return Response(serializer.data)
 
 
@@ -238,9 +238,9 @@ class companyprofile(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         # Delete company image, if applicable
-        company_image_obj = company_image.objects.filter(company_id=company_obj.id).first()
-        if company_image_obj:
-            company_image_obj.delete()
+        # company_image_obj = company_image.objects.filter(company_id=company_obj.id).first()
+        # if company_image_obj:
+        #     company_image_obj.delete()
 
         # Delete company object
         company_obj.delete()
@@ -284,16 +284,16 @@ class postjobjobype(APIView):
         serializer = job_type_serializer(data)
         return Response(serializer.data)
     
-class companysaveimage(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
+# class companysaveimage(APIView):
+#     # Return a list of all userreg objects serialized using userregSerializer
 
-    queryset = company_image.objects.all()
-    serializer_class = company_image_serializer
+#     queryset = company_image.objects.all()
+#     serializer_class = company_image_serializer
 
-    def get(self, request, format=None):
-        user_data = company_image.objects.all().order_by('-createdDate')
-        serializer = company_image_serializer(user_data, many=True, context={'request': request})
-        return Response(serializer.data)
+#     def get(self, request, format=None):
+#         user_data = company_image.objects.all().order_by('-createdDate')
+#         serializer = company_image_serializer(user_data, many=True, context={'request': request})
+#         return Response(serializer.data)
     
 class postjob(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
@@ -1096,18 +1096,18 @@ class editseekrprofile(APIView):
         return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
 
 
-class showCI(APIView):
-    def get_object(self, pk):
-        try:
-            return company.objects.get(pk=pk)
-        except company.DoesNotExist:
-            raise Http404
+# class showCI(APIView):
+#     def get_object(self, pk):
+#         try:
+#             return company.objects.get(pk=pk)
+#         except company.DoesNotExist:
+#             raise Http404
 
-    def get(self, request, pk, format=None):
-        company_obj = self.get_object(pk)
-        images = company_image.objects.filter(company_id=company_obj)
-        serializer = company_image_serializer(images, many=True)
-        return Response(serializer.data)
+#     def get(self, request, pk, format=None):
+#         company_obj = self.get_object(pk)
+#         images = company_image.objects.filter(company_id=company_obj)
+#         serializer = company_image_serializer(images, many=True)
+#         return Response(serializer.data)
     
 
 class contactus(APIView):

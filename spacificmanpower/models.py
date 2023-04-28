@@ -44,17 +44,12 @@ class company(models.Model):
     company_name=models.CharField(max_length=100)    
     profile_description=models.CharField(max_length=1000)
     business_stream_id = models.ForeignKey('business_stream',related_name='business_stream_id', on_delete=models.CASCADE,default=None,null=True)
-    company_images = models.ForeignKey('company_image',related_name='company_images', on_delete=models.CASCADE,default=None,null=True)
     establishment_date=models.DateField()
+    companyimage=models.ImageField(max_length=200, blank=True)
     company_website_url=models.CharField(max_length=500)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
-class company_image(models.Model):
-    company_id = models.ForeignKey('company',related_name='company_id_company_image', on_delete=models.CASCADE,default=None,null=True)
-    companyimage=models.ImageField(max_length=200, blank=True)
-    createdDate = models.DateTimeField(auto_now_add=True, blank=True)
-    modifiedDate = models.DateTimeField(auto_now=True)
 
 #Seeker Profile Builder
 class education_detail(models.Model):
