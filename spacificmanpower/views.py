@@ -726,15 +726,15 @@ class applyjob(APIView):
         user_account_id = user_account.objects.get(id=useraccountid)
             
         status_test = request.data.get('status')
-        userstatus = request.data.get('userstatus', None)
-        if userstatus is not None:
-            if userstatus.lower() == 'true':
-                userstatus = True
-            elif userstatus.lower() == 'false':
-                userstatus = False
-            else:
-                # Handle invalid input
-                pass
+        userstatus = request.data.get('userstatus')
+        # if userstatus is not None:
+        #     if userstatus.lower() == 'true':
+        #         userstatus = True
+        #     elif userstatus.lower() == 'false':
+        #         userstatus = False
+        #     else:
+        #         # Handle invalid input
+        #         pass
         jobpostid = request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
 
