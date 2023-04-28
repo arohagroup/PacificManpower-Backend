@@ -888,9 +888,31 @@ class applyjobIND(APIView):
 
     def get(self, request, pk, format=None):
         data = self.get_object(pk)
-        serializer = job_post_activity_serializer(data)
+        serializer = job_post_activity_serializertest(data)
         return Response(serializer.data)
 
+    def put(self, request, pk, format=None):  # added
+        # fetchedData = self.get_object(pk)
+        # serializer = job_post_activity_serializertest(fetchedData, data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        status_test = request.data.get('status')
+        user_account_id = request.data.get('user_account_id')
+        job_post_id = request.data.get('job_post_id')
+
+        jobpostactivity = job_post_activity.objects.get(pk=pk)
+
+        jobpostactivity.status = status_test
+        jobpostactivity.user_account_id__id = user_account_id
+        jobpostactivity.job_post_id__id = job_post_id
+
+        jobpostactivity.save()
+
+        return Response({"message": "updated"}, status=status.HTTP_201_CREATED)
+    
 
 class editseekrprofile(APIView):
     def get_object(self, pk):
