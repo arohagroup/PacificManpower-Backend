@@ -894,13 +894,13 @@ class applyjobIND(APIView):
 
     def get_object(self, pk):
         try:
-            return job_post_activity.objects.get(user_account_id=pk)
+            return job_post_activity.objects.filter(user_account_id=pk)
         except job_post_activity.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        data = self.get_object(pk)
-        serializer = job_post_activity_serializertest(data)
+        queryset = self.get_object(pk)
+        serializer = job_post_activity_serializertest(queryset, many=True)
         return Response(serializer.data)
     
     # def get_object(self, pk):

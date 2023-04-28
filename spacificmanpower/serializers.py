@@ -61,12 +61,7 @@ class business_stream_serializer(serializers.ModelSerializer):
         model=business_stream
         fields=['id','business_stream_name']
 
-class company_serializer(serializers.ModelSerializer):
-    
-    business_stream_id=serializers.ReadOnlyField(source='business_stream_id.id')
-    class Meta:
-        model=company
-        fields=['id','company_name','profile_description','business_stream_id','establishment_date','company_website_url','createdDate','modifiedDate']
+
 
 class company_image_serializer(serializers.ModelSerializer):
 
@@ -74,6 +69,14 @@ class company_image_serializer(serializers.ModelSerializer):
     class Meta:
         model=company_image
         fields=['id','company_id','companyimage','createdDate','modifiedDate']
+
+class company_serializer(serializers.ModelSerializer):
+    
+    business_stream_id=serializers.ReadOnlyField(source='business_stream_id.id')
+    company_images=company_image_serializer(many=True, read_only=True)
+    class Meta:
+        model=company
+        fields=['id','company_name','profile_description','business_stream_id','company_images','establishment_date','company_website_url','createdDate','modifiedDate']
 
 #Seeker Profile Builder
 class education_detail_serializer(serializers.ModelSerializer):
