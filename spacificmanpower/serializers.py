@@ -179,7 +179,7 @@ class job_post_activity_serializertest(serializers.ModelSerializer):
     job_post_id=job_post_serializer()
     class Meta:
         model=job_post_activity
-        fields=['id','user_account_id','job_post_id','apply_date','status','createdDate','modifiedDate']
+        fields=['id','user_account_id','job_post_id','apply_date','status','userstatus','createdDate','modifiedDate']
 
 class trending_news_serializer(serializers.ModelSerializer):
    

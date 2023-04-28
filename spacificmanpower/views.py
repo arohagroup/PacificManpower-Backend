@@ -726,6 +726,15 @@ class applyjob(APIView):
         user_account_id = user_account.objects.get(id=useraccountid)
             
         status_test = request.data.get('status')
+        userstatus = request.data.get('userstatus', None)
+        if userstatus is not None:
+            if userstatus.lower() == 'true':
+                userstatus = True
+            elif userstatus.lower() == 'false':
+                userstatus = False
+            else:
+                # Handle invalid input
+                pass
         jobpostid = request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
 
@@ -740,7 +749,7 @@ class applyjob(APIView):
             return Response({'message': 'User account not found in seeker_skill_set table'}, status=status.HTTP_404_NOT_FOUND)
 
         # Save the new job_post_activity record and user_log record
-        jobpostactivity = job_post_activity(user_account_id=user_account_id, job_post_id=job_post_id, apply_date=datetime.now(), status=status_test)
+        jobpostactivity = job_post_activity(user_account_id=user_account_id, job_post_id=job_post_id, apply_date=datetime.now(), status=status_test,userstatus=userstatus)
         jobpostactivity.save()
 
         userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now())
@@ -903,11 +912,22 @@ class applyjobIND(APIView):
         user_account_id = request.data.get('user_account_id')
         job_post_id = request.data.get('job_post_id')
 
+        userstatus = request.data.get('userstatus', None)
+        if userstatus is not None:
+            if userstatus.lower() == 'true':
+                userstatus = True
+            elif userstatus.lower() == 'false':
+                userstatus = False
+            else:
+                # Handle invalid input
+                pass
+
         jobpostactivity = job_post_activity.objects.get(pk=pk)
 
         jobpostactivity.status = status_test
         jobpostactivity.user_account_id__id = user_account_id
         jobpostactivity.job_post_id__id = job_post_id
+        jobpostactivity.userstatus = userstatus
 
         jobpostactivity.save()
 
