@@ -73,10 +73,10 @@ class company_image_serializer(serializers.ModelSerializer):
 class company_serializer(serializers.ModelSerializer):
     
     business_stream_id=serializers.ReadOnlyField(source='business_stream_id.id')
-    company_images=company_image_serializer(many=True, read_only=True)
+    company_images_id = company_image_serializer(many=True)
     class Meta:
         model=company
-        fields=['id','company_name','profile_description','business_stream_id','company_images','establishment_date','company_website_url','createdDate','modifiedDate']
+        fields=['id','company_name','profile_description','business_stream_id','company_images_id','establishment_date','company_website_url','createdDate','modifiedDate']
 
 #Seeker Profile Builder
 class education_detail_serializer(serializers.ModelSerializer):

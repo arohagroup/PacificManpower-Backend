@@ -21,7 +21,7 @@ class BusinessStreamAdmin(admin.ModelAdmin):
     list_display_links = ('id','business_stream_name') # adds links to id and name fields
 
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('id','company_name','profile_description','business_stream_id','establishment_date','company_website_url',
+    list_display = ('id','company_name','profile_description','company_images','business_stream_id','establishment_date','company_website_url',
                     'createdDate','modifiedDate')
     list_display_links = ('id','company_name') # adds links to id and name fields
 

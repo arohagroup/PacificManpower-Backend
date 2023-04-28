@@ -19,6 +19,8 @@ from smtplib import SMTP_SSL as SMTP
 from email.mime.text import MIMEText
 from django.http import JsonResponse
 from datetime import datetime
+from django.forms.models import model_to_dict
+
 
 # Create your views here.
 
@@ -1423,3 +1425,18 @@ class subscribeemail(APIView):
             #     conn.sendmail(sender, destination, msg.as_string())
             # finally:
             #     conn.quit()
+
+class notappliedjob(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+
+        user_account_id=request.data.get('user_account_id')
+        if job_post_activity.objects.filter(user_account_id=user_account_id).exists():
+            job_post_ids = job_post_activity.objects.values_list('job_post_id', flat=True)
+
+            postedjob = job_post.objects.exclude(id__in=job_post_ids)
+            postedjob_data = [model_to_dict(post) for post in postedjob]
+            # postedjob = job_post.objects.exclude(id__in=job_post_ids).values_list('id', flat=True)
+            return Response({"message":postedjob_data})
+        else:
+            # The passed id does not match any user_account_id in the job_post_activity model
+            return Response({"message":"Not Exists"})
