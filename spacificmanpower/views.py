@@ -840,6 +840,8 @@ class educationdetailIND(APIView):
         serializer = education_detail_serializer(data)
         return Response(serializer.data)
     
+    
+    
 class skillsetIND(APIView):
     def get_object(self, pk):
         try:
@@ -889,9 +891,10 @@ class seekerskillsetIND(APIView):
         return Response(serializer.data)
     
 class applyjobIND(APIView):
+
     def get_object(self, pk):
         try:
-            return job_post_activity.objects.get(pk=pk)
+            return job_post_activity.objects.get(user_account_id=pk)
         except job_post_activity.DoesNotExist:
             raise Http404
 
@@ -899,6 +902,17 @@ class applyjobIND(APIView):
         data = self.get_object(pk)
         serializer = job_post_activity_serializertest(data)
         return Response(serializer.data)
+    
+    # def get_object(self, pk):
+    #     try:
+    #         return job_post_activity.objects.get(pk=pk)
+    #     except job_post_activity.DoesNotExist:
+    #         raise Http404
+
+    # def get(self, request, pk, format=None):
+    #     data = self.get_object(pk)
+    #     serializer = job_post_activity_serializertest(data)
+    #     return Response(serializer.data)
 
     def put(self, request, pk, format=None):  # added
         # fetchedData = self.get_object(pk)
@@ -1267,12 +1281,25 @@ class joblistbycompany(APIView):
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)
     
+    
 class filteredjobbyparttime(APIView):
     def get(self, request, format=None, *args, **kwargs):
 
         filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='part time')
 
         serializer = job_post_serializer(filtered_data, many=True)
+        return Response(serializer.data)
+    
+class applyjobTrue(APIView):
+    def get(self, request, userstatus, format=None):
+        calendars = job_post_activity.objects.filter(userstatus=userstatus)
+        serializer = job_post_activity_serializertest(calendars, many=True)
+        return Response(serializer.data)
+    
+class applyjobUserIdTrue(APIView):
+    def get(self, request, user_account_id,userstatus, format=None):
+        calendars = job_post_activity.objects.filter(user_account_id=user_account_id,userstatus=userstatus)
+        serializer = job_post_activity_serializertest(calendars, many=True)
         return Response(serializer.data)
     
 class filteredjobbyfulltime(APIView):
