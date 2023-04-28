@@ -1427,7 +1427,7 @@ class subscribeemail(APIView):
             #     conn.quit()
 
 class notappliedjob(APIView):
-    def get(self, request, format=None, *args, **kwargs):
+    def post(self, request, format=None, *args, **kwargs):
 
         user_account_id=request.data.get('user_account_id')
         if job_post_activity.objects.filter(user_account_id=user_account_id).exists():
