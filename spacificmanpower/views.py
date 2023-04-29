@@ -1288,28 +1288,32 @@ class joblistbycompany(APIView):
         # filtered_data = job_post.objects.filter(job_title__icontains=search_terms)
 
         query = Q()
-        
+        filtered_data = []
 
-        if(len(filtered_data)==0):
-            filtered_data = job_post.objects.filter(job_title__icontains=search_terms)
-            for term in search_terms:
-                query |= Q(job_title__icontains=term.strip())
+        for term in search_terms:
+            query &= Q(job_title__icontains=term.strip()) | Q(job_location_id__country__iexact=term.strip()) | Q(job_type_id__job_type__iexact=term.strip())
 
-            filtered_data = job_post.objects.filter(query)
+        filtered_data = job_post.objects.filter(query)
+        # if(len(filtered_data)==0):
+        #     filtered_data = job_post.objects.filter(job_title__icontains=search_terms)
+        #     for term in search_terms:
+        #         query |= Q(job_title__icontains=term.strip())
 
-            if(len(filtered_data)==0):
-                filtered_data = job_post.objects.filter(job_location_id__country__iexact=search_terms)
-                for term in search_terms:
-                    query |= Q(job_location_id__country__iexact=term.strip())
+        #     filtered_data = job_post.objects.filter(query)
 
-                filtered_data = job_post.objects.filter(query)
+        #     if(len(filtered_data)==0):
+        #         filtered_data = job_post.objects.filter(job_location_id__country__iexact=search_terms)
+        #         for term in search_terms:
+        #             query |= Q(job_location_id__country__iexact=term.strip())
 
-                if(len(filtered_data)==0):
-                    filtered_data = job_post.objects.filter(job_type_id__job_type__iexact=search_terms)
-                    for term in search_terms:
-                        query |= Q(job_type_id__job_type__iexact=term.strip())
+        #         filtered_data = job_post.objects.filter(query)
 
-                    filtered_data = job_post.objects.filter(query)
+        #         if(len(filtered_data)==0):
+        #             filtered_data = job_post.objects.filter(job_type_id__job_type__iexact=search_terms)
+        #             for term in search_terms:
+        #                 query |= Q(job_type_id__job_type__iexact=term.strip())
+
+        #             filtered_data = job_post.objects.filter(query)
         
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)
