@@ -20,7 +20,7 @@ from email.mime.text import MIMEText
 from django.http import JsonResponse
 from datetime import datetime
 from django.forms.models import model_to_dict
-
+from django.http import QueryDict
 
 # Create your views here.
 
@@ -1273,15 +1273,35 @@ class recEmail(APIView):
         return Response({'email sent': True}, status=status.HTTP_201_CREATED)
     
 class joblistbycompany(APIView):
-    def get(self, request, format=None, *args, **kwargs):
+    def get(self, request,searchItem, format=None, *args, **kwargs):
 
-        filtered_data = job_post.objects.filter( 
-            job_title__iexact=self.kwargs['job_title'],
-            job_location_id__country__iexact=self.kwargs['country'],
-            job_type_id__job_type__iexact=self.kwargs['job_type'])
+        search_terms = searchItem.split('/')
+        print(search_terms)
+        # filtered_data = job_post.objects.filter(job_title__icontains=search_terms)
 
+        query = Q()
+        for term in search_terms:
+            query |= Q(job_title__icontains=term.strip())
+
+        filtered_data = job_post.objects.filter(query)
+
+        if(len(filtered_data)==0):
+            filtered_data = job_post.objects.filter(job_location_id__country__iexact=search_terms)
+            for term in search_terms:
+                query |= Q(job_location_id__country__iexact=term.strip())
+
+            filtered_data = job_post.objects.filter(query)
+
+            if(len(filtered_data)==0):
+                filtered_data = job_post.objects.filter(job_type_id__job_type__iexact=search_terms)
+                for term in search_terms:
+                    query |= Q(job_type_id__job_type__iexact=term.strip())
+
+                filtered_data = job_post.objects.filter(query)
+        
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)
+
     
     
 class filteredjobbyparttime(APIView):

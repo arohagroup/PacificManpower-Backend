@@ -42,7 +42,7 @@ urlpatterns = [
     path('post_job/',views.postjob.as_view()),
     path('post_job/<int:pk>/',views.editjob.as_view()),
     # path('postjobCI/<int:pk>/',views.showCI.as_view()),
-    path('filteredjob/<str:job_title>/<str:country>/<str:job_type>/', views.joblistbycompany.as_view()),
+    path('filteredjob/<path:searchItem>/', views.joblistbycompany.as_view()),
     path('filteredjobbyparttime/<str:job_type>/', views.filteredjobbyparttime.as_view()),
     path('filteredjobbyfulltime/<str:job_type>/', views.filteredjobbyfulltime.as_view()),
     path('filteredjobbyfreelancer/<str:job_type>/', views.filteredjobbyfreelancer.as_view()),
