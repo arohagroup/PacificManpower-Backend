@@ -228,7 +228,7 @@ class companyprofile(APIView):
             #     company_image_object, _ = company_image.objects.get_or_create(company_id=userObject)
             #     company_image_object.companyimage = request.data['companyimage']
             #     company_image_object.save()
-            return Response(serializer.data)
+        return Response(status=status.HTTP_201_CREATED)
 
 
     def delete(self, request, pk, format=None):
@@ -1437,9 +1437,9 @@ class notappliedjob(APIView):
             postedjob = job_post.objects.exclude(id__in=job_post_ids)
             postedjob_data = job_post_serializer(postedjob, many=True).data
             # postedjob = job_post.objects.exclude(id__in=job_post_ids).values_list('id', flat=True)
-            return Response({"message":postedjob_data})
+            return Response(postedjob_data)
         else:
             # The passed id does not match any user_account_id in the job_post_activity model
             all_job_posts = job_post.objects.all()
             all_job_posts_data = job_post_serializer(all_job_posts, many=True).data
-            return Response({"message":all_job_posts_data})
+            return Response(all_job_posts_data)
