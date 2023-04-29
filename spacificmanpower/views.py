@@ -21,7 +21,7 @@ from django.http import JsonResponse
 from datetime import datetime
 from django.forms.models import model_to_dict
 from django.http import QueryDict
-
+import os
 # Create your views here.
 
 
@@ -68,6 +68,14 @@ class usersaveaccount(APIView):
         if user_account.objects.filter(email_address=email_address).exists():
             return Response({"message": "Email address already exists"}, status=status.HTTP_400_BAD_REQUEST)
         user_type_id = request.data.get('user_type_id')
+
+        user_image = request.FILES.get('user_image')
+        if user_image:
+            valid_extensions = ['.jpg', '.jpeg', '.png']
+            ext = os.path.splitext(user_image.name)[1]
+            if not ext.lower() in valid_extensions:
+                return Response({"message": "Invalid file type. Only image files with extensions {} are allowed".format(', '.join(valid_extensions))}, status=status.HTTP_403_FORBIDDEN)
+            
         if user_type_id:
             userObject = user_type.objects.get(pk=user_type_id)
             request.data['isactive'] = True
@@ -1280,24 +1288,28 @@ class joblistbycompany(APIView):
         # filtered_data = job_post.objects.filter(job_title__icontains=search_terms)
 
         query = Q()
-        for term in search_terms:
-            query |= Q(job_title__icontains=term.strip())
-
-        filtered_data = job_post.objects.filter(query)
+        
 
         if(len(filtered_data)==0):
-            filtered_data = job_post.objects.filter(job_location_id__country__iexact=search_terms)
+            filtered_data = job_post.objects.filter(job_title__icontains=search_terms)
             for term in search_terms:
-                query |= Q(job_location_id__country__iexact=term.strip())
+                query |= Q(job_title__icontains=term.strip())
 
             filtered_data = job_post.objects.filter(query)
 
             if(len(filtered_data)==0):
-                filtered_data = job_post.objects.filter(job_type_id__job_type__iexact=search_terms)
+                filtered_data = job_post.objects.filter(job_location_id__country__iexact=search_terms)
                 for term in search_terms:
-                    query |= Q(job_type_id__job_type__iexact=term.strip())
+                    query |= Q(job_location_id__country__iexact=term.strip())
 
                 filtered_data = job_post.objects.filter(query)
+
+                if(len(filtered_data)==0):
+                    filtered_data = job_post.objects.filter(job_type_id__job_type__iexact=search_terms)
+                    for term in search_terms:
+                        query |= Q(job_type_id__job_type__iexact=term.strip())
+
+                    filtered_data = job_post.objects.filter(query)
         
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)
