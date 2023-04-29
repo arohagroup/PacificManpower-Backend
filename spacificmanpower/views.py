@@ -1430,6 +1430,7 @@ class notappliedjob(APIView):
     def post(self, request, format=None, *args, **kwargs):
 
         user_account_id=request.data.get('user_account_id')
+        print("user_account_id",user_account_id)
         if job_post_activity.objects.filter(user_account_id=user_account_id).exists():
             job_post_ids = job_post_activity.objects.values_list('job_post_id', flat=True)
 
@@ -1439,4 +1440,6 @@ class notappliedjob(APIView):
             return Response({"message":postedjob_data})
         else:
             # The passed id does not match any user_account_id in the job_post_activity model
-            return Response({"message":"Not Exists"})
+            all_job_posts = job_post.objects.all()
+            all_job_posts_data = job_post_serializer(all_job_posts, many=True).data
+            return Response({"message":all_job_posts_data})
