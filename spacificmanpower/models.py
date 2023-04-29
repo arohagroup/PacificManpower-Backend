@@ -128,7 +128,7 @@ class job_post_activity(models.Model):
     job_post_id = models.ForeignKey('job_post',related_name='job_post_id', on_delete=models.CASCADE,default=None)
     apply_date=models.DateTimeField(auto_now_add=True, blank=True)
     status=models.CharField(max_length=20)
-    userstatus=models.BooleanField()
+    userstatus=models.BooleanField(blank=True,null=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
     # primary_key = ('user_account_id', 'job_post_id')
