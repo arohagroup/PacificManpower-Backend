@@ -1521,3 +1521,13 @@ class expType(APIView):
         user_data = experince_type.objects.all().order_by('-createdDate')
         serializer = experince_type_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = experince_type_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    
