@@ -452,9 +452,6 @@ class editjob(APIView):
         
         if jobpost.company_id:
             jobpost.company_id.delete()
-
-        if jobpost.company_image:
-            jobpost.company_image.delete()
         
         if jobpost.job_location_id:
             jobpost.job_location_id.delete()
