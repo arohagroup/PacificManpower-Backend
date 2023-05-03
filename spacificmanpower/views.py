@@ -1355,11 +1355,7 @@ class applyjobTrue(APIView):
         serializer = job_post_activity_serializertest(calendars, many=True)
         return Response(serializer.data)
     
-class activefilter(APIView):
-    def get(self, request, is_active, format=None):
-        calendars = job_post.objects.filter(is_active=is_active)
-        serializer = job_post_serializer(calendars, many=True)
-        return Response(serializer.data)
+
     
 class applyjobUserIdTrue(APIView):
     def get(self, request, user_account_id,userstatus, format=None):
@@ -1506,3 +1502,9 @@ class notappliedjob(APIView):
             all_job_posts = job_post.objects.all()
             all_job_posts_data = job_post_serializer(all_job_posts, many=True).data
             return Response(all_job_posts_data)
+        
+class activefilter(APIView):
+    def get(self, request, is_active, format=None):
+        calendars = job_post.objects.filter(is_active=is_active)
+        serializer = job_post_serializer(calendars, many=True)
+        return Response(serializer.data)

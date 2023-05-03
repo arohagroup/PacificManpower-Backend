@@ -41,7 +41,7 @@ urlpatterns = [
 
     path('post_job/',views.postjob.as_view()),
     path('post_job/<int:pk>/',views.editjob.as_view()),
-    path('jobpostActiveFilter/<str:is_active>/',views.activefilter.as_view()),
+    # path('jobpostActiveFilter/<str:is_active>/',views.activefilter.as_view()),
     # path('postjobCI/<int:pk>/',views.showCI.as_view()),
     path('filteredjob/<path:searchItem>/', views.joblistbycompany.as_view()),
     path('filteredjobbyparttime/<str:job_type>/', views.filteredjobbyparttime.as_view()),
@@ -49,6 +49,7 @@ urlpatterns = [
     path('filteredjobbyfreelancer/<str:job_type>/', views.filteredjobbyfreelancer.as_view()),
 
     path('notAplliedJob/',views.notappliedjob.as_view()),
+    path('notAplliedJob/<str:is_active>/',views.activefilter.as_view()),
 
     path('applyjob/',views.applyjob.as_view()),
     path('applyjob/<int:pk>/',views.applyjobIND.as_view()),
