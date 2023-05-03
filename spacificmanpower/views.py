@@ -173,11 +173,16 @@ class businessstream(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        serializer = business_stream_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        business_stream_name=request.data.get('business_stream_name')
+
+        if business_stream.objects.filter(business_stream_name=business_stream_name).exists():
+            return JsonResponse({'error': 'Record already exists in business_stream table.'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = business_stream_serializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class companyadddetails(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
@@ -587,11 +592,15 @@ class skills(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        serializer = skill_set_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        skill_set_name=request.data.get('skill_set_name')
+        if skill_set.objects.filter(skill_set_name=skill_set_name).exists():
+            return JsonResponse({'error': 'Record already exists in skill_set table.'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = skill_set_serializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class skillset(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
