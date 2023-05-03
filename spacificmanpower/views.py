@@ -1284,7 +1284,6 @@ class joblistbycompany(APIView):
     def get(self, request,searchItem, format=None, *args, **kwargs):
 
         search_terms = searchItem.split('/')
-        print(search_terms)
         # filtered_data = job_post.objects.filter(job_title__icontains=search_terms)
 
         query = Q()
