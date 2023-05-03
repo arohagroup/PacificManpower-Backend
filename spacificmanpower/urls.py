@@ -41,6 +41,7 @@ urlpatterns = [
 
     path('post_job/',views.postjob.as_view()),
     path('post_job/<int:pk>/',views.editjob.as_view()),
+    path('jobpostActiveFilter/<str:is_active>/',views.activefilter.as_view()),
     # path('postjobCI/<int:pk>/',views.showCI.as_view()),
     path('filteredjob/<path:searchItem>/', views.joblistbycompany.as_view()),
     path('filteredjobbyparttime/<str:job_type>/', views.filteredjobbyparttime.as_view()),

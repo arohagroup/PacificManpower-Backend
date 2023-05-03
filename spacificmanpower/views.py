@@ -1312,7 +1312,7 @@ class joblistbycompany(APIView):
         filtered_data = []
 
         for term in search_terms:
-            query &= Q(job_title__icontains=term.strip()) | Q(job_location_id__country__iexact=term.strip()) | Q(job_type_id__job_type__iexact=term.strip())
+            query &= Q(job_title__icontains=term.strip()) | Q(job_location_id__country__iexact=term.strip()) | Q(job_type_id__job_type__iexact=term.strip()) | Q(company_id__company_name__iexact=term.strip())
 
         filtered_data = job_post.objects.filter(query)
         # if(len(filtered_data)==0):
@@ -1353,6 +1353,12 @@ class applyjobTrue(APIView):
     def get(self, request, userstatus, format=None):
         calendars = job_post_activity.objects.filter(userstatus=userstatus)
         serializer = job_post_activity_serializertest(calendars, many=True)
+        return Response(serializer.data)
+    
+class activefilter(APIView):
+    def get(self, request, is_active, format=None):
+        calendars = job_post.objects.filter(is_active=is_active)
+        serializer = job_post_serializer(calendars, many=True)
         return Response(serializer.data)
     
 class applyjobUserIdTrue(APIView):
