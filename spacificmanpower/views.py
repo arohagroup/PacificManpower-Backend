@@ -345,15 +345,29 @@ class postjob(APIView):
                          job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active)
         jobpost.save()
 
-        skill_level=request.data.get('skill_level')
-        skillsetid=request.data.get('skill_set_id')
+        # skill_level=request.data.get('skill_level')
+        # skillsetid=request.data.get('skill_set_id')
         
-        skill_set_id=skill_set.objects.get(id=skillsetid)
-        job_post_id=jobpost.id
-        job_post_instance = job_post.objects.get(id=job_post_id)
+        # skill_set_id=skill_set.objects.get(id=skillsetid)
+        # job_post_id=jobpost.id
+        # job_post_instance = job_post.objects.get(id=job_post_id)
         
-        jobpostskillset=job_post_skill_set(skill_set_id=skill_set_id,skill_level=skill_level,job_post_id=job_post_instance)
-        jobpostskillset.save()
+        # jobpostskillset=job_post_skill_set(skill_set_id=skill_set_id,skill_level=skill_level,job_post_id=job_post_instance)
+        # jobpostskillset.save()
+
+        skillsetids = request.data.get('skill_set_id').split(',') 
+        
+        for skillsetid in skillsetids:
+            try:
+                skill_set_id = skill_set.objects.get(id=int(skillsetid))
+                skill_level = request.data.get('skill_level')
+                job_post_id=jobpost.id
+                job_post_instance = job_post.objects.get(id=job_post_id)
+                seekerskillset = job_post_skill_set(user_account_id=user_account_id, 
+                                                    skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
+                seekerskillset.save() 
+            except skill_set.DoesNotExist:
+                pass
 
         # user_log_instance = user_log.objects.get(user_account_id=user_account_id)
         # user_log_instance.last_job_apply_date = datetime.datetime.now()
