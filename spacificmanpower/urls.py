@@ -72,7 +72,7 @@ urlpatterns = [
 
     path('trendingnews/',views.trendingnews.as_view()),
     path('trendingnews/<int:pk>/',views.updatenews.as_view()),
-
+    path('exptype/',views.expType.as_view()),
     path('contactus/',views.contactus.as_view()),
     path('recemail/',views.recEmail.as_view()),
     path('subscribe/',views.subscribeemail.as_view()),

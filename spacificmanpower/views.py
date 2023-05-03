@@ -1508,3 +1508,14 @@ class activefilter(APIView):
         calendars = job_post.objects.filter(is_active=is_active)
         serializer = job_post_serializer(calendars, many=True)
         return Response(serializer.data)
+    
+class expType(APIView):
+    # Return a list of all userreg objects serialized using userregSerializer
+
+    queryset = experince_type.objects.all()
+    serializer_class = experince_type_serializer
+
+    def get(self, request, format=None):
+        user_data = experince_type.objects.all().order_by('-createdDate')
+        serializer = experince_type_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
