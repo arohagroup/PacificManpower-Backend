@@ -363,8 +363,7 @@ class postjob(APIView):
                 skill_level = request.data.get('skill_level')
                 job_post_id=jobpost.id
                 job_post_instance = job_post.objects.get(id=job_post_id)
-                seekerskillset = job_post_skill_set(user_account_id=user_account_id, 
-                                                    skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
+                seekerskillset = job_post_skill_set( skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
                 seekerskillset.save() 
             except skill_set.DoesNotExist:
                 pass
