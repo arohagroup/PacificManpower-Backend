@@ -343,11 +343,11 @@ class postjob(APIView):
         job_location_id = joblocation.id
         created_date=request.data.get('created_date')
         is_active = request.data.get('is_active')
-
+        experince_type_id = request.data.get('experince_type_id')
         job_location_instance = job_location.objects.get(id=job_location_id)
 
         jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,job_title=job_title,
-                         job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active)
+                         job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active,experince_type_id=experince_type_id)
         jobpost.save()
 
         # skill_level=request.data.get('skill_level')
@@ -424,6 +424,7 @@ class editjob(APIView):
         jobpost.created_date = request.data.get('created_date', jobpost.created_date)
         jobpost.is_active = request.data.get('is_active', jobpost.is_active)
         is_active_str = request.data.get('is_active')
+        jobpost.experince_type_id = request.data.get('experince_type_id',jobpost.experince_type_id)
         jobpost.is_active = ast.literal_eval(is_active_str.title())
         jobpost.save()
 
