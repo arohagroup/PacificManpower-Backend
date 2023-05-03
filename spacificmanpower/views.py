@@ -343,7 +343,8 @@ class postjob(APIView):
         job_location_id = joblocation.id
         created_date=request.data.get('created_date')
         is_active = request.data.get('is_active')
-        experince_type_id = request.data.get('experince_type_id')
+        experincetypeid = request.data.get('experince_type_id')
+        experince_type_id = experince_type.objects.get(id=experincetypeid)
         job_location_instance = job_location.objects.get(id=job_location_id)
 
         jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,job_title=job_title,
