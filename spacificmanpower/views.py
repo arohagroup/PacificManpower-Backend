@@ -388,7 +388,8 @@ class editjob(APIView):
     
     def put(self, request, pk, format=None):
         jobpost = self.get_object(pk)
-        
+        useraccountid=request.data.get('user_account_id')
+        user_account_id=user_account.objects.get(id=useraccountid)
         # Update job_location fields
         joblocation = jobpost.job_location_id
         joblocation.street_address = request.data.get('street_address', joblocation.street_address)
@@ -421,22 +422,24 @@ class editjob(APIView):
         jobpost.is_active = ast.literal_eval(is_active_str.title())
         jobpost.save()
 
-        # # Update job_post_skill_set fields
-        # jobpostskillset = job_post_skill_set.objects.get(job_post_id=jobpost.id)
-        # jobpostskillset.skill_set_id = skill_set.objects.get(id=request.data.get('skill_set_id', jobpostskillset.skill_set_id.id))
-        # jobpostskillset.skill_level = request.data.get('skill_level', jobpostskillset.skill_level)
-        # jobpostskillset.save()
 
-        # # Update job_post_activity fields
-        # jobpostactivity = job_post_activity.objects.get(job_post_id=jobpost.id)
-        # jobpostactivity.user_account_id = user_account.objects.get(id=request.data.get('user_account_id', jobpostactivity.user_account_id.id))
-        # jobpostactivity.apply_date = request.data.get('apply_date', jobpostactivity.apply_date)
-        # jobpostactivity.save()
+        skillsetids = request.data.get('skill_set_id').split(',')
+        
+        # # Delete existing records
+        # job_post_skill_set.objects.filter(user_account_id=user_account_id).delete()
 
-        # Update user_log fields
-        # userlog = user_log.objects.last()
-        # userlog.last_job_apply_date = jobpostactivity.apply_date
-        # userlog.save()
+        seekerskillset = None
+
+        for skillsetid in skillsetids:
+            if skillsetid:
+                try:
+                    skill_set_id = skill_set.objects.get(id=int(skillsetid))
+                    skill_level = request.data.get('skill_level')
+                    seekerskillset = job_post_skill_set(user_account_id=user_account_id, skill_set_id=skill_set_id, skill_level=skill_level)
+                    seekerskillset.save() 
+                except skill_set.DoesNotExist:
+                    
+                    pass
 
         serializer = job_post_serializer(jobpost)
         return Response(serializer.data)
