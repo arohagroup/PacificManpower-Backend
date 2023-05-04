@@ -1066,12 +1066,12 @@ class editseekrprofile(APIView):
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
 
-        if start_date == "":
+        if start_date == "" or start_date == 'undefined':
             start_date = None
         else:
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
 
-        if end_date == "":
+        if end_date == "" or end_date == 'undefined':
             end_date = None
         else:
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
@@ -1313,7 +1313,7 @@ class joblistbycompany(APIView):
         query = Q()
 
         filtered_data = []
-        print(search_terms)
+
         if(len(search_terms)>0):
 
             if(len(search_terms)==1):
