@@ -1451,7 +1451,7 @@ class notappliedjob(APIView):
             return Response(all_job_posts_data)
         
 class activefilter(APIView):
-    def get(self, request, is_active, format=None):
+    def post(self, request, is_active, format=None):
         calendars = job_post.objects.filter(is_active=is_active)
         serializer = job_post_serializer(calendars, many=True)
         return Response(serializer.data)
