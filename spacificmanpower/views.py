@@ -113,9 +113,7 @@ class edituseraccount(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    
-        
+                
 class userlog(APIView):
     # Return a list of all userreg objects serialized using userregSerializer
 
@@ -127,8 +125,6 @@ class userlog(APIView):
         serializer = user_log_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
     
-
-
 class userlogin(APIView):
     def post(self, request):
         email = request.data.get('email_address')
@@ -151,9 +147,7 @@ class userlogin(APIView):
         else:
             # Passwords do not match
             return Response({"message": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
-
-
-        
+       
 class forgotpassword(APIView):
     def post(self, request, *args, **kwargs):
         my_model_instance = user_account.objects.get(id=request.data['id'])
@@ -259,7 +253,6 @@ class companyprofile(APIView):
         company_obj.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class postjoblocation(APIView):
     def get_object(self, pk):
@@ -374,10 +367,6 @@ class postjob(APIView):
                 seekerskillset.save() 
             except skill_set.DoesNotExist:
                 pass
-
-        # user_log_instance = user_log.objects.get(user_account_id=user_account_id)
-        # user_log_instance.last_job_apply_date = datetime.datetime.now()
-        # user_log_instance.save()
         
         return Response(status=status.HTTP_201_CREATED)
 
@@ -698,9 +687,6 @@ class seekerprofile(APIView):
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
 
-        
-        
-
         if start_date == "":
             start_date = None
         else:
@@ -763,14 +749,7 @@ class applyjob(APIView):
             
         status_test = request.data.get('status')
         userstatus = request.data.get('userstatus')
-        # if userstatus is not None:
-        #     if userstatus.lower() == 'true':
-        #         userstatus = True
-        #     elif userstatus.lower() == 'false':
-        #         userstatus = False
-        #     else:
-        #         # Handle invalid input
-        #         pass
+
         jobpostid = request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
 
@@ -784,7 +763,6 @@ class applyjob(APIView):
         if not seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
             return Response({'message': 'User account not found in seeker_skill_set table'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Save the new job_post_activity record and user_log record
         jobpostactivity = job_post_activity(user_account_id=user_account_id, job_post_id=job_post_id, apply_date=datetime.now(), status=status_test,userstatus=userstatus)
         jobpostactivity.save()
 
@@ -794,7 +772,6 @@ class applyjob(APIView):
         return Response(status=status.HTTP_201_CREATED)
     
 class trendingnews(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = trending_news.objects.all()
     serializer_class = trending_news_serializer
@@ -806,9 +783,9 @@ class trendingnews(APIView):
     
     def post(self, request, format=None):
 
-        useraccountid=request.data.get('user_account_id')
-        
+        useraccountid=request.data.get('user_account_id') 
         user_account_id=user_account.objects.get(id=useraccountid)
+
         news_title = request.data.get('news_title')
         news_description = request.data.get('news_description')
         news_image = request.data.get('news_image')
@@ -848,8 +825,6 @@ class updatenews(APIView):
 
         return Response(status=status.HTTP_200_OK)
 
-
-    
     def patch(self, request, pk):
         calendars = self.get_object(pk)
         serializer = trending_news_serializer(calendars, data=request.data, partial=True)
@@ -875,8 +850,6 @@ class educationdetailIND(APIView):
         data = self.get_object(pk)
         serializer = education_detail_serializer(data)
         return Response(serializer.data)
-    
-    
     
 class skillsetIND(APIView):
     def get_object(self, pk):
@@ -939,24 +912,8 @@ class applyjobIND(APIView):
         serializer = job_post_activity_serializertest(queryset, many=True)
         return Response(serializer.data)
     
-    # def get_object(self, pk):
-    #     try:
-    #         return job_post_activity.objects.get(pk=pk)
-    #     except job_post_activity.DoesNotExist:
-    #         raise Http404
-
-    # def get(self, request, pk, format=None):
-    #     data = self.get_object(pk)
-    #     serializer = job_post_activity_serializertest(data)
-    #     return Response(serializer.data)
-
     def put(self, request, pk, format=None):  # added
-        # fetchedData = self.get_object(pk)
-        # serializer = job_post_activity_serializertest(fetchedData, data=request.data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(serializer.data)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
         status_test = request.data.get('status')
         user_account_id = request.data.get('user_account_id')
@@ -969,7 +926,6 @@ class applyjobIND(APIView):
             elif userstatus.lower() == 'false':
                 userstatus = False
             else:
-                # Handle invalid input
                 pass
 
         jobpostactivity = job_post_activity.objects.get(pk=pk)
@@ -982,7 +938,7 @@ class applyjobIND(APIView):
         jobpostactivity.save()
 
         return Response({"message": "updated"}, status=status.HTTP_201_CREATED)
-    
+  
 
 class editseekrprofile(APIView):
     def get_object(self, pk):
@@ -1331,9 +1287,6 @@ class joblistbycompany(APIView):
             serializer = job_post_serializer(filtered_data, many=True)
             return Response(serializer.data)
     
-
-
-    
     
 class filteredjobbyparttime(APIView):
     def get(self, request, format=None, *args, **kwargs):
@@ -1395,7 +1348,7 @@ class subscribeemail(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-
+        
         useraccountid = request.data.get('user_account_id')
         user_account_obj = user_account.objects.get(id=useraccountid)
         email = request.data.get('email')
@@ -1489,10 +1442,10 @@ class notappliedjob(APIView):
 
             postedjob = job_post.objects.exclude(id__in=job_post_ids)
             postedjob_data = job_post_serializer(postedjob, many=True).data
-            # postedjob = job_post.objects.exclude(id__in=job_post_ids).values_list('id', flat=True)
+            
             return Response(postedjob_data)
         else:
-            # The passed id does not match any user_account_id in the job_post_activity model
+
             all_job_posts = job_post.objects.all()
             all_job_posts_data = job_post_serializer(all_job_posts, many=True).data
             return Response(all_job_posts_data)
