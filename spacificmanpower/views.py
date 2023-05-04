@@ -1479,47 +1479,67 @@ class expType(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-class fetchDetail(APIView):
-    def post(self, request, format=None, *args, **kwargs):
+# class fetchDetail(APIView):
+#     def post(self, request, format=None, *args, **kwargs):
 
-        fetched_data = []
-        user_account_id = request.data.get('user_account_id')
-        education_detail_data = education_detail.objects.filter(user_account_id=user_account_id).all()
-        if education_detail_data:
-            education_data = []
-            for education in education_detail_data:
-                education_data.append({
-                    'certificate_degree_name': education.certificate_degree_name,
-                    'major': education.major,
-                    'institute_university_name': education.institute_university_name,
-                    'starting_date': education.starting_date,
-                    'completion_date': education.completion_date,
-                    'percentage': education.percentage,
-                    'cgpa': education.cgpa,
-                })
-            # return Response(data)
+#         fetched_data = []
+#         user_account_id = request.data.get('user_account_id')
+#         education_detail_data = education_detail.objects.filter(user_account_id=user_account_id).all()
+#         if education_detail_data:
+#             education_data = []
+#             for education in education_detail_data:
+#                 education_data.append({
+#                     'certificate_degree_name': education.certificate_degree_name,
+#                     'major': education.major,
+#                     'institute_university_name': education.institute_university_name,
+#                     'starting_date': education.starting_date,
+#                     'completion_date': education.completion_date,
+#                     'percentage': education.percentage,
+#                     'cgpa': education.cgpa,
+#                 })
+            
 
-        experience_detail_data = experience_detail.objects.filter(user_account_id=user_account_id).all()
-        if experience_detail_data:
-            experience_data = []
-            for experience in experience_detail_data:
-                experience_data.append({
-                    'is_current_job': experience.is_current_job,
-                    'start_date': experience.start_date,
-                    'end_date': experience.end_date,
-                    'job_title': experience.job_title,
-                    'company_name': experience.company_name,
-                    'job_location_city': experience.job_location_city,
-                    'job_location_state': experience.job_location_state,
-                    'job_location_country': experience.job_location_country,
-                    'description': experience.description
-                })
+#         experience_detail_data = experience_detail.objects.filter(user_account_id=user_account_id).all()
+#         if experience_detail_data:
+#             experience_data = []
+#             for experience in experience_detail_data:
+#                 experience_data.append({
+#                     'is_current_job': experience.is_current_job,
+#                     'start_date': experience.start_date,
+#                     'end_date': experience.end_date,
+#                     'job_title': experience.job_title,
+#                     'company_name': experience.company_name,
+#                     'job_location_city': experience.job_location_city,
+#                     'job_location_state': experience.job_location_state,
+#                     'job_location_country': experience.job_location_country,
+#                     'description': experience.description
+#                 })
 
-            data = {
-                'education_detail': education_data,
-                'work_experience': experience_data,
-            }
-            # response_data = [data]
-            return Response(data)
-        else:
-            return Response({'message': 'No education detail found for the provided user account ID.'})
+#         seekerprofile_detail_data = seeker_profile.objects.filter(user_account_id=user_account_id).all()
+#         if seekerprofile_detail_data:
+#             seeker_data = []
+#             for seeker in seekerprofile_detail_data:
+#                 seeker_data.append({
+#                     'first_name': seeker.first_name,
+#                     'last_name': seeker.last_name,
+#                     'current_salary': seeker.current_salary,
+#                     'is_annually_monthly': seeker.is_annually_monthly,
+#                     'currency': seeker.currency,
+#                     'uploaded_cv': seeker.uploaded_cv,
+#                 })
+                
+#         seekerskillset_detail_data = seeker_skill_set.objects.filter(user_account_id=user_account_id).all()
+#         if seekerskillset_detail_data:
+#             seekerskillset_data = []
+#             for seekerskill in seekerskillset_detail_data:
+#                 skill_set_obj = seekerskill.skill_set_id  # fetch the skill_set object
+#                 seekerskillset_data.append({
+#                     'skill_set_id': skill_set_obj.id,  # use the id value of skill_set object
+#                     'skill_set_name': skill_set_obj.skill_set_name,  # include the name of skill_set in the output
+#                     'skill_level': seekerskill.skill_level
+#                 })
+
+#             return Response(seekerskillset_data)
+            
+#         else:
+#             return Response({'message': 'No education detail found for the provided user account ID.'})
