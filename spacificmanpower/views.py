@@ -1479,4 +1479,47 @@ class expType(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-    
+class fetchDetail(APIView):
+    def post(self, request, format=None, *args, **kwargs):
+
+        fetched_data = []
+        user_account_id = request.data.get('user_account_id')
+        education_detail_data = education_detail.objects.filter(user_account_id=user_account_id).all()
+        if education_detail_data:
+            education_data = []
+            for education in education_detail_data:
+                education_data.append({
+                    'certificate_degree_name': education.certificate_degree_name,
+                    'major': education.major,
+                    'institute_university_name': education.institute_university_name,
+                    'starting_date': education.starting_date,
+                    'completion_date': education.completion_date,
+                    'percentage': education.percentage,
+                    'cgpa': education.cgpa,
+                })
+            # return Response(data)
+
+        experience_detail_data = experience_detail.objects.filter(user_account_id=user_account_id).all()
+        if experience_detail_data:
+            experience_data = []
+            for experience in experience_detail_data:
+                experience_data.append({
+                    'is_current_job': experience.is_current_job,
+                    'start_date': experience.start_date,
+                    'end_date': experience.end_date,
+                    'job_title': experience.job_title,
+                    'company_name': experience.company_name,
+                    'job_location_city': experience.job_location_city,
+                    'job_location_state': experience.job_location_state,
+                    'job_location_country': experience.job_location_country,
+                    'description': experience.description
+                })
+
+            data = {
+                'education_detail': education_data,
+                'work_experience': experience_data,
+            }
+            # response_data = [data]
+            return Response(data)
+        else:
+            return Response({'message': 'No education detail found for the provided user account ID.'})

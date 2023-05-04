@@ -77,4 +77,5 @@ urlpatterns = [
     path('recemail/',views.recEmail.as_view()),
     path('subscribe/',views.subscribeemail.as_view()),
 
+    path('fetchapplicantInfo/<int:pk>/',views.fetchDetail.as_view()),
 ]
