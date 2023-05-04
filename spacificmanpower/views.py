@@ -330,7 +330,7 @@ class postjob(APIView):
         companyid=request.data.get('company_id')
         useraccountid=request.data.get('user_account_id')
         job_title=request.data.get('job_title')
-        
+        salary=request.data.get('salary')
 
         joblocation = job_location(street_address=street_address, city=city, state=state, country=country,zip=zip)
         joblocation.save()
@@ -348,7 +348,8 @@ class postjob(APIView):
         job_location_instance = job_location.objects.get(id=job_location_id)
 
         jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,job_title=job_title,
-                         job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active,experince_type_id=experince_type_id)
+                         job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active,
+                         experince_type_id=experince_type_id,salary=salary)
         jobpost.save()
 
         # skill_level=request.data.get('skill_level')
@@ -426,6 +427,7 @@ class editjob(APIView):
         jobpost.is_active = request.data.get('is_active', jobpost.is_active)
         is_active_str = request.data.get('is_active')
         jobpost.experince_type_id = request.data.get('experince_type_id',jobpost.experince_type_id)
+        jobpost.salary = request.data.get('salary',jobpost.salary)
         jobpost.is_active = ast.literal_eval(is_active_str.title())
         jobpost.save()
 
@@ -1307,37 +1309,26 @@ class recEmail(APIView):
 class joblistbycompany(APIView):
     def get(self, request,searchItem, format=None, *args, **kwargs):
 
-        search_terms = searchItem.split('/')
-        # filtered_data = job_post.objects.filter(job_title__icontains=search_terms)
+        # search_terms = searchItem.split('/')
 
+        # query = Q()
+        # filtered_data = []
+
+        # for term in search_terms:
+        #     query &= Q(job_title__icontains=term.strip()) | Q(job_location_id__country__iexact=term.strip()) | Q(job_type_id__job_type__iexact=term.strip()) | Q(company_id__company_name__iexact=term.strip())
+
+        # filtered_data = job_post.objects.filter(query)
+        
+        # serializer = job_post_serializer(filtered_data, many=True)
+        # return Response(serializer.data)
+    
+        search_terms = [term.strip() for term in searchItem.split('/') if term.strip()]
         query = Q()
-        filtered_data = []
 
         for term in search_terms:
-            query &= Q(job_title__icontains=term.strip()) | Q(job_location_id__country__iexact=term.strip()) | Q(job_type_id__job_type__iexact=term.strip()) | Q(company_id__company_name__iexact=term.strip())
+            query |= Q(job_title__icontains=term) | Q(job_location_id__country__iexact=term) | Q(job_type_id__job_type__iexact=term) | Q(company_id__company_name__iexact=term)
 
         filtered_data = job_post.objects.filter(query)
-        # if(len(filtered_data)==0):
-        #     filtered_data = job_post.objects.filter(job_title__icontains=search_terms)
-        #     for term in search_terms:
-        #         query |= Q(job_title__icontains=term.strip())
-
-        #     filtered_data = job_post.objects.filter(query)
-
-        #     if(len(filtered_data)==0):
-        #         filtered_data = job_post.objects.filter(job_location_id__country__iexact=search_terms)
-        #         for term in search_terms:
-        #             query |= Q(job_location_id__country__iexact=term.strip())
-
-        #         filtered_data = job_post.objects.filter(query)
-
-        #         if(len(filtered_data)==0):
-        #             filtered_data = job_post.objects.filter(job_type_id__job_type__iexact=search_terms)
-        #             for term in search_terms:
-        #                 query |= Q(job_type_id__job_type__iexact=term.strip())
-
-        #             filtered_data = job_post.objects.filter(query)
-        
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)
 
