@@ -1309,28 +1309,29 @@ class recEmail(APIView):
 class joblistbycompany(APIView):
     def get(self, request,searchItem, format=None, *args, **kwargs):
 
-        # search_terms = searchItem.split('/')
-
-        # query = Q()
-        # filtered_data = []
-
-        # for term in search_terms:
-        #     query &= Q(job_title__icontains=term.strip()) | Q(job_location_id__country__iexact=term.strip()) | Q(job_type_id__job_type__iexact=term.strip()) | Q(company_id__company_name__iexact=term.strip())
-
-        # filtered_data = job_post.objects.filter(query)
-        
-        # serializer = job_post_serializer(filtered_data, many=True)
-        # return Response(serializer.data)
-    
-        search_terms = [term.strip() for term in searchItem.split('/') if term.strip()]
+        search_terms = [term.strip() for term in searchItem.split('/') if term.strip() and term.strip().lower() != 'null']
         query = Q()
 
-        for term in search_terms:
-            query |= Q(job_title__icontains=term) | Q(job_location_id__country__iexact=term) | Q(job_type_id__job_type__iexact=term) | Q(company_id__company_name__iexact=term)
+        filtered_data = []
+        print(search_terms)
+        if(len(search_terms)>0):
 
-        filtered_data = job_post.objects.filter(query)
-        serializer = job_post_serializer(filtered_data, many=True)
-        return Response(serializer.data)
+            if(len(search_terms)==1):
+
+                or_query = Q(job_title__icontains=search_terms[0]) | Q(job_location_id__country__iexact=search_terms[0]) | Q(job_type_id__job_type__iexact=search_terms[0]) | Q(company_id__company_name__iexact=search_terms[0])
+                filtered_data = job_post.objects.filter(or_query)
+
+            else:
+
+                for term in search_terms:
+                    query &= Q(job_title__icontains=term.strip()) | Q(job_location_id__country__iexact=term.strip()) | Q(job_type_id__job_type__iexact=term.strip()) | Q(company_id__company_name__iexact=term.strip())
+
+                filtered_data = job_post.objects.filter(query)
+        
+            serializer = job_post_serializer(filtered_data, many=True)
+            return Response(serializer.data)
+    
+
 
     
     
