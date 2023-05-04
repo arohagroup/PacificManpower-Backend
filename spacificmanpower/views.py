@@ -953,9 +953,13 @@ class editseekrprofile(APIView):
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):
-        print(request.data)
+
         useraccountid = request.data.get('user_account_id')
         user_account_id = user_account.objects.get(id=useraccountid)
+
+        user_account_id.user_image = request.data.get('user_image')
+
+        user_account_id.save()
 
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
