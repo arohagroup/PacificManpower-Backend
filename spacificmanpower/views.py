@@ -919,14 +919,14 @@ class applyjobIND(APIView):
         user_account_id = request.data.get('user_account_id')
         job_post_id = request.data.get('job_post_id')
 
-        userstatus = request.data.get('userstatus', None)
-        if userstatus is not None:
-            if userstatus.lower() == 'true':
-                userstatus = True
-            elif userstatus.lower() == 'false':
-                userstatus = False
-            else:
-                pass
+        userstatus = request.data.get('userstatus')
+        # if userstatus is not None:
+        #     if userstatus.lower() == 'true':
+        #         userstatus = True
+        #     elif userstatus.lower() == 'false':
+        #         userstatus = False
+        #     else:
+        #         pass
 
         jobpostactivity = job_post_activity.objects.get(pk=pk)
 
