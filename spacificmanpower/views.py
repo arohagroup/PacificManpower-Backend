@@ -616,9 +616,16 @@ class seekerprofile(APIView):
         currency = request.data.get('currency')
         uploaded_cv = request.data.get('uploaded_cv')
 
-        seekerprofile=seeker_profile(user_account_id=user_account_id,first_name=first_name,last_name=last_name,
-                         current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency,uploaded_cv=uploaded_cv)
-        seekerprofile.save()
+        if uploaded_cv:
+            valid_extensions = ['.pdf']
+            ext = os.path.splitext(uploaded_cv.name)[1]
+            if not ext.lower() in valid_extensions:
+                return Response({"message": "Invalid file type. Only pdf files with extensions {} are allowed".format(', '.join(valid_extensions))}, status=status.HTTP_403_FORBIDDEN)
+        else:
+
+            seekerprofile=seeker_profile(user_account_id=user_account_id,first_name=first_name,last_name=last_name,
+                            current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency,uploaded_cv=uploaded_cv)
+            seekerprofile.save()
 
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
@@ -931,7 +938,15 @@ class editseekrprofile(APIView):
         seekerprofile.currency = currency
         seekerprofile.uploaded_cv = uploaded_cv
 
-        seekerprofile.save()
+        if uploaded_cv:
+            valid_extensions = ['.pdf']
+            ext = os.path.splitext(uploaded_cv.name)[1]
+            if not ext.lower() in valid_extensions:
+                return Response({"message": "Invalid file type. Only image files with extensions {} are allowed".format(', '.join(valid_extensions))}, status=status.HTTP_403_FORBIDDEN)
+            
+        else:
+
+            seekerprofile.save()
 
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
@@ -1284,7 +1299,7 @@ class filteredjobbyfreelancer(APIView):
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)
     
-    
+
 class subscribeemail(APIView):
 
     queryset = subscribe.objects.all()
