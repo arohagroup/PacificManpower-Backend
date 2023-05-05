@@ -225,18 +225,13 @@ class companyprofile(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        userObject = company.objects.get(pk=pk)
-        addmoreUser = self.get_object(pk)
-        serializer = company_serializer(addmoreUser, data=request.data)
+        dataGot = self.get_object(pk)
+        serializer = company_serializer(dataGot, data=request.data)
         if serializer.is_valid():
-            serializer.save(staff=userObject)
-
-            # if 'companyimage' in request.data:
-            #     company_image_object, _ = company_image.objects.get_or_create(company_id=userObject)
-            #     company_image_object.companyimage = request.data['companyimage']
-            #     company_image_object.save()
-        return Response(status=status.HTTP_201_CREATED)
-
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
     def delete(self, request, pk, format=None):
         try:
