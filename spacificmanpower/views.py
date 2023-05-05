@@ -25,7 +25,6 @@ import os
 from django.utils import timezone
 # Create your views here.
 
-
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -40,9 +39,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
-
 class usertype(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = user_type.objects.all()
     serializer_class = user_type_serializer
@@ -53,7 +50,6 @@ class usertype(APIView):
         return Response(serializer.data)
     
 class usersaveaccount(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = user_account.objects.all()
     serializer_class = user_account_serializer
@@ -108,15 +104,32 @@ class edituseraccount(APIView):
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):
-        dataGot = self.get_object(pk)
-        serializer = user_account_serializer(dataGot, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            dataGot = user_account.objects.get(pk=pk)
+        except user_account.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        dataGot.first_name = request.data.get('first_name')
+        dataGot.last_name = request.data.get('last_name')  
+        dataGot.email_address = request.data.get('email_address')   
+        dataGot.password = request.data.get('password')
+        dataGot.date_of_birth=request.data.get('date_of_birth')
+        dataGot.gender = request.data.get('gender')
+        dataGot.contact_number = request.data.get('contact_number')
+        dataGot.user_image=request.data.get('user_image')
+
+        dataGot.save()
+        return Response(status=status.HTTP_200_OK)
+        # dataGot = self.get_object(pk)
+        # serializer = user_account_serializer(dataGot, data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
                 
 class userlog(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = user_log.objects.all()
     serializer_class = user_log_serializer
@@ -135,18 +148,17 @@ class userlogin(APIView):
             user = user_account.objects.get(email_address=email)
             user_logData = user_log.objects.last()
         except user_account.DoesNotExist:
-            # User does not exist
+            
             return Response({"message": "User account doesn't exists"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check the password
         if user.password == password:
-            # Passwords match, user is authenticated
+            
             user_logData.last_login_date = datetime.now()
             user_logData.save()
             unique_id = get_random_string(length=32)
             return Response({"userid": user.id,"user_type_id": user.user_type_id.id,"username":user.first_name,"token": unique_id},status=status.HTTP_200_OK)
         else:
-            # Passwords do not match
+            
             return Response({"message": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
        
 class forgotpassword(APIView):
@@ -157,7 +169,6 @@ class forgotpassword(APIView):
         return Response({'success': True})
     
 class businessstream(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = business_stream.objects.all()
     serializer_class = business_stream_serializer
@@ -180,7 +191,6 @@ class businessstream(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class companyadddetails(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = company.objects.all()
     serializer_class = company_serializer
@@ -298,7 +308,6 @@ class postjobjobype(APIView):
 #         return Response(serializer.data)
     
 class postjob(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = job_post.objects.all()
     serializer_class = job_post_serializer
@@ -309,7 +318,7 @@ class postjob(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        # Extract data from request.data
+
         street_address = request.data.get('street_address')
         city = request.data.get('city')
         state = request.data.get('state')
@@ -340,16 +349,6 @@ class postjob(APIView):
                          job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active,
                          experince_type_id=experince_type_id,salary=salary)
         jobpost.save()
-
-        # skill_level=request.data.get('skill_level')
-        # skillsetid=request.data.get('skill_set_id')
-        
-        # skill_set_id=skill_set.objects.get(id=skillsetid)
-        # job_post_id=jobpost.id
-        # job_post_instance = job_post.objects.get(id=job_post_id)
-        
-        # jobpostskillset=job_post_skill_set(skill_set_id=skill_set_id,skill_level=skill_level,job_post_id=job_post_instance)
-        # jobpostskillset.save()
 
         skillsetids = request.data.get('skill_set_id').split(',') 
         
@@ -382,7 +381,7 @@ class editjob(APIView):
         jobpost = self.get_object(pk)
         useraccountid=request.data.get('user_account_id')
         user_account_id=user_account.objects.get(id=useraccountid)
-        # Update job_location fields
+
         joblocation = jobpost.job_location_id
         joblocation.street_address = request.data.get('street_address', joblocation.street_address)
         joblocation.city = request.data.get('city', joblocation.city)
@@ -391,10 +390,8 @@ class editjob(APIView):
         joblocation.zip = request.data.get('zip', joblocation.zip)
         joblocation.save()
 
-        # Update job_post fields
         jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
         jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
-        # jobpost.is_company_name_hidden = request.data.get('is_company_name_hidden',jobpost.is_company_name_hidden)
 
         is_company_name_hidden = request.data.get('is_company_name_hidden', None)
         if is_company_name_hidden is not None:
@@ -416,12 +413,11 @@ class editjob(APIView):
         jobpost.is_active = ast.literal_eval(is_active_str.title())
         jobpost.save()
 
-
         skillsetids = request.data.get('skill_set_id').split(',')
         
         # # Delete existing records
         # job_post_skill_set.objects.filter(user_account_id=user_account_id).delete()
-
+        
         seekerskillset = None
 
         for skillsetid in skillsetids:
@@ -454,9 +450,7 @@ class editjob(APIView):
         
         return Response(status=status.HTTP_204_NO_CONTENT)
         
-    
 class joblocation(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = job_location.objects.all()
     serializer_class = job_location_serializer
@@ -512,7 +506,6 @@ class editjoblocation(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT) 
     
 class educationdetail(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = education_detail.objects.all()
     serializer_class = education_detail_serializer
@@ -530,7 +523,6 @@ class educationdetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class seekerskillset(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = seeker_skill_set.objects.all()
     serializer_class = seeker_skill_set_serializer
@@ -608,7 +600,6 @@ class seekerprofile(APIView):
         serializer = seeker_profile_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
 
-    
     def post(self, request, format=None):
         useraccountid=request.data.get('user_account_id')
         user_account_id=user_account.objects.get(id=useraccountid)
@@ -908,8 +899,7 @@ class applyjobIND(APIView):
 
         jobpostactivity.save()
 
-        return Response({"message": "updated"}, status=status.HTTP_201_CREATED)
-  
+        return Response({"message": "updated"}, status=status.HTTP_201_CREATED) 
 
 class editseekrprofile(APIView):
     def get_object(self, pk):
@@ -1045,7 +1035,6 @@ class editseekrprofile(APIView):
                 except skill_set.DoesNotExist:
                     
                     pass
-
 
         # seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
         # educationdetaildata = serializers.serialize('json', [educationdetail, ])
