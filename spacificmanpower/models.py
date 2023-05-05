@@ -116,7 +116,7 @@ class job_post(models.Model):
     job_title=models.CharField(max_length=20)
     created_date=models.DateTimeField(auto_now_add=True, blank=True)
     job_description=models.CharField(max_length=500)
-    salary=models.IntegerField(max_length=30,blank=True,null=True)
+    salary=models.IntegerField(blank=True,null=True)
     job_location_id = models.ForeignKey('job_location',related_name='job_location_id', on_delete=models.CASCADE,default=None)
     is_active=models.BooleanField()
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)

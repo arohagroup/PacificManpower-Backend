@@ -22,6 +22,7 @@ from datetime import datetime
 from django.forms.models import model_to_dict
 from django.http import QueryDict
 import os
+from django.utils import timezone
 # Create your views here.
 
 
@@ -661,7 +662,10 @@ class seekerprofile(APIView):
         completion_date = request.data.get('completion_date')
         
         starting_date = datetime.strptime(starting_date, '%Y-%m-%d').date()
+        starting_date = timezone.make_aware(datetime.combine(starting_date, datetime.min.time()))
+
         completion_date = datetime.strptime(completion_date, '%Y-%m-%d').date()
+        completion_date = timezone.make_aware(datetime.combine(completion_date, datetime.min.time()))
 
         percentage = request.data.get('percentage')
         cgpa = request.data.get('cgpa')
@@ -686,10 +690,12 @@ class seekerprofile(APIView):
             start_date = None
         else:
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+            start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
         if end_date == "":
             end_date = None
         else:
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+            end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
         job_title = request.data.get('job_title')
         company_name = request.data.get('company_name')
         job_location_city = request.data.get('job_location_city')
@@ -985,14 +991,14 @@ class editseekrprofile(APIView):
             starting_date = None
         else:
             starting_date = datetime.strptime(starting_date, '%Y-%m-%d').date()
+            starting_date = timezone.make_aware(datetime.combine(starting_date, datetime.min.time()))
 
         if completion_date == "":
             completion_date = None
         else:
             completion_date = datetime.strptime(completion_date, '%Y-%m-%d').date()
+            completion_date = timezone.make_aware(datetime.combine(completion_date, datetime.min.time()))
             
-        # starting_date = datetime.strptime(starting_date, '%Y-%m-%d').date()
-        # completion_date = datetime.strptime(completion_date, '%Y-%m-%d').date()
         percentage = request.data.get('percentage')
         cgpa = request.data.get('cgpa')
 
@@ -1025,11 +1031,13 @@ class editseekrprofile(APIView):
             start_date = None
         else:
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+            start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
 
         if end_date == "" or end_date == 'undefined':
             end_date = None
         else:
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+            end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
         
         job_title = request.data.get('job_title')
         company_name = request.data.get('company_name')
