@@ -3,7 +3,6 @@ from .models import *
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.hashers import make_password
 
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     groups = serializers.PrimaryKeyRelatedField(many=True, read_only='True')
     password = serializers.CharField(
@@ -61,15 +60,6 @@ class business_stream_serializer(serializers.ModelSerializer):
         model=business_stream
         fields=['id','business_stream_name']
 
-
-
-# class company_image_serializer(serializers.ModelSerializer):
-
-#     company_id=serializers.ReadOnlyField(source='company_id.id')
-#     class Meta:
-#         model=company_image
-#         fields=['id','company_id','companyimage','createdDate','modifiedDate']
-
 class company_serializer(serializers.ModelSerializer):
     
     business_stream_id=serializers.ReadOnlyField(source='business_stream_id.id')
@@ -122,8 +112,6 @@ class seeker_skill_set_serializertest(serializers.ModelSerializer):
         model=seeker_skill_set
         fields=['id','user_account_id','skill_set_id','skill_level','createdDate','modifiedDate']
 
-
-
 #Job Post Management
 class job_post_activity_serializer(serializers.ModelSerializer):
     
@@ -132,8 +120,6 @@ class job_post_activity_serializer(serializers.ModelSerializer):
     class Meta:
         model=job_post_activity
         fields=['id','user_account_id','job_post_id','apply_date','status','createdDate','modifiedDate']
-
-
 
 class job_post_skill_set_serializer(serializers.ModelSerializer):
     
@@ -147,8 +133,6 @@ class job_type_serializer(serializers.ModelSerializer):
     class Meta:
         model=job_type
         fields=['id','job_type','createdDate','modifiedDate']
-
-
 
 class job_location_serializer(serializers.ModelSerializer):
     class Meta:
@@ -208,7 +192,6 @@ class subscribe_serializer(serializers.ModelSerializer):
     class Meta:
         model=subscribe
         fields=['id','user_account_id','email','createdDate','modifiedDate']
-
 
 class applyjob_serializer(serializers.ModelSerializer):
    

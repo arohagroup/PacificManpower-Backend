@@ -13,19 +13,17 @@ urlpatterns = [
     path('', include(router.urls)),
 
     path('user_type/',views.usertype.as_view()),
-
     path('user_save_account/',views.usersaveaccount.as_view()),
     path('user_save_account/<int:pk>/',views.edituseraccount.as_view()),
 
     path('user_log/',views.userlog.as_view()),
-
     path('user_login/',views.userlogin.as_view()),
+
     path('forgot_password/<int:pk>/',views.forgotpassword.as_view()),
 
     path('business_stream/',views.businessstream.as_view()),
 
     path('company_save_details/',views.companyadddetails.as_view()),
-    # path('company_save_image/',views.companysaveimage.as_view()),
     path('company_save_details/<int:pk>/',views.companyprofile.as_view()),
 
     path('seeker_profile/',views.seekerprofile.as_view()),
@@ -41,8 +39,7 @@ urlpatterns = [
 
     path('post_job/',views.postjob.as_view()),
     path('post_job/<int:pk>/',views.editjob.as_view()),
-    # path('jobpostActiveFilter/<str:is_active>/',views.activefilter.as_view()),
-    # path('postjobCI/<int:pk>/',views.showCI.as_view()),
+
     path('filteredjob/<path:searchItem>/', views.joblistbycompany.as_view()),
     path('filteredjobbyparttime/<str:job_type>/', views.filteredjobbyparttime.as_view()),
     path('filteredjobbyfulltime/<str:job_type>/', views.filteredjobbyfulltime.as_view()),
@@ -55,9 +52,6 @@ urlpatterns = [
     path('applyjob/<int:pk>/',views.applyjobIND.as_view()),
     path('applyjobfilteredTrue/<str:userstatus>/',views.applyjobTrue.as_view()),
     path('applyjobfilteredTrueUseraccount/<int:user_account_id>/<str:userstatus>/',views.applyjobUserIdTrue.as_view()),
-    # path('applyjobfiltered/<int:pk>/',views.filteredJob.as_view()),
-
-    # path('jobpostactivity/',views.jobpostactivity.as_view()),
     
     path('job_type/',views.jobtype.as_view()),
 
@@ -77,5 +71,4 @@ urlpatterns = [
     path('recemail/',views.recEmail.as_view()),
     path('subscribe/',views.subscribeemail.as_view()),
 
-    # path('fetchapplicantInfo/<int:pk>/',views.fetchDetail.as_view()),
 ]

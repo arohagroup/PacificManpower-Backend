@@ -108,7 +108,7 @@ class edituseraccount(APIView):
             dataGot = user_account.objects.get(pk=pk)
         except user_account.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
+        
         dataGot.first_name = request.data.get('first_name')
         dataGot.last_name = request.data.get('last_name')  
         dataGot.email_address = request.data.get('email_address')   
@@ -119,15 +119,8 @@ class edituseraccount(APIView):
         dataGot.user_image=request.data.get('user_image')
 
         dataGot.save()
-        return Response(status=status.HTTP_200_OK)
-        # dataGot = self.get_object(pk)
-        # serializer = user_account_serializer(dataGot, data=request.data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(serializer.data)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+        serializer=user_account_serializer(dataGot)
+        return Response(serializer.data,status=status.HTTP_200_OK)
                 
 class userlog(APIView):
 
@@ -1322,7 +1315,7 @@ class notappliedjob(APIView):
     def post(self, request, format=None, *args, **kwargs):
 
         user_account_id=request.data.get('user_account_id')
-        print("user_account_id",user_account_id)
+
         if job_post_activity.objects.filter(user_account_id=user_account_id).exists():
             job_post_ids = job_post_activity.objects.values_list('job_post_id', flat=True)
 
