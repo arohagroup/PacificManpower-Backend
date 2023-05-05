@@ -539,20 +539,8 @@ class seekerskillset(APIView):
         user_data = seeker_skill_set.objects.all().order_by('-createdDate')
         serializer = seeker_skill_set_serializer(user_data, many=True, context={'request': request})
         return Response(serializer.data)
-    
-# class jobpostactivity(APIView):
-#     # Return a list of all userreg objects serialized using userregSerializer
-
-#     queryset = job_post_activity.objects.all()
-#     serializer_class = job_post_activity_serializer
-
-#     def get(self, request, format=None):
-#         user_data = job_post_activity.objects.all().order_by('-createdDate')
-#         serializer = job_post_activity_serializer(user_data, many=True, context={'request': request})
-#         return Response(serializer.data)
-    
+        
 class experincedetail(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = experience_detail.objects.all()
     serializer_class = experience_detail_serializer
@@ -570,7 +558,6 @@ class experincedetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class skills(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = skill_set.objects.all()
     serializer_class = skill_set_serializer
@@ -592,7 +579,6 @@ class skills(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class skillset(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = job_post_skill_set.objects.all()
     serializer_class = job_post_skill_set_serializer
@@ -603,7 +589,6 @@ class skillset(APIView):
         return Response(serializer.data)
     
 class jobtype(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = job_type.objects.all()
     serializer_class = job_type_serializer
@@ -614,7 +599,6 @@ class jobtype(APIView):
         return Response(serializer.data)
     
 class seekerprofile(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = seeker_profile.objects.all()
     serializer_class = seeker_profile_serializer
@@ -632,11 +616,9 @@ class seekerprofile(APIView):
         if seeker_profile.objects.filter(user_account_id=user_account_id).exists():
             return JsonResponse({'error': 'Record already exists in seeker_profile table.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if user_account_id already exists in education_detail table
         if education_detail.objects.filter(user_account_id=user_account_id).exists():
             return JsonResponse({'error': 'Record already exists in education_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if user_account_id already exists in experience_detail table
         if experience_detail.objects.filter(user_account_id=user_account_id).exists():
             return JsonResponse({'error': 'Record already exists in experience_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -696,6 +678,7 @@ class seekerprofile(APIView):
         else:
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
             end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
+
         job_title = request.data.get('job_title')
         company_name = request.data.get('company_name')
         job_location_city = request.data.get('job_location_city')
@@ -707,17 +690,16 @@ class seekerprofile(APIView):
                          end_date=end_date,job_title=job_title,company_name=company_name,job_location_city=job_location_city,job_location_state=job_location_state,job_location_country=job_location_country,description=description)
         experincedetail.save()
 
-        skillsetids = request.data.get('skill_set_id').split(',') # split the string into a list of ids
-        # user_account_id = request.data.get('user_account_id')
+        skillsetids = request.data.get('skill_set_id').split(',')
 
         for skillsetid in skillsetids:
             try:
                 skill_set_id = skill_set.objects.get(id=int(skillsetid))
-                skill_level = request.data.get('skill_level') # get the skill_level from the request data
+                skill_level = request.data.get('skill_level')
                 seekerskillset = seeker_skill_set(user_account_id=user_account_id, skill_set_id=skill_set_id, skill_level=skill_level)
-                seekerskillset.save() # save the seeker_skill_set object to the database
+                seekerskillset.save() 
             except skill_set.DoesNotExist:
-                # handle the case where the skill_set object does not exist
+                
                 pass
 
         seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
@@ -731,7 +713,7 @@ class seekerprofile(APIView):
             'experience_detail': experincedetaildata,
             'seekerskillsetdata': seekerskillsetdata
         }
-        # return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
+        
         return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
     
 class applyjob(APIView):
@@ -754,7 +736,6 @@ class applyjob(APIView):
         jobpostid = request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
 
-        # Check if the user account exists in related tables
         if not seeker_profile.objects.filter(user_account_id=user_account_id).exists():
             return Response({'message': 'User account not found in seeker_profile table'}, status=status.HTTP_404_NOT_FOUND)
         
@@ -815,13 +796,11 @@ class updatenews(APIView):
         except trending_news.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        # Update the instance fields
         trendingnews.user_account_id = user_account.objects.get(id=request.data.get('user_account_id'))
         trendingnews.news_title = request.data.get('news_title')
         trendingnews.news_description = request.data.get('news_description')
         trendingnews.news_image = request.data.get('news_image')
 
-        # Save the updated instance
         trendingnews.save()
 
         return Response(status=status.HTTP_200_OK)
@@ -913,21 +892,12 @@ class applyjobIND(APIView):
         serializer = job_post_activity_serializertest(queryset, many=True)
         return Response(serializer.data)
     
-    def put(self, request, pk, format=None):  # added
-
+    def put(self, request, pk, format=None): 
 
         status_test = request.data.get('status')
         user_account_id = request.data.get('user_account_id')
         job_post_id = request.data.get('job_post_id')
-
         userstatus = request.data.get('userstatus')
-        # if userstatus is not None:
-        #     if userstatus.lower() == 'true':
-        #         userstatus = True
-        #     elif userstatus.lower() == 'false':
-        #         userstatus = False
-        #     else:
-        #         pass
 
         jobpostactivity = job_post_activity.objects.get(pk=pk)
 
@@ -959,7 +929,6 @@ class editseekrprofile(APIView):
         user_account_id = user_account.objects.get(id=useraccountid)
 
         user_account_id.user_image = request.data.get('user_image')
-
         user_account_id.save()
 
         first_name = request.data.get('first_name')
@@ -1021,7 +990,7 @@ class editseekrprofile(APIView):
             elif is_current_job.lower() == 'false':
                 is_current_job = False
             else:
-                # Handle invalid input
+                
                 pass
         
         start_date = request.data.get('start_date')
@@ -1061,8 +1030,7 @@ class editseekrprofile(APIView):
         experincedetail.save()
 
         skillsetids = request.data.get('skill_set_id').split(',')
-        
-        # Delete existing records
+  
         seeker_skill_set.objects.filter(user_account_id=user_account_id).delete()
 
         seekerskillset = None
@@ -1108,7 +1076,6 @@ class editseekrprofile(APIView):
     
 
 class contactus(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = contact_us.objects.all()
     serializer_class = contact_us_serializer
@@ -1129,7 +1096,6 @@ class contactus(APIView):
         getInTouch=contact_us(user_account_id=user_account_id,email=email,name=name,message=message)
         getInTouch.save()
             
-        # Email sending code starts here
         SMTPserver = 'shared42.accountservergroup.com'
         sender = 'ashwini@arohagroup.com'
         destination = 'zeeyan@arohagroup.com'
@@ -1189,7 +1155,6 @@ class contactus(APIView):
         return Response({'email sent': True}, status=status.HTTP_201_CREATED)
     
 class recEmail(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = recservice.objects.all()
     serializer_class = recservice_serializer
@@ -1209,8 +1174,7 @@ class recEmail(APIView):
 
         getInTouch=recservice(user_account_id=user_account_id,email=email,name=name,message=message)
         getInTouch.save()
-            
-        # Email sending code starts here
+
         SMTPserver = 'shared42.accountservergroup.com'
         sender = 'ashwini@arohagroup.com'
         destination = 'zeeyan@arohagroup.com'
@@ -1251,9 +1215,8 @@ class recEmail(APIView):
               </body>
             </html>
             """
-
+        
         subject = "Recruitment service"
-
         msg = MIMEText(content, text_subtype)
         msg['Subject'] = subject
         msg['From'] = sender
@@ -1294,7 +1257,6 @@ class joblistbycompany(APIView):
             serializer = job_post_serializer(filtered_data, many=True)
             return Response(serializer.data)
     
-    
 class filteredjobbyparttime(APIView):
     def get(self, request, format=None, *args, **kwargs):
 
@@ -1308,9 +1270,7 @@ class applyjobTrue(APIView):
         calendars = job_post_activity.objects.filter(userstatus=userstatus)
         serializer = job_post_activity_serializertest(calendars, many=True)
         return Response(serializer.data)
-    
-
-    
+ 
 class applyjobUserIdTrue(APIView):
     def get(self, request, user_account_id,userstatus, format=None):
         calendars = job_post_activity.objects.filter(user_account_id=user_account_id,userstatus=userstatus)
@@ -1344,7 +1304,6 @@ class filteredjobbyfreelancer(APIView):
     
     
 class subscribeemail(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = subscribe.objects.all()
     serializer_class = subscribe_serializer
@@ -1360,84 +1319,15 @@ class subscribeemail(APIView):
         user_account_obj = user_account.objects.get(id=useraccountid)
         email = request.data.get('email')
 
-        # Save the new subscribe record
         subscribetable = subscribe(user_account_id=user_account_obj, email=email)
         subscribetable.save()
 
-        # Update the subscribed_email_id and subscribed fields in the user_account object
         user_account_obj.subscribed_email_id = email
         user_account_obj.subscribed = 1
         user_account_obj.save()
 
         serializer = subscribe_serializer(subscribetable)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-            # Email sending code starts here
-            # SMTPserver = 'shared42.accountservergroup.com'
-            # sender = 'ashwini@arohagroup.com'
-            # destination = 'zeeyan@arohagroup.com'
-
-            # USERNAME = "ashwini@arohagroup.com"
-            # PASSWORD = "I2GJS.]rYk^s321"
-
-            # text_subtype = 'html'
-            # content = """\
-            #     <html>
-            #       <head>
-            #         <style>
-            #             table,tr,td{
-            #                 border: 1px solid;
-            #                 border-collapse: collapse;
-            #                 padding: 1%;
-            #             }
-            #             tr td:first-child { 
-            #                 width: 200px;
-            #             }
-            #             tr td:nth-child(2) { 
-            #                 width: 500px;
-            #             }
-            #         </style>
-            #       </head>
-            #       <body>
-            #         <p>
-            #         <img alt="Aroha Logo" class="pointerCursor" src="https://arohagroup.com/wp-content/uploads/2022/07/arohagrouplogo-01.svg" style="width:10%;"><br><br>
-            #         <p2>Hi,</p2>
-            #         <br>
-            #         <br>
-            #         <p2>Here is the test mail</p2>
-            #         <br><br>
-            #         <p2>You can add content here</p2><br>
-            #         <br>
-            #         <table> 
-            #             <tr>
-            #                 <td>column 1</td>
-            #                 <td>value 1</td>
-            #             </tr>
-            #             <tr>
-            #                 <td>column 2</td>
-            #                 <td>value 2</td>
-            #             </tr>
-            #         </table><br>
-            #         <p2>Thanks</p2><br>
-            #         <p2>Aroha Team</p2>
-
-            #       </body>
-            #     </html>
-            #     """
-
-            # subject = "Test Mail"
-
-            # msg = MIMEText(content, text_subtype)
-            # msg['Subject'] = subject
-            # msg['From'] = sender
-            # msg['To'] = destination
-
-            # conn = SMTP(SMTPserver)
-            # conn.set_debuglevel(False)
-            # conn.login(USERNAME, PASSWORD)
-            # try:
-            #     conn.sendmail(sender, destination, msg.as_string())
-            # finally:
-            #     conn.quit()
 
 class notappliedjob(APIView):
     def post(self, request, format=None, *args, **kwargs):
@@ -1464,7 +1354,6 @@ class activefilter(APIView):
         return Response(serializer.data)
     
 class expType(APIView):
-    # Return a list of all userreg objects serialized using userregSerializer
 
     queryset = experince_type.objects.all()
     serializer_class = experince_type_serializer
@@ -1480,69 +1369,3 @@ class expType(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-# class fetchDetail(APIView):
-#     def post(self, request, format=None, *args, **kwargs):
-
-#         fetched_data = []
-#         user_account_id = request.data.get('user_account_id')
-#         education_detail_data = education_detail.objects.filter(user_account_id=user_account_id).all()
-#         if education_detail_data:
-#             education_data = []
-#             for education in education_detail_data:
-#                 education_data.append({
-#                     'certificate_degree_name': education.certificate_degree_name,
-#                     'major': education.major,
-#                     'institute_university_name': education.institute_university_name,
-#                     'starting_date': education.starting_date,
-#                     'completion_date': education.completion_date,
-#                     'percentage': education.percentage,
-#                     'cgpa': education.cgpa,
-#                 })
-            
-
-#         experience_detail_data = experience_detail.objects.filter(user_account_id=user_account_id).all()
-#         if experience_detail_data:
-#             experience_data = []
-#             for experience in experience_detail_data:
-#                 experience_data.append({
-#                     'is_current_job': experience.is_current_job,
-#                     'start_date': experience.start_date,
-#                     'end_date': experience.end_date,
-#                     'job_title': experience.job_title,
-#                     'company_name': experience.company_name,
-#                     'job_location_city': experience.job_location_city,
-#                     'job_location_state': experience.job_location_state,
-#                     'job_location_country': experience.job_location_country,
-#                     'description': experience.description
-#                 })
-
-#         seekerprofile_detail_data = seeker_profile.objects.filter(user_account_id=user_account_id).all()
-#         if seekerprofile_detail_data:
-#             seeker_data = []
-#             for seeker in seekerprofile_detail_data:
-#                 seeker_data.append({
-#                     'first_name': seeker.first_name,
-#                     'last_name': seeker.last_name,
-#                     'current_salary': seeker.current_salary,
-#                     'is_annually_monthly': seeker.is_annually_monthly,
-#                     'currency': seeker.currency,
-#                     'uploaded_cv': seeker.uploaded_cv,
-#                 })
-                
-#         seekerskillset_detail_data = seeker_skill_set.objects.filter(user_account_id=user_account_id).all()
-#         if seekerskillset_detail_data:
-#             seekerskillset_data = []
-#             for seekerskill in seekerskillset_detail_data:
-#                 skill_set_obj = seekerskill.skill_set_id  # fetch the skill_set object
-#                 seekerskillset_data.append({
-#                     'skill_set_id': skill_set_obj.id,  # use the id value of skill_set object
-#                     'skill_set_name': skill_set_obj.skill_set_name,  # include the name of skill_set in the output
-#                     'skill_level': seekerskill.skill_level
-#                 })
-
-#             return Response(seekerskillset_data)
-            
-#         else:
-#             return Response({'message': 'No education detail found for the provided user account ID.'})
