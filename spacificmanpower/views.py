@@ -616,16 +616,20 @@ class seekerprofile(APIView):
         currency = request.data.get('currency')
         uploaded_cv = request.data.get('uploaded_cv')
 
-        if uploaded_cv:
-            valid_extensions = ['.pdf']
-            ext = os.path.splitext(uploaded_cv.name)[1]
-            if not ext.lower() in valid_extensions:
-                return Response({"message": "Invalid file type. Only pdf files with extensions {} are allowed".format(', '.join(valid_extensions))}, status=status.HTTP_403_FORBIDDEN)
-        else:
-
-            seekerprofile=seeker_profile(user_account_id=user_account_id,first_name=first_name,last_name=last_name,
+        seekerprofile=seeker_profile(user_account_id=user_account_id,first_name=first_name,last_name=last_name,
                             current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency,uploaded_cv=uploaded_cv)
-            seekerprofile.save()
+        seekerprofile.save()
+
+        # if uploaded_cv:
+        #     valid_extensions = ['.pdf']
+        #     ext = os.path.splitext(uploaded_cv.name)[1]
+        #     if not ext.lower() in valid_extensions:
+        #         return Response({"message": "Invalid file type. Only pdf files with extensions {} are allowed".format(', '.join(valid_extensions))}, status=status.HTTP_403_FORBIDDEN)
+        # else:
+
+        #     seekerprofile=seeker_profile(user_account_id=user_account_id,first_name=first_name,last_name=last_name,
+        #                     current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency,uploaded_cv=uploaded_cv)
+        #     seekerprofile.save()
 
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
@@ -693,16 +697,16 @@ class seekerprofile(APIView):
                 
                 pass
 
-        seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
-        educationdetaildata = serializers.serialize('json', [educationdetail, ])
-        experincedetaildata = serializers.serialize('json', [experincedetail, ])
-        seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
+        # seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
+        # educationdetaildata = serializers.serialize('json', [educationdetail, ])
+        # experincedetaildata = serializers.serialize('json', [experincedetail, ])
+        # seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
 
         data = {
-            'seeker_profile': seekerprofiledata,
-            'education_detail': educationdetaildata,
-            'experience_detail': experincedetaildata,
-            'seekerskillsetdata': seekerskillsetdata
+            # 'seeker_profile': seekerprofiledata,
+            # 'education_detail': educationdetaildata,
+            # 'experience_detail': experincedetaildata,
+            # 'seekerskillsetdata': seekerskillsetdata
         }
         
         return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
@@ -938,15 +942,17 @@ class editseekrprofile(APIView):
         seekerprofile.currency = currency
         seekerprofile.uploaded_cv = uploaded_cv
 
-        if uploaded_cv:
-            valid_extensions = ['.pdf']
-            ext = os.path.splitext(uploaded_cv.name)[1]
-            if not ext.lower() in valid_extensions:
-                return Response({"message": "Invalid file type. Only image files with extensions {} are allowed".format(', '.join(valid_extensions))}, status=status.HTTP_403_FORBIDDEN)
+        seekerprofile.save()
+        
+        # if uploaded_cv:
+        #     valid_extensions = ['.pdf']
+        #     ext = os.path.splitext(uploaded_cv.name)[1]
+        #     if not ext.lower() in valid_extensions:
+        #         return Response({"message": "Invalid file type. Only image files with extensions {} are allowed".format(', '.join(valid_extensions))}, status=status.HTTP_403_FORBIDDEN)
             
-        else:
+        # else:
 
-            seekerprofile.save()
+        #     seekerprofile.save()
 
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
