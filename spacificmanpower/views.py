@@ -319,7 +319,7 @@ class postjob(APIView):
         zip = request.data.get('zip')
         jobtypeid=request.data.get('job_type_id')
         companyid=request.data.get('company_id')
-        useraccountid=request.data.get('user_account_id')
+        # useraccountid=request.data.get('user_account_id')
         job_title=request.data.get('job_title')
         salary=request.data.get('salary')
 
@@ -328,7 +328,7 @@ class postjob(APIView):
 
         job_type_id = job_type.objects.get(id=jobtypeid)
         company_id = company.objects.get(id=companyid)
-        user_account_id=user_account.objects.get(id=useraccountid)
+        # user_account_id=user_account.objects.get(id=useraccountid)
         is_company_name_hidden = request.data.get('is_company_name_hidden')
         job_description = request.data.get('job_description')
         job_location_id = joblocation.id
@@ -372,8 +372,8 @@ class editjob(APIView):
     
     def put(self, request, pk, format=None):
         jobpost = self.get_object(pk)
-        useraccountid=request.data.get('user_account_id')
-        user_account_id=user_account.objects.get(id=useraccountid)
+        # useraccountid=request.data.get('user_account_id')
+        # user_account_id=user_account.objects.get(id=useraccountid)
 
         joblocation = jobpost.job_location_id
         joblocation.street_address = request.data.get('street_address', joblocation.street_address)
@@ -418,7 +418,9 @@ class editjob(APIView):
                 try:
                     skill_set_id = skill_set.objects.get(id=int(skillsetid))
                     skill_level = request.data.get('skill_level')
-                    seekerskillset = job_post_skill_set(user_account_id=user_account_id, skill_set_id=skill_set_id, skill_level=skill_level)
+                    job_post_id=jobpost.id
+                    job_post_instance = job_post.objects.get(id=job_post_id)
+                    seekerskillset = job_post_skill_set(skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
                     seekerskillset.save() 
                 except skill_set.DoesNotExist:
                     
@@ -1352,9 +1354,21 @@ class notappliedjob(APIView):
         
 class activefilter(APIView):
     def post(self, request, is_active, format=None):
-        calendars = job_post.objects.filter(is_active=is_active)
-        serializer = job_post_serializer(calendars, many=True)
-        return Response(serializer.data)
+        # calendars = job_post.objects.filter(is_active=is_active)
+        # serializer = job_post_serializer(calendars, many=True)
+        # return Response(serializer.data)
+
+        user_account_id=request.data.get('user_account_id')
+
+        if job_post_activity.objects.filter(user_account_id=user_account_id).exists():
+            job_post_ids = job_post_activity.objects.values_list('job_post_id', flat=True)
+
+            postedjob = job_post.objects.exclude(id__in=job_post_ids).filter(is_active=True)
+            postedjob_data = job_post_serializer(postedjob, many=True).data
+
+            return Response(postedjob_data)
+        else:
+            return Response({'error': 'User account not found.'}, status=status.HTTP_404_NOT_FOUND)
     
 class expType(APIView):
 
