@@ -1368,7 +1368,10 @@ class activefilter(APIView):
 
             return Response(postedjob_data)
         else:
-            return Response({'error': 'User account not found.'}, status=status.HTTP_404_NOT_FOUND)
+            postedjob = job_post.objects.filter(is_active=True)
+            postedjob_data = job_post_serializer(postedjob, many=True).data
+
+            return Response(postedjob_data)
     
 class expType(APIView):
 
