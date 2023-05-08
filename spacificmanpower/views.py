@@ -172,9 +172,9 @@ class businessstream(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        business_stream_name=request.data.get('business_stream_name')
+        business_stream_name=request.data.get('business_stream_name','').lower()
 
-        if business_stream.objects.filter(business_stream_name=business_stream_name).exists():
+        if business_stream.objects.filter(business_stream_name__iexact=business_stream_name).exists():
             return JsonResponse({'error': 'Record already exists in business_stream table.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             serializer = business_stream_serializer(data=request.data)
@@ -555,8 +555,8 @@ class skills(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        skill_set_name=request.data.get('skill_set_name')
-        if skill_set.objects.filter(skill_set_name=skill_set_name).exists():
+        skill_set_name=request.data.get('skill_set_name','').lower()
+        if skill_set.objects.filter(skill_set_name__iexact=skill_set_name).exists():
             return JsonResponse({'error': 'Record already exists in skill_set table.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             serializer = skill_set_serializer(data=request.data)
