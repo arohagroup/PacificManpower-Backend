@@ -599,14 +599,14 @@ class seekerprofile(APIView):
         useraccountid=request.data.get('user_account_id')
         user_account_id=user_account.objects.get(id=useraccountid)
 
-        # if seeker_profile.objects.filter(user_account_id=user_account_id).exists():
-        #     return JsonResponse({'error': 'Record already exists in seeker_profile table.'}, status=status.HTTP_400_BAD_REQUEST)
+        if seeker_profile.objects.filter(user_account_id=user_account_id).exists():
+            return JsonResponse({'error': 'Record already exists in seeker_profile table.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # if education_detail.objects.filter(user_account_id=user_account_id).exists():
-        #     return JsonResponse({'error': 'Record already exists in education_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
+        if education_detail.objects.filter(user_account_id=user_account_id).exists():
+            return JsonResponse({'error': 'Record already exists in education_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # if experience_detail.objects.filter(user_account_id=user_account_id).exists():
-        #     return JsonResponse({'error': 'Record already exists in experience_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
+        if experience_detail.objects.filter(user_account_id=user_account_id).exists():
+            return JsonResponse({'error': 'Record already exists in experience_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
         
         # if seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
         #     return JsonResponse({'error': 'Record already exists in seeker_skill_set table.'}, status=status.HTTP_400_BAD_REQUEST)
