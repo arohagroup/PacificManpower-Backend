@@ -665,16 +665,27 @@ class seekerprofile(APIView):
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
 
-        if start_date == "":
-            start_date = None
-        else:
+        # if start_date == "":
+        #     start_date = None
+        # else:
+        #     start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        #     start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
+        # if end_date == "":
+        #     end_date = None
+        # else:
+        #     end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+        #     end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
+
+        if start_date and start_date != "":
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
             start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
-        if end_date == "":
-            end_date = None
         else:
+            start_date = None
+        if end_date and end_date != "":
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
             end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
+        else:
+            end_date = None
 
         job_title = request.data.get('job_title')
         company_name = request.data.get('company_name')
