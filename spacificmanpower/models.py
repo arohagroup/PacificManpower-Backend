@@ -44,7 +44,7 @@ class company(models.Model):
     company_name=models.CharField(max_length=100)    
     profile_description=models.CharField(max_length=1000)
     business_stream_id = models.ForeignKey('business_stream',related_name='business_stream_id', on_delete=models.CASCADE,default=None,null=True)
-    user_account_id = models.ForeignKey('user_account',related_name='user_account_company', on_delete=models.CASCADE,default=None)
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_company', on_delete=models.CASCADE,default=None,null=True)
     establishment_date=models.DateField()
     companyimage=models.ImageField(max_length=200, blank=True)
     company_website_url=models.CharField(max_length=500)
@@ -103,6 +103,7 @@ class seeker_skill_set(models.Model):
 
 class skill_set(models.Model):
     skill_set_name=models.CharField(max_length=200)
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_skill_set', on_delete=models.CASCADE,default=None)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
@@ -113,6 +114,7 @@ class job_post(models.Model):
     job_type_id = models.ForeignKey('job_type',related_name='job_type_id', on_delete=models.CASCADE,default=None)
     company_id = models.ForeignKey('company',related_name='company_id', on_delete=models.CASCADE,default=None)
     experince_type_id = models.ForeignKey('experince_type',related_name='experince_type_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_job_post', on_delete=models.CASCADE,default=None)
     is_company_name_hidden=models.BooleanField()
     job_title=models.CharField(max_length=20)
     created_date=models.DateTimeField(auto_now_add=True, blank=True)

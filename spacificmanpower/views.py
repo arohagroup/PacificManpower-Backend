@@ -83,7 +83,8 @@ class usersaveaccount(APIView):
             user_id = user_account.objects.last()
             userlogObject = user_account.objects.get(pk=user_id.id)
             log_Data={
-                'last_login_date':datetime.now()
+                'last_login_date':datetime.now(),
+                'last_job_apply_date':None
             }
             logserializer = user_log_serializer(data=log_Data)
             if logserializer.is_valid():
@@ -339,7 +340,7 @@ class postjob(APIView):
         zip = request.data.get('zip')
         jobtypeid=request.data.get('job_type_id')
         companyid=request.data.get('company_id')
-        # useraccountid=request.data.get('user_account_id')
+        useraccountid=request.data.get('user_account_id')
         job_title=request.data.get('job_title')
         salary=request.data.get('salary')
 
@@ -348,7 +349,7 @@ class postjob(APIView):
 
         job_type_id = job_type.objects.get(id=jobtypeid)
         company_id = company.objects.get(id=companyid)
-        # user_account_id=user_account.objects.get(id=useraccountid)
+        user_account_id=user_account.objects.get(id=useraccountid)
         is_company_name_hidden = request.data.get('is_company_name_hidden')
         job_description = request.data.get('job_description')
         job_location_id = joblocation.id
@@ -360,7 +361,7 @@ class postjob(APIView):
 
         jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,job_title=job_title,
                          job_description=job_description,job_location_id=job_location_instance,created_date=created_date,is_active=is_active,
-                         experince_type_id=experince_type_id,salary=salary)
+                         experince_type_id=experince_type_id,salary=salary,user_account_id=user_account_id)
         jobpost.save()
 
         skillsetids = request.data.get('skill_set_id').split(',') 
@@ -424,6 +425,10 @@ class editjob(APIView):
         experince_type_id = request.data.get('experince_type_id', jobpost.experince_type_id.id)
         experince_type_instance = experince_type.objects.get(id=experince_type_id)
         jobpost.experince_type_id = experince_type_instance
+
+        user_account_id = request.data.get('user_account_id', jobpost.user_account_id.id)
+        user_account_id_instance = user_account.objects.get(id=user_account_id)
+        jobpost.user_account_id = user_account_id_instance
         # jobpost.experince_type_id = request.data.get('experince_type_id',jobpost.experince_type_id)
 
         jobpost.salary = request.data.get('salary',jobpost.salary)
@@ -582,12 +587,16 @@ class skills(APIView):
         skill_set_name=request.data.get('skill_set_name','').lower()
         if skill_set.objects.filter(skill_set_name__iexact=skill_set_name).exists():
             return JsonResponse({'error': 'Record already exists in skill_set table.'}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            serializer = skill_set_serializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        skill_set_name = request.data.get('skill_set_name')
+        user_account_id = request.data.get('user_account_id')
+        user_account_id = user_account.objects.get(id=user_account_id)
+
+        skillset = skill_set(skill_set_name=skill_set_name, user_account_id=user_account_id)
+        skillset.save() 
+
+        serializer=skill_set_serializer(skillset)
+        return Response(serializer.data,status=status.HTTP_200_OK)
     
 class skillset(APIView):
 

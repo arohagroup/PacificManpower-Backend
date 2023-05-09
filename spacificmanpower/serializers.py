@@ -101,9 +101,10 @@ class seeker_skill_set_serializer(serializers.ModelSerializer):
         fields=['id','user_account_id','skill_set_id','skill_level','createdDate','modifiedDate']
 
 class skill_set_serializer(serializers.ModelSerializer):
+    user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
     class Meta:
         model=skill_set
-        fields=['id','skill_set_name','createdDate','modifiedDate']
+        fields=['id','skill_set_name','user_account_id','createdDate','modifiedDate']
 
 class seeker_skill_set_serializertest(serializers.ModelSerializer):
     
@@ -155,9 +156,10 @@ class job_post_serializer(serializers.ModelSerializer):
     company_id=company_serializer()
     job_location_id=job_location_serializer()
     experince_type_id=experince_type_serializer()
+    user_account_id=user_account_serializer()
     class Meta:
         model=job_post
-        fields=['id','posted_by_id','job_type_id','company_id','experince_type_id','is_company_name_hidden','job_title','created_date',
+        fields=['id','posted_by_id','job_type_id','company_id','user_account_id','experince_type_id','is_company_name_hidden','job_title','created_date',
                 'job_description','is_active','job_location_id','salary','createdDate','modifiedDate']
         
 class job_post_activity_serializertest(serializers.ModelSerializer):

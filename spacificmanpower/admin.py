@@ -45,11 +45,11 @@ class SeekerSkillSetAdmin(admin.ModelAdmin):
     list_display_links = ('id','user_account_id')
 
 class SkillSetAdmin(admin.ModelAdmin):
-    list_display = ('id','skill_set_name','createdDate','modifiedDate')
+    list_display = ('id','skill_set_name','user_account_id','createdDate','modifiedDate')
     list_display_links = ('id','skill_set_name')
 
 class JobPostAdmin(admin.ModelAdmin):
-    list_display = ('id','posted_by_id','job_type_id','company_id','experince_type_id','is_company_name_hidden','job_title','created_date',
+    list_display = ('id','posted_by_id','job_type_id','company_id','user_account_id','experince_type_id','is_company_name_hidden','job_title','created_date',
                     'job_description','job_location_id','salary','is_active','createdDate','modifiedDate')
     list_display_links = ('id','posted_by_id')
 
