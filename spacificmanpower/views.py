@@ -599,14 +599,14 @@ class seekerprofile(APIView):
         useraccountid=request.data.get('user_account_id')
         user_account_id=user_account.objects.get(id=useraccountid)
 
-        if seeker_profile.objects.filter(user_account_id=user_account_id).exists():
-            return JsonResponse({'error': 'Record already exists in seeker_profile table.'}, status=status.HTTP_400_BAD_REQUEST)
+        # if seeker_profile.objects.filter(user_account_id=user_account_id).exists():
+        #     return JsonResponse({'error': 'Record already exists in seeker_profile table.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if education_detail.objects.filter(user_account_id=user_account_id).exists():
-            return JsonResponse({'error': 'Record already exists in education_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
+        # if education_detail.objects.filter(user_account_id=user_account_id).exists():
+        #     return JsonResponse({'error': 'Record already exists in education_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if experience_detail.objects.filter(user_account_id=user_account_id).exists():
-            return JsonResponse({'error': 'Record already exists in experience_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
+        # if experience_detail.objects.filter(user_account_id=user_account_id).exists():
+        #     return JsonResponse({'error': 'Record already exists in experience_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
         
         # if seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
         #     return JsonResponse({'error': 'Record already exists in seeker_skill_set table.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -798,20 +798,28 @@ class updatenews(APIView):
         serializer = trending_news_serializer(data)
         return Response(serializer.data)
 
+    # def put(self, request, pk, format=None):
+    #     try:
+    #         trendingnews = trending_news.objects.get(pk=pk)
+    #     except trending_news.DoesNotExist:
+    #         return Response(status=status.HTTP_404_NOT_FOUND)
+
+    #     trendingnews.user_account_id = user_account.objects.get(id=request.data.get('user_account_id'))
+    #     trendingnews.news_title = request.data.get('news_title')
+    #     trendingnews.news_description = request.data.get('news_description')
+    #     trendingnews.news_image = request.data.get('news_image')
+
+    #     trendingnews.save()
+
+    #     return Response(status=status.HTTP_200_OK)
+
     def put(self, request, pk, format=None):
-        try:
-            trendingnews = trending_news.objects.get(pk=pk)
-        except trending_news.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        trendingnews.user_account_id = user_account.objects.get(id=request.data.get('user_account_id'))
-        trendingnews.news_title = request.data.get('news_title')
-        trendingnews.news_description = request.data.get('news_description')
-        trendingnews.news_image = request.data.get('news_image')
-
-        trendingnews.save()
-
-        return Response(status=status.HTTP_200_OK)
+        dataGot = self.get_object(pk)
+        serializer = trending_news_serializer(dataGot, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk):
         calendars = self.get_object(pk)
