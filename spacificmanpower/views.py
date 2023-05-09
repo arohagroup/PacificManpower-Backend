@@ -392,6 +392,7 @@ class editjob(APIView):
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):
+        print(request.data)
         jobpost = self.get_object(pk)
         # useraccountid=request.data.get('user_account_id')
         # user_account_id=user_account.objects.get(id=useraccountid)
@@ -1254,7 +1255,7 @@ class recEmail(APIView):
                 <br>
                 <tr>
                     <td>Email address : </td>
-                    <td>v{request.data['email']}</td>
+                    <td>{request.data['email']}</td>
                 </tr>
                 <br>
                  <tr>
