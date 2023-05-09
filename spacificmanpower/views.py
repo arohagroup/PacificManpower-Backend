@@ -197,14 +197,16 @@ class companyadddetails(APIView):
         company_name = request.data.get('company_name')
         profile_description = request.data.get('profile_description')
         business_stream_id = request.data.get('business_stream_id')
-
+        user_account_id = request.data.get('user_account_id')
         establishment_date = request.data.get('establishment_date')
         company_website_url = request.data.get('company_website_url')
         companyimage = request.data.get('companyimage')
         business_stream_id = business_stream.objects.get(id=business_stream_id)
+        user_account_id = user_account.objects.get(id=user_account_id)
 
         company_data = company(company_name=company_name, profile_description=profile_description, business_stream_id=business_stream_id, 
-                              establishment_date=establishment_date,company_website_url=company_website_url,companyimage=companyimage)
+                              user_account_id=user_account_id,establishment_date=establishment_date,company_website_url=company_website_url,
+                              companyimage=companyimage)
         company_data.save() 
 
         # company_id = company_data.id
@@ -243,6 +245,7 @@ class companyprofile(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         companydetails.business_stream_id = business_stream.objects.get(id=request.data.get('business_stream_id'))
+        companydetails.user_account_id = user_account.objects.get(id=request.data.get('user_account_id'))
         companydetails.company_name = request.data.get('company_name')
         companydetails.profile_description = request.data.get('profile_description')
         companydetails.establishment_date = request.data.get('establishment_date')

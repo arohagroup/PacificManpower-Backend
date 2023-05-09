@@ -44,6 +44,7 @@ class company(models.Model):
     company_name=models.CharField(max_length=100)    
     profile_description=models.CharField(max_length=1000)
     business_stream_id = models.ForeignKey('business_stream',related_name='business_stream_id', on_delete=models.CASCADE,default=None,null=True)
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_company', on_delete=models.CASCADE,default=None)
     establishment_date=models.DateField()
     companyimage=models.ImageField(max_length=200, blank=True)
     company_website_url=models.CharField(max_length=500)
