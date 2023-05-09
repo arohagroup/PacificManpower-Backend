@@ -418,7 +418,11 @@ class editjob(APIView):
         jobpost.created_date = request.data.get('created_date', jobpost.created_date)
         jobpost.is_active = request.data.get('is_active', jobpost.is_active)
         is_active_str = request.data.get('is_active')
-        jobpost.experince_type_id = request.data.get('experince_type_id',jobpost.experince_type_id)
+        experince_type_id = request.data.get('experince_type_id', jobpost.experince_type_id.id)
+        experince_type_instance = experince_type.objects.get(id=experince_type_id)
+        jobpost.experince_type_id = experince_type_instance
+        # jobpost.experince_type_id = request.data.get('experince_type_id',jobpost.experince_type_id)
+
         jobpost.salary = request.data.get('salary',jobpost.salary)
         jobpost.is_active = ast.literal_eval(is_active_str.title())
         jobpost.save()
@@ -682,27 +686,27 @@ class seekerprofile(APIView):
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
 
-        # if start_date == "":
-        #     start_date = None
-        # else:
-        #     start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-        #     start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
-        # if end_date == "":
-        #     end_date = None
-        # else:
-        #     end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
-        #     end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
-
-        if start_date and start_date != "":
+        if start_date == "":
+            start_date = None
+        else:
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
             start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
+        if end_date == "":
+            end_date = None
         else:
-            start_date = None
-        if end_date and end_date != "":
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
             end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
-        else:
-            end_date = None
+
+        # if start_date and start_date != "":
+        #     start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        #     start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
+        # else:
+        #     start_date = None
+        # if end_date and end_date != "":
+        #     end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+        #     end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
+        # else:
+        #     end_date = None
 
         job_title = request.data.get('job_title')
         company_name = request.data.get('company_name')
