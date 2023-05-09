@@ -228,13 +228,30 @@ class companyprofile(APIView):
         serializer = company_serializer(data)
         return Response(serializer.data)
 
+    # def put(self, request, pk, format=None):
+    #     dataGot = self.get_object(pk)
+    #     serializer = company_serializer(dataGot, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def put(self, request, pk, format=None):
-        dataGot = self.get_object(pk)
-        serializer = company_serializer(dataGot, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            companydetails = company.objects.get(pk=pk)
+        except company.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        companydetails.business_stream_id = business_stream.objects.get(id=request.data.get('business_stream_id'))
+        companydetails.company_name = request.data.get('company_name')
+        companydetails.profile_description = request.data.get('profile_description')
+        companydetails.establishment_date = request.data.get('establishment_date')
+        companydetails.companyimage = request.data.get('companyimage')
+        companydetails.company_website_url = request.data.get('company_website_url')
+
+        companydetails.save()
+
+        return Response(status=status.HTTP_200_OK)
     
 
     def delete(self, request, pk, format=None):
@@ -798,28 +815,20 @@ class updatenews(APIView):
         serializer = trending_news_serializer(data)
         return Response(serializer.data)
 
-    # def put(self, request, pk, format=None):
-    #     try:
-    #         trendingnews = trending_news.objects.get(pk=pk)
-    #     except trending_news.DoesNotExist:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-
-    #     trendingnews.user_account_id = user_account.objects.get(id=request.data.get('user_account_id'))
-    #     trendingnews.news_title = request.data.get('news_title')
-    #     trendingnews.news_description = request.data.get('news_description')
-    #     trendingnews.news_image = request.data.get('news_image')
-
-    #     trendingnews.save()
-
-    #     return Response(status=status.HTTP_200_OK)
-
     def put(self, request, pk, format=None):
-        dataGot = self.get_object(pk)
-        serializer = trending_news_serializer(dataGot, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            trendingnews = trending_news.objects.get(pk=pk)
+        except trending_news.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        trendingnews.user_account_id = user_account.objects.get(id=request.data.get('user_account_id'))
+        trendingnews.news_title = request.data.get('news_title')
+        trendingnews.news_description = request.data.get('news_description')
+        trendingnews.news_image = request.data.get('news_image')
+
+        trendingnews.save()
+
+        return Response(status=status.HTTP_200_OK)
     
 
     def patch(self, request, pk):
