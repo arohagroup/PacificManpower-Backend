@@ -852,7 +852,7 @@ class updatenews(APIView):
         # trendingnews.news_image = request.data.get('news_image')
 
         if 'news_image' in request.data:
-            trendingnews.news_image = request.data.get('companyimage')
+            trendingnews.news_image = request.data.get('news_image')
 
         trendingnews.save()
 
