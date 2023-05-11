@@ -1397,7 +1397,7 @@ class notappliedjob(APIView):
         user_account_id=request.data.get('user_account_id')
 
         if job_post_activity.objects.filter(user_account_id=user_account_id).exists():
-            job_post_ids = job_post_activity.objects.values_list('job_post_id', flat=True)
+            job_post_ids = job_post_activity.objects.filter(user_account_id=user_account_id).values_list('job_post_id', flat=True)
 
             postedjob = job_post.objects.exclude(id__in=job_post_ids)
             postedjob_data = job_post_serializer(postedjob, many=True).data
