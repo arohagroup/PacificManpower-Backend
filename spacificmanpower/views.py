@@ -790,13 +790,13 @@ class applyjob(APIView):
         if not seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
             return Response({'message': 'User account not found in seeker_skill_set table'}, status=status.HTTP_404_NOT_FOUND)
         
-        if job_post_activity.objects.filter(job_post_id=job_post_id).exists():
-            return Response({'message': 'Job already applied'}, status=status.HTTP_403_FORBIDDEN)
+        # if job_post_activity.objects.filter(job_post_id=job_post_id).exists():
+        #     return Response({'message': 'Job already applied'}, status=status.HTTP_403_FORBIDDEN)
         
-        else:
-            jobpostactivity = job_post_activity(user_account_id=user_account_id, job_post_id=job_post_id, apply_date=datetime.now(),
+        # else:
+        jobpostactivity = job_post_activity(user_account_id=user_account_id, job_post_id=job_post_id, apply_date=datetime.now(),
                                                 status=status_test,userstatus=userstatus)
-            jobpostactivity.save()
+        jobpostactivity.save()
 
         userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now())
         userlog.save()
@@ -1418,7 +1418,8 @@ class activefilter(APIView):
         user_account_id=request.data.get('user_account_id')
 
         if job_post_activity.objects.filter(user_account_id=user_account_id).exists():
-            job_post_ids = job_post_activity.objects.values_list('job_post_id', flat=True)
+            # job_post_ids = job_post_activity.objects.values_list('job_post_id', flat=True)
+            job_post_ids = job_post_activity.objects.filter(user_account_id=user_account_id).values_list('job_post_id', flat=True)
 
             postedjob = job_post.objects.exclude(id__in=job_post_ids).filter(is_active=True)
             postedjob_data = job_post_serializer(postedjob, many=True).data
