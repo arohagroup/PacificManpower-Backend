@@ -46,7 +46,7 @@ urlpatterns = [
     path('filteredjobbyfreelancer/<str:job_type>/', views.filteredjobbyfreelancer.as_view()),
 
     path('notAplliedJob/',views.notappliedjob.as_view()),
-    path('notAplliedJob/<str:is_active>/',views.activefilter.as_view()),
+    path('notAplliedJob/<int:user_account_id>/<str:is_active>/',views.activefilter.as_view()),
 
     path('applyjob/',views.applyjob.as_view()),
     path('applyjob/<int:pk>/',views.applyjobIND.as_view()),

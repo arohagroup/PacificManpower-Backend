@@ -1422,12 +1422,12 @@ class notappliedjob(APIView):
             return Response(all_job_posts_data)
         
 class activefilter(APIView):
-    def post(self, request, is_active, format=None):
+    def get(self, request, user_account_id,is_active, format=None):
         # calendars = job_post.objects.filter(is_active=is_active)
         # serializer = job_post_serializer(calendars, many=True)
         # return Response(serializer.data)
 
-        user_account_id=request.data.get('user_account_id')
+        # user_account_id=request.data.get('user_account_id')
 
         if job_post_activity.objects.filter(user_account_id=user_account_id).exists():
             # job_post_ids = job_post_activity.objects.values_list('job_post_id', flat=True)
