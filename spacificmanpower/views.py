@@ -988,7 +988,7 @@ class editseekrprofile(APIView):
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):
-
+        print(request.data)
         useraccountid = request.data.get('user_account_id')
         user_account_id = user_account.objects.get(id=useraccountid)
 
@@ -1000,7 +1000,8 @@ class editseekrprofile(APIView):
         current_salary = request.data.get('current_salary')
         is_annually_monthly = request.data.get('is_annually_monthly')
         currency = request.data.get('currency')
-        uploaded_cv = request.data.get('uploaded_cv')
+        
+        uploaded_cv = request.data.get('uploaded_cv', None)
 
         seekerprofile = seeker_profile.objects.get(pk=pk)
 
@@ -1010,7 +1011,8 @@ class editseekrprofile(APIView):
         seekerprofile.current_salary = current_salary
         seekerprofile.is_annually_monthly = is_annually_monthly
         seekerprofile.currency = currency
-        seekerprofile.uploaded_cv = uploaded_cv
+        if uploaded_cv is not None:
+            seekerprofile.uploaded_cv = uploaded_cv
 
         seekerprofile.save()
         
