@@ -809,7 +809,7 @@ class applyjob(APIView):
                                                 status=status_test,userstatus=userstatus)
         jobpostactivity.save()
 
-        userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now())
+        userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now(),createdDate = timezone.now())
         userlog.save()
 
         return Response(status=status.HTTP_201_CREATED)
