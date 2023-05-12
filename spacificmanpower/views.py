@@ -83,8 +83,7 @@ class usersaveaccount(APIView):
             user_id = user_account.objects.last()
             userlogObject = user_account.objects.get(pk=user_id.id)
             log_Data={
-                'last_login_date':datetime.now(),
-                'last_job_apply_date':None
+                'last_login_date':datetime.now()
             }
             logserializer = user_log_serializer(data=log_Data)
             if logserializer.is_valid():
