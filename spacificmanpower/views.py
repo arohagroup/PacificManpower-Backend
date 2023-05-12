@@ -388,6 +388,11 @@ class editjob(APIView):
             return job_post.objects.get(pk=pk)
         except job_post.DoesNotExist:
             raise Http404
+    def get_objects(self,pk):
+        try:
+            return job_post_skill_set.objects.get(pk=pk)
+        except job_post_skill_set.DoesNotExist:
+            raise Http404
 
     def get(self, request, pk, format=None):
         data = self.get_object(pk)
@@ -462,21 +467,28 @@ class editjob(APIView):
         serializer = job_post_serializer(jobpost)
         return Response(serializer.data)
     
-    def delete(self, request, pk, format=None):
-        try:
-            jobpost = job_post.objects.get(pk=pk)
-        except job_post.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+    # def delete(self, request, pk, format=None):
+    #     try:
+    #         jobpost = job_post.objects.get(pk=pk)
+    #     except job_post.DoesNotExist:
+    #         return Response(status=status.HTTP_404_NOT_FOUND)
         
-        if jobpost.company_id:
-            jobpost.company_id.delete()
+    #     if jobpost.company_id:
+    #         jobpost.company_id.delete()
         
-        if jobpost.job_location_id:
-            jobpost.job_location_id.delete()
+    #     if jobpost.job_location_id:
+    #         jobpost.job_location_id.delete()
 
-        jobpost.delete()
+    #     jobpost.delete()
         
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def delete(self, request, pk, format=None):
+        calendars = self.get_object(pk)
+        test=self.get_objects(pk)
+        test.delete()
+        calendars.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
         
 class joblocation(APIView):
 
@@ -774,7 +786,7 @@ class applyjob(APIView):
 
         useraccountid = request.data.get('user_account_id')  
         user_account_id = user_account.objects.get(id=useraccountid)
-            
+
         status_test = request.data.get('status')
         userstatus = request.data.get('userstatus')
 
