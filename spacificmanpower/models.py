@@ -61,7 +61,7 @@ class education_detail(models.Model):
     starting_date=models.DateTimeField()
     completion_date=models.DateTimeField()
     percentage = models.IntegerField(null=True,blank=True)
-    cgpa = models.IntegerField(blank=True)
+    cgpa = models.DecimalField(max_digits=6, decimal_places=2,blank=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
     # primary_key = ('user_account_id','certificate_degree_name', 'major')
