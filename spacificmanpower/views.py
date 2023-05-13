@@ -1460,3 +1460,10 @@ class expType(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class fetchJobSkills(APIView):
+    def get(self, request, job_post_id, format=None):
+        job_skills = job_post_skill_set.objects.filter(job_post_id=job_post_id)
+        serializer = job_post_skill_set_serializer(job_skills, many=True)
+        return Response(serializer.data)
+    

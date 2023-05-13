@@ -71,4 +71,6 @@ urlpatterns = [
     path('recemail/',views.recEmail.as_view()),
     path('subscribe/',views.subscribeemail.as_view()),
 
+    path('fetchJobSkills/<int:job_post_id>/',views.fetchJobSkills.as_view()),
+
 ]
