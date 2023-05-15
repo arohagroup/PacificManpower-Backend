@@ -1200,7 +1200,7 @@ class contactus(APIView):
                 <br>
                 <tr>
                     <td>Email address : </td>
-                    <td>v{request.data['email']}</td>
+                    <td>{request.data['email']}</td>
                 </tr>
                 <br>
                  <tr>
