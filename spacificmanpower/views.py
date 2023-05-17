@@ -787,7 +787,7 @@ class applyjob(APIView):
         # user_account_id = user_account.objects.get(id=useraccountid)
 
         status_test = request.data.get('status')
-        userstatus = request.data.get('userstatus')
+        # userstatus = request.data.get('userstatus')
         applicant_name = request.data.get('applicant_name')
         applicant_email = request.data.get('applicant_email')
         phone_num = request.data.get('phone_num')
@@ -816,7 +816,7 @@ class applyjob(APIView):
         
         # else:
         jobpostactivity = job_post_activity(job_post_id=job_post_id, apply_date=datetime.now(),
-                                                status=status_test,userstatus=userstatus,experience=experience,applicant_name=applicant_name,
+                                                status=status_test,experience=experience,applicant_name=applicant_name,
                                                 applicant_email=applicant_email,phone_num=phone_num,uploaded_cv=uploaded_cv,
                                                 notice_period=notice_period,expected_pay=expected_pay)
         jobpostactivity.save()
