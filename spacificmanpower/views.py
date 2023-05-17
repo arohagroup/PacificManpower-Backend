@@ -788,6 +788,16 @@ class applyjob(APIView):
 
         status_test = request.data.get('status')
         userstatus = request.data.get('userstatus')
+        applicant_name = request.data.get('applicant_name')
+        applicant_email = request.data.get('applicant_email')
+        phone_num = request.data.get('phone_num')
+        uploaded_cv = request.data.get('uploaded_cv')
+        notice_period = request.data.get('notice_period')
+        expected_pay = request.data.get('expected_pay')
+
+        experience = request.data.get('experience')
+        experience=experince_type.objects.get(id=experience)
+
 
         jobpostid = request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
@@ -806,7 +816,9 @@ class applyjob(APIView):
         
         # else:
         jobpostactivity = job_post_activity(user_account_id=user_account_id, job_post_id=job_post_id, apply_date=datetime.now(),
-                                                status=status_test,userstatus=userstatus)
+                                                status=status_test,userstatus=userstatus,experience=experience,applicant_name=applicant_name,
+                                                applicant_email=applicant_email,phone_num=phone_num,uploaded_cv=uploaded_cv,
+                                                notice_period=notice_period,expected_pay=expected_pay)
         jobpostactivity.save()
 
         userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now(),createdDate = timezone.now())

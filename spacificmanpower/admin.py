@@ -54,7 +54,8 @@ class JobPostAdmin(admin.ModelAdmin):
     list_display_links = ('id','posted_by_id')
 
 class JobPostActivityAdmin(admin.ModelAdmin):
-    list_display = ('id','user_account_id','job_post_id','apply_date','status','userstatus','createdDate','modifiedDate')
+    list_display = ('id','user_account_id','job_post_id','experience','applicant_name','applicant_email'
+                ,'phone_num','uploaded_cv','notice_period','expected_pay','apply_date','status','userstatus','createdDate','modifiedDate')
     list_display_links = ('id','user_account_id')
 
 class JobTypeAdmin(admin.ModelAdmin):
