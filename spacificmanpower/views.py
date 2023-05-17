@@ -783,8 +783,8 @@ class applyjob(APIView):
     
     def post(self, request, format=None):
 
-        useraccountid = request.data.get('user_account_id')  
-        user_account_id = user_account.objects.get(id=useraccountid)
+        # useraccountid = request.data.get('user_account_id')  
+        # user_account_id = user_account.objects.get(id=useraccountid)
 
         status_test = request.data.get('status')
         userstatus = request.data.get('userstatus')
@@ -802,27 +802,27 @@ class applyjob(APIView):
         jobpostid = request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
 
-        if not seeker_profile.objects.filter(user_account_id=user_account_id).exists():
-            return Response({'message': 'User account not found in seeker_profile table'}, status=status.HTTP_404_NOT_FOUND)
+        # if not seeker_profile.objects.filter(user_account_id=user_account_id).exists():
+        #     return Response({'message': 'User account not found in seeker_profile table'}, status=status.HTTP_404_NOT_FOUND)
         
-        if not education_detail.objects.filter(user_account_id=user_account_id).exists():
-            return Response({'message': 'User account not found in education_detail table'}, status=status.HTTP_404_NOT_FOUND)
+        # if not education_detail.objects.filter(user_account_id=user_account_id).exists():
+        #     return Response({'message': 'User account not found in education_detail table'}, status=status.HTTP_404_NOT_FOUND)
         
-        if not seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
-            return Response({'message': 'User account not found in seeker_skill_set table'}, status=status.HTTP_404_NOT_FOUND)
+        # if not seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
+        #     return Response({'message': 'User account not found in seeker_skill_set table'}, status=status.HTTP_404_NOT_FOUND)
         
         # if job_post_activity.objects.filter(job_post_id=job_post_id).exists():
         #     return Response({'message': 'Job already applied'}, status=status.HTTP_403_FORBIDDEN)
         
         # else:
-        jobpostactivity = job_post_activity(user_account_id=user_account_id, job_post_id=job_post_id, apply_date=datetime.now(),
+        jobpostactivity = job_post_activity(job_post_id=job_post_id, apply_date=datetime.now(),
                                                 status=status_test,userstatus=userstatus,experience=experience,applicant_name=applicant_name,
                                                 applicant_email=applicant_email,phone_num=phone_num,uploaded_cv=uploaded_cv,
                                                 notice_period=notice_period,expected_pay=expected_pay)
         jobpostactivity.save()
 
-        userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now(),createdDate = timezone.now())
-        userlog.save()
+        # userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now(),createdDate = timezone.now())
+        # userlog.save()
 
         return Response(status=status.HTTP_201_CREATED)
     
