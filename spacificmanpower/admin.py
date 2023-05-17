@@ -94,7 +94,7 @@ class recserviceAdmin(admin.ModelAdmin):
     list_display_links = ('id','user_account_id')
 
 class galleryAdmin(admin.ModelAdmin):
-    list_display = ('id','user_account_id','image','createdDate','modifiedDate')
+    list_display = ('id','user_account_id','image','title','createdDate','modifiedDate')
     list_display_links = ('id','user_account_id')
 
 admin.site.register(user_type,UserTypeAdmin)

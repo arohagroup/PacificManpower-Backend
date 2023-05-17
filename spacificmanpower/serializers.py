@@ -206,4 +206,4 @@ class gallery_serializer(serializers.ModelSerializer):
    
     class Meta:
         model=gallery
-        fields=['id','user_account_id','image','createdDate','modifiedDate']
+        fields=['id','user_account_id','image','title','createdDate','modifiedDate']

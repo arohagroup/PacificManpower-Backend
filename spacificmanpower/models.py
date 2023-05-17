@@ -196,6 +196,7 @@ class subscribe(models.Model):
 
 class gallery(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_id_gallery', on_delete=models.CASCADE,default=None)
+    title=models.CharField(max_length=25)
     image=models.ImageField(max_length=200, blank=True,null=True)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)

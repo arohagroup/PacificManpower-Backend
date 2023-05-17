@@ -1487,8 +1487,9 @@ class addgallery(APIView):
         useraccountid=request.data.get('user_account_id') 
         user_account_id=user_account.objects.get(id=useraccountid)
         image = request.data.get('image')
+        title = request.data.get('title')
 
-        gallerydata=gallery(user_account_id=user_account_id,image=image)
+        gallerydata=gallery(user_account_id=user_account_id,image=image,title=title)
         gallerydata.save()
 
         return Response(status=status.HTTP_201_CREATED)
