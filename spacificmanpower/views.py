@@ -1472,7 +1472,7 @@ class fetchJobSkills(APIView):
         return Response(serializer.data)
     
 
-class gallery(APIView):
+class addgallery(APIView):
 
     queryset = gallery.objects.all()
     serializer_class = gallery_serializer

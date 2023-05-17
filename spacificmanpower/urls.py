@@ -72,7 +72,7 @@ urlpatterns = [
     path('subscribe/',views.subscribeemail.as_view()),
 
     path('fetchJobSkills/<int:job_post_id>/',views.fetchJobSkills.as_view()),
-    path('gallery/',views.gallery.as_view()),
+    path('gallery/',views.addgallery.as_view()),
     path('gallery/<int:pk>/',views.editgallery.as_view()),
 
 ]
