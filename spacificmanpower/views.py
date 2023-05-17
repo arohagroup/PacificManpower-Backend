@@ -962,7 +962,7 @@ class applyjobIND(APIView):
 
     def get_object(self, pk):
         try:
-            return job_post_activity.objects.filter(user_account_id=pk)
+            return job_post_activity.objects.filter(pk=pk)
         except job_post_activity.DoesNotExist:
             raise Http404
 

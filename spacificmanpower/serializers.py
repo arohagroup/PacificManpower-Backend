@@ -121,7 +121,8 @@ class job_post_activity_serializer(serializers.ModelSerializer):
     job_post_id=serializers.ReadOnlyField(source='job_post_id.id')
     class Meta:
         model=job_post_activity
-        fields=['id','user_account_id','job_post_id','apply_date','status','createdDate','modifiedDate']
+        fields=['id','posted_by_id','job_type_id','company_id','user_account_id','experince_type_id','is_company_name_hidden','job_title','created_date',
+                'job_description','is_active','job_location_id','salary','createdDate','modifiedDate']
 
 class job_post_skill_set_serializer(serializers.ModelSerializer):
     
