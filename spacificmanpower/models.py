@@ -188,7 +188,7 @@ class contact_us(models.Model):
     modifiedDate = models.DateTimeField(auto_now=True)
 
 class recservice(models.Model):
-    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_recservice', on_delete=models.CASCADE,default=None)
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_recservice', on_delete=models.CASCADE,default=None,null=True,blank=True)
     name=models.CharField(max_length=25)
     email=models.CharField(max_length=15)
     message=models.CharField(max_length=400)
@@ -196,7 +196,7 @@ class recservice(models.Model):
     modifiedDate = models.DateTimeField(auto_now=True)
 
 class subscribe(models.Model):
-    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_subscribe', on_delete=models.CASCADE,default=None)
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_subscribe', on_delete=models.CASCADE,default=None,null=True,blank=True)
     email=models.CharField(max_length=25)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)

@@ -1233,14 +1233,14 @@ class recEmail(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        useraccountid=request.data.get('user_account_id')
-        user_account_id=user_account.objects.get(id=useraccountid)
+        # useraccountid=request.data.get('user_account_id')
+        # user_account_id=user_account.objects.get(id=useraccountid)
 
         email = request.data.get('email')
         name = request.data.get('name')
         message = request.data.get('message')
 
-        getInTouch=recservice(user_account_id=user_account_id,email=email,name=name,message=message)
+        getInTouch=recservice(email=email,name=name,message=message)
         getInTouch.save()
 
         SMTPserver = 'shared42.accountservergroup.com'
@@ -1387,16 +1387,16 @@ class subscribeemail(APIView):
     
     def post(self, request, format=None):
         
-        useraccountid = request.data.get('user_account_id')
-        user_account_obj = user_account.objects.get(id=useraccountid)
+        # useraccountid = request.data.get('user_account_id')
+        # user_account_obj = user_account.objects.get(id=useraccountid)
         email = request.data.get('email')
 
-        subscribetable = subscribe(user_account_id=user_account_obj, email=email)
+        subscribetable = subscribe( email=email)
         subscribetable.save()
 
-        user_account_obj.subscribed_email_id = email
-        user_account_obj.subscribed = 1
-        user_account_obj.save()
+        # user_account_obj.subscribed_email_id = email
+        # user_account_obj.subscribed = 1
+        # user_account_obj.save()
 
         serializer = subscribe_serializer(subscribetable)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
