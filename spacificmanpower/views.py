@@ -399,7 +399,6 @@ class editjob(APIView):
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):
-        print(request.data)
         jobpost = self.get_object(pk)
         # useraccountid=request.data.get('user_account_id')
         # user_account_id=user_account.objects.get(id=useraccountid)
@@ -824,7 +823,7 @@ class applyjob(APIView):
         # userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now(),createdDate = timezone.now())
         # userlog.save()
 
-        serializer=job_post_activity_serializer(jobpostactivity)
+        serializer=job_post_activity_serializertest(jobpostactivity)
 
         return Response(serializer.data,status=status.HTTP_201_CREATED)
     
