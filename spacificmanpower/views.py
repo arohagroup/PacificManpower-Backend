@@ -974,16 +974,12 @@ class applyjobIND(APIView):
     def put(self, request, pk, format=None): 
 
         status_test = request.data.get('status')
-        user_account_id = request.data.get('user_account_id')
         job_post_id = request.data.get('job_post_id')
-        userstatus = request.data.get('userstatus')
 
         jobpostactivity = job_post_activity.objects.get(pk=pk)
 
         jobpostactivity.status = status_test
-        jobpostactivity.user_account_id__id = user_account_id
         jobpostactivity.job_post_id__id = job_post_id
-        jobpostactivity.userstatus = userstatus
 
         jobpostactivity.save()
 
@@ -1002,7 +998,6 @@ class editseekrprofile(APIView):
         return Response(serializer.data)
     
     def put(self, request, pk, format=None):
-        print(request.data)
         useraccountid = request.data.get('user_account_id')
         user_account_id = user_account.objects.get(id=useraccountid)
 
@@ -1148,21 +1143,6 @@ class editseekrprofile(APIView):
             # 'seekerskillsetdata': seekerskillsetdata
         }
         return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)
-
-
-# class showCI(APIView):
-#     def get_object(self, pk):
-#         try:
-#             return company.objects.get(pk=pk)
-#         except company.DoesNotExist:
-#             raise Http404
-
-#     def get(self, request, pk, format=None):
-#         company_obj = self.get_object(pk)
-#         images = company_image.objects.filter(company_id=company_obj)
-#         serializer = company_image_serializer(images, many=True)
-#         return Response(serializer.data)
-    
 
 class contactus(APIView):
 
