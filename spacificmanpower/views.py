@@ -824,7 +824,9 @@ class applyjob(APIView):
         # userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now(),createdDate = timezone.now())
         # userlog.save()
 
-        return Response(status=status.HTTP_201_CREATED)
+        serializer=job_post_activity_serializer(jobpostactivity)
+
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
     
 class trendingnews(APIView):
 
