@@ -1471,3 +1471,54 @@ class fetchJobSkills(APIView):
         serializer = job_post_skill_set_serializer(job_skills, many=True)
         return Response(serializer.data)
     
+
+class gallery(APIView):
+
+    queryset = gallery.objects.all()
+    serializer_class = gallery_serializer
+
+    def get(self, request, format=None):
+        user_data = gallery.objects.all().order_by('-createdDate')
+        serializer = gallery_serializer(user_data, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+
+        useraccountid=request.data.get('user_account_id') 
+        user_account_id=user_account.objects.get(id=useraccountid)
+        image = request.data.get('image')
+
+        gallerydata=gallery(user_account_id=user_account_id,image=image)
+        gallerydata.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+    
+class editgallery(APIView):
+    def get_object(self, pk):
+        try:
+            return gallery.objects.get(pk=pk)
+        except gallery.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        data = self.get_object(pk)
+        serializer = gallery_serializer(data)
+        return Response(serializer.data)
+        
+    # def put(self, request, pk, format=None): 
+    #     user_account_id = request.data.get('user_account_id')
+    #     image = request.data.get('image')
+
+    #     gallerydata = gallery.objects.get(pk=pk)
+    #     gallerydata.user_account_id__id = user_account_id
+    #     gallerydata.image = image
+
+    #     gallerydata.save()
+
+    #     return Response({"message": "updated"}, status=status.HTTP_201_CREATED) 
+        
+    def delete(self, request, pk, format=None):
+        data = self.get_object(pk)
+        data.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    

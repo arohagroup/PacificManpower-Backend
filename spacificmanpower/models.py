@@ -194,4 +194,8 @@ class subscribe(models.Model):
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 
-
+class gallery(models.Model):
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_gallery', on_delete=models.CASCADE,default=None)
+    image=models.ImageField(max_length=200, blank=True,null=True)
+    createdDate = models.DateTimeField(auto_now_add=True, blank=True)
+    modifiedDate = models.DateTimeField(auto_now=True)

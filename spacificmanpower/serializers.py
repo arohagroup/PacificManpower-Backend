@@ -201,3 +201,9 @@ class applyjob_serializer(serializers.ModelSerializer):
     class Meta:
         model=job_post_activity
         fields=['id','user_account_id','job_post_id','apply_date','createdDate','modifiedDate']
+
+class gallery_serializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model=gallery
+        fields=['id','user_account_id','image','createdDate','modifiedDate']

@@ -93,6 +93,10 @@ class recserviceAdmin(admin.ModelAdmin):
     list_display = ('id','user_account_id','name','email','message','createdDate','modifiedDate')
     list_display_links = ('id','user_account_id')
 
+class galleryAdmin(admin.ModelAdmin):
+    list_display = ('id','user_account_id','image','createdDate','modifiedDate')
+    list_display_links = ('id','user_account_id')
+
 admin.site.register(user_type,UserTypeAdmin)
 admin.site.register(user_account, UserAccountAdmin)
 admin.site.register(user_log, UserLogAdmin)
@@ -114,4 +118,4 @@ admin.site.register(contact_us, ContactUs)
 admin.site.register(experince_type, ExperinceTypeAdmin)
 admin.site.register(subscribe, SubscribeAdmin)
 admin.site.register(recservice, recserviceAdmin)
-# admin.site.register(job_post_activity, ApplyAdmin)
+admin.site.register(gallery, galleryAdmin)
