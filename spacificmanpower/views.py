@@ -1515,4 +1515,3 @@ class editgallery(APIView):
         data = self.get_object(pk)
         data.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
