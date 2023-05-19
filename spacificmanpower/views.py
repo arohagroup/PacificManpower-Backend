@@ -1531,9 +1531,9 @@ class statusThroughfilter(APIView):
         filtered_data=None
         if status.lower()=='accepted':
             filtered_data = job_post_activity.objects.filter(status__iexact='Accepted')
-        elif status.lower()=='Rejected':
+        elif status.lower()=='rejected':
             filtered_data = job_post_activity.objects.filter(status__iexact='Rejected')
-        elif status.lower()=='Pending':
+        elif status.lower()=='pending':
             filtered_data = job_post_activity.objects.filter(status__iexact='Pending')
 
         serializer = job_post_activity_serializertest(filtered_data, many=True)
