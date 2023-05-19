@@ -75,7 +75,5 @@ urlpatterns = [
     path('gallery/',views.addgallery.as_view()),
     path('gallery/<int:pk>/',views.editgallery.as_view()),
 
-    path('statuswisefilteraccepted/<str:status>/',views.statusThroughfilteraccepted.as_view()),
-    path('statuswisefilterrejected/<str:status>/',views.statusThroughfilterrejected.as_view()),
-    path('statuswisefilterpending/<str:status>/',views.statusThroughfilterpending.as_view()),
+    path('statuswisefilter/<str:status>/',views.statusThroughfilter.as_view()),
 ]
