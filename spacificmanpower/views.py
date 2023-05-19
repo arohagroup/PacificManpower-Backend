@@ -1526,3 +1526,27 @@ class editgallery(APIView):
         data = self.get_object(pk)
         data.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class statusThroughfilteraccepted(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+
+        filtered_data = job_post_activity.objects.filter(status__iexact='Accepted')
+
+        serializer = job_post_activity_serializertest(filtered_data, many=True)
+        return Response(serializer.data)
+    
+class statusThroughfilterrejected(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+
+        filtered_data = job_post_activity.objects.filter(status__iexact='Rejected')
+
+        serializer = job_post_activity_serializertest(filtered_data, many=True)
+        return Response(serializer.data)
+    
+class statusThroughfilterpending(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+
+        filtered_data = job_post_activity.objects.filter(status__iexact='Pending')
+
+        serializer = job_post_activity_serializertest(filtered_data, many=True)
+        return Response(serializer.data)
