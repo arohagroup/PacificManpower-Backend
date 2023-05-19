@@ -181,7 +181,7 @@ class trending_news(models.Model):
     modifiedDate = models.DateTimeField(auto_now=True)
 
 class contact_us(models.Model):
-    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_contact_us', on_delete=models.CASCADE,default=None)
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_contact_us', on_delete=models.CASCADE,default=None,null=True,blank=True)
     name=models.CharField(max_length=25)
     email=models.CharField(max_length=15)
     message=models.CharField(max_length=400)

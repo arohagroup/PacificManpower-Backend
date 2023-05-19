@@ -1165,14 +1165,13 @@ class contactus(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        useraccountid=request.data.get('user_account_id')
-        user_account_id=user_account.objects.get(id=useraccountid)
+
 
         email = request.data.get('email')
         name = request.data.get('name')
         message = request.data.get('message')
 
-        getInTouch=contact_us(user_account_id=user_account_id,email=email,name=name,message=message)
+        getInTouch=contact_us(email=email,name=name,message=message)
         getInTouch.save()
             
         SMTPserver = 'shared42.accountservergroup.com'
