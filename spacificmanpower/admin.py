@@ -17,7 +17,7 @@ class UserLogAdmin(admin.ModelAdmin):
     list_display_links = ('user_account_id','last_login_date')
 
 class BusinessStreamAdmin(admin.ModelAdmin):
-    list_display = ('id','business_stream_name','createdDate','modifiedDate')
+    list_display = ('id','business_stream_name','user_account_id','createdDate','modifiedDate')
     list_display_links = ('id','business_stream_name')
 
 class CompanyAdmin(admin.ModelAdmin):

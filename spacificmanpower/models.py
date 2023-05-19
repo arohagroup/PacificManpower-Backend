@@ -36,6 +36,7 @@ class user_log(models.Model):
 
 #Company Porfile
 class business_stream(models.Model):
+    user_account_id = models.ForeignKey('user_account',related_name='user_account_id_business_stream', on_delete=models.CASCADE,default=None)
     business_stream_name=models.CharField(max_length=100)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)

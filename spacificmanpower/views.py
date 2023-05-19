@@ -176,12 +176,22 @@ class businessstream(APIView):
 
         if business_stream.objects.filter(business_stream_name__iexact=business_stream_name).exists():
             return JsonResponse({'error': 'Record already exists in business_stream table.'}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            serializer = business_stream_serializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        business_stream_name=request.data.get('business_stream_name')
+        user_account_id = request.data.get('user_account_id')
+        user_account_id = user_account.objects.get(id=user_account_id)
+
+        skillset = business_stream(business_stream_name=business_stream_name, user_account_id=user_account_id)
+        skillset.save() 
+
+        serializer=business_stream_serializer(skillset)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+        # else:
+        #     serializer = business_stream_serializer(data=request.data)
+        #     if serializer.is_valid():
+        #         serializer.save()
+        #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class companyadddetails(APIView):
 
