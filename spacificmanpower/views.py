@@ -192,6 +192,7 @@ class businessstream(APIView):
         #         serializer.save()
         #         return Response(serializer.data, status=status.HTTP_201_CREATED)
         #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 class companyadddetails(APIView):
 
@@ -493,8 +494,8 @@ class editjob(APIView):
 
     def delete(self, request, pk, format=None):
         calendars = self.get_object(pk)
-        # test=self.get_objects(pk)
-        # test.delete()
+        test=self.get_objects(pk)
+        test.delete()
         calendars.delete()
         return Response(status=status.HTTP_204_NO_CONTENT) 
         
