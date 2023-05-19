@@ -129,7 +129,7 @@ class job_post(models.Model):
 
 class job_post_activity(models.Model):
     user_account_id = models.ForeignKey('user_account',related_name='user_account_idssss', on_delete=models.CASCADE,default=None,null=True,blank=True)
-    job_post_id = models.ForeignKey('job_post',related_name='job_post_id', on_delete=models.SET_NULL,default=None,null=True)
+    job_post_id = models.ForeignKey('job_post',related_name='job_post_id', on_delete=models.CASCADE,default=None,null=True)
     apply_date=models.DateTimeField(auto_now_add=True, blank=True)
     status=models.CharField(max_length=20)
     userstatus=models.BooleanField(blank=True,null=True)
