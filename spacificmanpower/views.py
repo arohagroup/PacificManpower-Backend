@@ -1312,7 +1312,7 @@ class recEmail(APIView):
     
 class joblistbycompany(APIView):
     def get(self, request,searchItem, format=None, *args, **kwargs):
-        print(searchItem)
+        
         if not searchItem or searchItem.lower() == 'null':
             # return an empty array if searchItem is null or empty
             return Response([], status=status.HTTP_204_NO_CONTENT)
