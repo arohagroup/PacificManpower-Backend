@@ -171,8 +171,8 @@ class job_post_activity_serializertest(serializers.ModelSerializer):
     experience=experince_type_serializer()
     class Meta:
         model=job_post_activity
-        fields=['id','user_account_id','job_post_id','experience','applicant_name','applicant_email'
-                ,'phone_num','uploaded_cv','notice_period','expected_pay','apply_date','status','userstatus','createdDate','modifiedDate']
+        fields=['id','user_account_id','job_post_id','apply_date','status','userstatus','applicant_name','applicant_email'
+                ,'phone_num','city','country','enquiry','uploaded_cv','notice_period','expected_pay','experience','createdDate','modifiedDate']
 
 class trending_news_serializer(serializers.ModelSerializer):
    
