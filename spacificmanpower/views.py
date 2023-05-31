@@ -805,6 +805,10 @@ class applyjob(APIView):
         notice_period = request.data.get('notice_period')
         expected_pay = request.data.get('expected_pay')
 
+        city = request.data.get('city')
+        country = request.data.get('country')
+        enquiry = request.data.get('enquiry')
+
         experience = request.data.get('experience')
         experience=experince_type.objects.get(id=experience)
 
@@ -828,7 +832,8 @@ class applyjob(APIView):
         jobpostactivity = job_post_activity(job_post_id=job_post_id, apply_date=datetime.now(),
                                                 status=status_test,experience=experience,applicant_name=applicant_name,
                                                 applicant_email=applicant_email,phone_num=phone_num,uploaded_cv=uploaded_cv,
-                                                notice_period=notice_period,expected_pay=expected_pay)
+                                                notice_period=notice_period,expected_pay=expected_pay,city=city,country=country,
+                                                enquiry=enquiry)
         jobpostactivity.save()
 
         # userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now(),createdDate = timezone.now())
@@ -1175,8 +1180,8 @@ class contactus(APIView):
         getInTouch.save()
             
         SMTPserver = 'shared42.accountservergroup.com'
-        sender = 'ashwini@arohagroup.com'
-        destination = 'zeeyan@arohagroup.com'
+        sender = 'support@pacificmanpower.com.pg'
+        destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg']
 
         USERNAME = "ashwini@arohagroup.com"
         PASSWORD = "I2GJS.]rYk^s321"
@@ -1220,7 +1225,7 @@ class contactus(APIView):
         msg = MIMEText(content, text_subtype)
         msg['Subject'] = subject
         msg['From'] = sender
-        msg['To'] = destination
+        msg['To'] = ', '.join(destination)
 
         conn = SMTP(SMTPserver)
         conn.set_debuglevel(False)
