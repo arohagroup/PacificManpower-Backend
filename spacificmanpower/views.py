@@ -12,6 +12,7 @@ from django.http import HttpResponse
 from django.utils.crypto import get_random_string
 from ast import literal_eval
 import ast
+import tempfile
 from django.db.models import Q
 from django.core.mail import BadHeaderError, send_mail
 from django.shortcuts import get_object_or_404
@@ -21,8 +22,11 @@ from django.http import JsonResponse
 from datetime import datetime
 from django.forms.models import model_to_dict
 from django.http import QueryDict
-import os
 from django.utils import timezone
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+import os
 # Create your views here.
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -812,23 +816,9 @@ class applyjob(APIView):
         experience = request.data.get('experience')
         experience=experince_type.objects.get(id=experience)
 
-
         jobpostid = request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
 
-        # if not seeker_profile.objects.filter(user_account_id=user_account_id).exists():
-        #     return Response({'message': 'User account not found in seeker_profile table'}, status=status.HTTP_404_NOT_FOUND)
-        
-        # if not education_detail.objects.filter(user_account_id=user_account_id).exists():
-        #     return Response({'message': 'User account not found in education_detail table'}, status=status.HTTP_404_NOT_FOUND)
-        
-        # if not seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
-        #     return Response({'message': 'User account not found in seeker_skill_set table'}, status=status.HTTP_404_NOT_FOUND)
-        
-        # if job_post_activity.objects.filter(job_post_id=job_post_id).exists():
-        #     return Response({'message': 'Job already applied'}, status=status.HTTP_403_FORBIDDEN)
-        
-        # else:
         jobpostactivity = job_post_activity(job_post_id=job_post_id, apply_date=datetime.now(),
                                                 status=status_test,experience=experience,applicant_name=applicant_name,
                                                 applicant_email=applicant_email,phone_num=phone_num,uploaded_cv=uploaded_cv,
@@ -836,10 +826,106 @@ class applyjob(APIView):
                                                 enquiry=enquiry)
         jobpostactivity.save()
 
-        # userlog = user_log(user_account_id=user_account_id, last_job_apply_date=datetime.now(),createdDate = timezone.now())
-        # userlog.save()
-
         serializer=job_post_activity_serializertest(jobpostactivity)
+
+        jobtitle = job_post_id.job_title
+        applicant_name = request.data.get('applicant_name')
+        applicant_email = request.data.get('applicant_email')
+        phone_num = request.data.get('phone_num')
+        city = request.data.get('city')
+        country = request.data.get('country')
+        enquiry = request.data.get('enquiry')
+        uploaded_cv = request.data.get('uploaded_cv')
+            
+        SMTPserver = 'shared42.accountservergroup.com'
+        sender = 'ashwini@arohagroup.com'
+        destination = 'zeeyan@arohagroup.com'
+
+        USERNAME = "ashwini@arohagroup.com"
+        PASSWORD = "I2GJS.]rYk^s321"
+
+        text_subtype = 'html'
+        content = f"""\
+            <html>
+              <head>
+                
+              </head>
+              <body>
+                <table> 
+                <tr>
+                    <td>Job Name: </td>
+                    <td>{jobtitle}</td>
+                </tr>
+                <tr>
+                    <td>First Name: </td>
+                    <td>{request.data['applicant_name']}</td>
+                </tr>
+                <br>
+                <tr>
+                    <td>Email address: </td>
+                    <td>{request.data['applicant_email']}</td>
+                </tr>
+                <br>
+                <tr>
+                    <td>Phone: </td>
+                    <td>{request.data['phone_num']}</td>
+                </tr>
+                <br>
+                <tr>
+                    <td>City: </td>
+                    <td>{request.data['city']}</td>
+                </tr>
+                <br>
+                <tr>
+                    <td>Country: </td>
+                    <td>{request.data['country']}</td>
+                </tr>
+                <br>
+                <tr>
+                    <td>Enquiry: </td>
+                    <td>{request.data['enquiry']}</td>
+                </tr>
+                <br>
+                </table><br>
+              </body>
+            </html>
+            """
+
+        subject = "Job Application"
+
+        # msg = MIMEText(content, text_subtype)
+        msg = MIMEMultipart()
+        msg['Subject'] = subject
+        msg['From'] = sender
+        msg['To'] = destination
+
+        msg.attach(MIMEText(content, text_subtype))
+
+        # Attach the uploaded CV file
+        cv_filename = os.path.basename(uploaded_cv.name)  # Extract the filename from the uploaded_cv object
+
+        # Save the uploaded CV to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            for chunk in uploaded_cv.chunks():
+                temp_file.write(chunk)
+            temp_file_path = temp_file.name
+
+        # Attach the temporary CV file to the email
+        with open(temp_file_path, "rb") as f:
+            cv_part = MIMEApplication(f.read(), Name=cv_filename)
+        cv_part['Content-Disposition'] = f'attachment; filename="{cv_filename}"'
+        msg.attach(cv_part)
+
+
+        conn = SMTP(SMTPserver)
+        conn.set_debuglevel(False)
+        conn.login(USERNAME, PASSWORD)
+        try:
+            conn.sendmail(sender, destination, msg.as_string())
+        finally:
+            conn.quit()
+
+        os.remove(temp_file_path)
 
         return Response(serializer.data,status=status.HTTP_201_CREATED)
     
