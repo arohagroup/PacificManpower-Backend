@@ -49,6 +49,8 @@ class company(models.Model):
     establishment_date=models.DateField()
     companyimage=models.ImageField(max_length=200, blank=True)
     company_website_url=models.CharField(max_length=500)
+    company_size=models.CharField(max_length=50)
+    company_location=models.CharField(max_length=200)
     createdDate = models.DateTimeField(auto_now_add=True, blank=True)
     modifiedDate = models.DateTimeField(auto_now=True)
 

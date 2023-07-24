@@ -216,12 +216,14 @@ class companyadddetails(APIView):
         establishment_date = request.data.get('establishment_date')
         company_website_url = request.data.get('company_website_url')
         companyimage = request.data.get('companyimage')
+        company_location = request.data.get('company_location')
+        company_size = request.data.get('company_size')
         business_stream_id = business_stream.objects.get(id=business_stream_id)
         user_account_id = user_account.objects.get(id=user_account_id)
 
         company_data = company(company_name=company_name, profile_description=profile_description, business_stream_id=business_stream_id, 
-                              user_account_id=user_account_id,establishment_date=establishment_date,company_website_url=company_website_url,
-                              companyimage=companyimage)
+                              user_account_id=user_account_id,establishment_date=establishment_date,company_size=company_size,
+                              company_website_url=company_website_url,company_location=company_location,companyimage=companyimage)
         company_data.save() 
 
         # company_id = company_data.id
@@ -265,6 +267,8 @@ class companyprofile(APIView):
         companydetails.profile_description = request.data.get('profile_description')
         companydetails.establishment_date = request.data.get('establishment_date')
         # companydetails.companyimage = request.data.get('companyimage')
+        companydetails.company_location = request.data.get('company_location')
+        companydetails.company_size = request.data.get('company_size')
         companydetails.company_website_url = request.data.get('company_website_url')
 
         if 'companyimage' in request.data:

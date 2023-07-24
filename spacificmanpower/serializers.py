@@ -67,7 +67,8 @@ class company_serializer(serializers.ModelSerializer):
     user_account_id=serializers.ReadOnlyField(source='user_account_id.id')
     class Meta:
         model=company
-        fields=['id','company_name','profile_description','business_stream_id','user_account_id','companyimage','establishment_date','company_website_url','createdDate','modifiedDate']
+        fields=['id','company_name','profile_description','business_stream_id','user_account_id','companyimage','establishment_date'
+                ,'company_website_url','company_location','company_size','createdDate','modifiedDate']
 
 #Seeker Profile Builder
 class education_detail_serializer(serializers.ModelSerializer):
