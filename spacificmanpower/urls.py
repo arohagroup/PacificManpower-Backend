@@ -25,6 +25,7 @@ urlpatterns = [
 
     path('company_save_details/',views.companyadddetails.as_view()),
     path('company_save_details/<int:pk>/',views.companyprofile.as_view()),
+    path('company_save_details/<str:company_name>/',views.companynamefilter.as_view()),
 
     path('seeker_profile/',views.seekerprofile.as_view()),
     path('seeker_profile/<int:pk>/',views.editseekrprofile.as_view()),

@@ -1630,3 +1630,8 @@ class statusThroughfilter(APIView):
         serializer = job_post_activity_serializertest(filtered_data, many=True)
         return Response(serializer.data)
 
+class companynamefilter(APIView):
+    def get(self, request, company_name, format=None, *args, **kwargs):
+        filtered_data = company.objects.filter(company_name__icontains=company_name)
+        serializer = company_serializer(filtered_data, many=True)
+        return Response(serializer.data)
