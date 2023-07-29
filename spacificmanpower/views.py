@@ -842,8 +842,8 @@ class applyjob(APIView):
         uploaded_cv = request.data.get('uploaded_cv')
             
         SMTPserver = 'shared42.accountservergroup.com'
-        sender = 'ashwini@arohagroup.com'
-        destination = 'zeeyan@arohagroup.com'
+        sender = 'support@pacificmanpower.com.pg'
+        destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg']
 
         USERNAME = "ashwini@arohagroup.com"
         PASSWORD = "I2GJS.]rYk^s321"
