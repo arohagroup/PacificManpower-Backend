@@ -119,7 +119,7 @@ class job_post(models.Model):
     experince_type_id = models.ForeignKey('experince_type',related_name='experince_type_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
     user_account_id = models.ForeignKey('user_account',related_name='user_account_id_job_post', on_delete=models.CASCADE,default=None)
     is_company_name_hidden=models.BooleanField()
-    job_title=models.CharField(max_length=20)
+    job_title=models.CharField(max_length=100)
     created_date=models.DateTimeField(auto_now_add=True, blank=True)
     job_description=models.CharField(max_length=500)
     salary=models.IntegerField(blank=True,null=True)
