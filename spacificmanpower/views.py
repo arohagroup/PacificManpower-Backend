@@ -369,7 +369,15 @@ class postjob(APIView):
         joblocation.save()
 
         job_type_id = job_type.objects.get(id=jobtypeid)
-        company_id = company.objects.get(id=companyid)
+
+        if companyid:
+            try:
+                company_id = company.objects.get(id=companyid)
+            except company.DoesNotExist:
+                return Response({"message": "Invalid company ID"}, status=400)
+        else:
+            company_id = None
+            
         user_account_id=user_account.objects.get(id=useraccountid)
         is_company_name_hidden = request.data.get('is_company_name_hidden')
         job_description = request.data.get('job_description')
@@ -431,8 +439,19 @@ class editjob(APIView):
         joblocation.save()
 
         jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
-        jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
+        # jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
 
+        company_id = request.data.get('company_id', jobpost.company_id.id)
+
+        if company_id:
+            try:
+                company_instance = company.objects.get(id=company_id)
+            except company.DoesNotExist:
+                return Response({"message": "Invalid company ID"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            company_instance = None
+        
+        
         is_company_name_hidden = request.data.get('is_company_name_hidden', None)
         if is_company_name_hidden is not None:
             if is_company_name_hidden.lower() == 'true':
@@ -459,6 +478,9 @@ class editjob(APIView):
 
         jobpost.salary = request.data.get('salary',jobpost.salary)
         jobpost.is_active = ast.literal_eval(is_active_str.title())
+
+        jobpost.company_id = company_instance
+        
         jobpost.save()
 
         skillsetids = request.data.get('skill_set_id').split(',')
@@ -484,22 +506,6 @@ class editjob(APIView):
         serializer = job_post_serializer(jobpost)
         return Response(serializer.data)
     
-    # def delete(self, request, pk, format=None):
-    #     try:
-    #         jobpost = job_post.objects.get(pk=pk)
-    #     except job_post.DoesNotExist:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-        
-    #     if jobpost.company_id:
-    #         jobpost.company_id.delete()
-        
-    #     if jobpost.job_location_id:
-    #         jobpost.job_location_id.delete()
-
-    #     jobpost.delete()
-        
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
-
     def delete(self, request, pk, format=None):
         calendars = self.get_object(pk)
         # test=self.get_objects(pk)
@@ -664,18 +670,6 @@ class seekerprofile(APIView):
     def post(self, request, format=None):
         useraccountid=request.data.get('user_account_id')
         user_account_id=user_account.objects.get(id=useraccountid)
-
-        # if seeker_profile.objects.filter(user_account_id=user_account_id).exists():
-        #     return JsonResponse({'error': 'Record already exists in seeker_profile table.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # if education_detail.objects.filter(user_account_id=user_account_id).exists():
-        #     return JsonResponse({'error': 'Record already exists in education_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # if experience_detail.objects.filter(user_account_id=user_account_id).exists():
-        #     return JsonResponse({'error': 'Record already exists in experience_detail table.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # if seeker_skill_set.objects.filter(user_account_id=user_account_id).exists():
-        #     return JsonResponse({'error': 'Record already exists in seeker_skill_set table.'}, status=status.HTTP_400_BAD_REQUEST)
     
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
@@ -687,17 +681,6 @@ class seekerprofile(APIView):
         seekerprofile=seeker_profile(user_account_id=user_account_id,first_name=first_name,last_name=last_name,
                             current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency,uploaded_cv=uploaded_cv)
         seekerprofile.save()
-
-        # if uploaded_cv:
-        #     valid_extensions = ['.pdf']
-        #     ext = os.path.splitext(uploaded_cv.name)[1]
-        #     if not ext.lower() in valid_extensions:
-        #         return Response({"message": "Invalid file type. Only pdf files with extensions {} are allowed".format(', '.join(valid_extensions))}, status=status.HTTP_403_FORBIDDEN)
-        # else:
-
-        #     seekerprofile=seeker_profile(user_account_id=user_account_id,first_name=first_name,last_name=last_name,
-        #                     current_salary=current_salary,is_annually_monthly=is_annually_monthly,currency=currency,uploaded_cv=uploaded_cv)
-        #     seekerprofile.save()
 
         certificate_degree_name = request.data.get('certificate_degree_name')
         major = request.data.get('major')
@@ -742,17 +725,6 @@ class seekerprofile(APIView):
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
             end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
 
-        # if start_date and start_date != "":
-        #     start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-        #     start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
-        # else:
-        #     start_date = None
-        # if end_date and end_date != "":
-        #     end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
-        #     end_date = timezone.make_aware(datetime.combine(end_date, datetime.min.time()))
-        # else:
-        #     end_date = None
-
         job_title = request.data.get('job_title')
         company_name = request.data.get('company_name')
         job_location_city = request.data.get('job_location_city')
@@ -776,16 +748,9 @@ class seekerprofile(APIView):
                 
                 pass
 
-        # seekerprofiledata = serializers.serialize('json', [seekerprofile, ])
-        # educationdetaildata = serializers.serialize('json', [educationdetail, ])
-        # experincedetaildata = serializers.serialize('json', [experincedetail, ])
-        # seekerskillsetdata = serializers.serialize('json', [seekerskillset, ])
 
         data = {
-            # 'seeker_profile': seekerprofiledata,
-            # 'education_detail': educationdetaildata,
-            # 'experience_detail': experincedetaildata,
-            # 'seekerskillsetdata': seekerskillsetdata
+
         }
         
         return JsonResponse({'success': True, 'data': data},status=status.HTTP_201_CREATED)

@@ -115,7 +115,7 @@ class skill_set(models.Model):
 class job_post(models.Model):
     posted_by_id = models.ForeignKey('job_post_activity',related_name='posted_by_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
     job_type_id = models.ForeignKey('job_type',related_name='job_type_id', on_delete=models.CASCADE,default=None)
-    company_id = models.ForeignKey('company',related_name='company_id', on_delete=models.CASCADE,default=None)
+    company_id = models.ForeignKey('company',related_name='company_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
     experince_type_id = models.ForeignKey('experince_type',related_name='experince_type_id', on_delete=models.CASCADE,default=None,null=True,blank=True)
     user_account_id = models.ForeignKey('user_account',related_name='user_account_id_job_post', on_delete=models.CASCADE,default=None)
     is_company_name_hidden=models.BooleanField()
