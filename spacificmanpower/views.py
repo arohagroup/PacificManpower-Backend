@@ -440,17 +440,17 @@ class editjob(APIView):
 
         jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
         # jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
+        
+        company_id = request.data.get('company_id', None)
 
-        company_id = request.data.get('company_id', jobpost.company_id.id)
-
-        if company_id:
+        if company_id is not None:
             try:
                 company_instance = company.objects.get(id=company_id)
             except company.DoesNotExist:
                 return Response({"message": "Invalid company ID"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             company_instance = None
-        
+
         
         is_company_name_hidden = request.data.get('is_company_name_hidden', None)
         if is_company_name_hidden is not None:
