@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
 from django.utils.crypto import get_random_string
 from ast import literal_eval
+import json
 import ast
 import tempfile
 from django.db.models import Q
@@ -354,16 +355,16 @@ class postjob(APIView):
     
     def post(self, request, format=None):
 
-        street_address = request.data.get('street_address')
-        city = request.data.get('city')
-        state = request.data.get('state')
-        country = request.data.get('country')
-        zip = request.data.get('zip')
-        jobtypeid=request.data.get('job_type_id')
-        companyid=request.data.get('company_id')
+        street_address = request.data.get('street_address','')
+        city = request.data.get('city','')
+        state = request.data.get('state','')
+        country = request.data.get('country','')
+        zip = request.data.get('zip','')
+        jobtypeid=request.data.get('job_type_id','')
+        companyid=request.data.get('company_id','')
         useraccountid=request.data.get('user_account_id')
-        job_title=request.data.get('job_title')
-        salary=request.data.get('salary')
+        job_title=request.data.get('job_title','')
+        salary=request.data.get('salary','')
 
         joblocation = job_location(street_address=street_address, city=city, state=state, country=country,zip=zip)
         joblocation.save()
@@ -379,28 +380,33 @@ class postjob(APIView):
             company_id = None
             
         user_account_id=user_account.objects.get(id=useraccountid)
-        is_company_name_hidden = request.data.get('is_company_name_hidden')
-        job_description = request.data.get('job_description','')
+        is_company_name_hidden = request.data.get('is_company_name_hidden','')
+        job_description = request.data.get('job_description')
         job_qualification = request.data.get('job_qualification','')
         job_location_id = joblocation.id
         created_date=request.data.get('created_date')
-        is_active = request.data.get('is_active')
-        experincetypeid = request.data.get('experince_type_id')
+        is_active = request.data.get('is_active','')
+        experincetypeid = request.data.get('experince_type_id','')
         experince_type_id = experince_type.objects.get(id=experincetypeid)
         job_location_instance = job_location.objects.get(id=job_location_id)
 
+        try:
+            job_qualification_list = json.loads(job_qualification)
+        except json.JSONDecodeError:
+            job_qualification_list = []
+
         jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,job_title=job_title,
-                         job_description=job_description,job_qualification=job_qualification,job_location_id=job_location_instance,created_date=created_date,is_active=is_active,
+                         job_description=job_description,job_qualification=json.dumps(job_qualification_list),job_location_id=job_location_instance,created_date=created_date,is_active=is_active,
                          experince_type_id=experince_type_id,salary=salary,user_account_id=user_account_id)
         
         jobpost.save()
 
-        skillsetids = request.data.get('skill_set_id').split(',') 
+        skillsetids = request.data.get('skill_set_id','').split(',') 
         
         for skillsetid in skillsetids:
             try:
                 skill_set_id = skill_set.objects.get(id=int(skillsetid))
-                skill_level = request.data.get('skill_level')
+                skill_level = request.data.get('skill_level','')
                 job_post_id=jobpost.id
                 job_post_instance = job_post.objects.get(id=job_post_id)
                 seekerskillset = job_post_skill_set( skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
@@ -433,11 +439,11 @@ class editjob(APIView):
         # user_account_id=user_account.objects.get(id=useraccountid)
 
         joblocation = jobpost.job_location_id
-        joblocation.street_address = request.data.get('street_address', joblocation.street_address)
-        joblocation.city = request.data.get('city', joblocation.city)
-        joblocation.state = request.data.get('state', joblocation.state)
-        joblocation.country = request.data.get('country', joblocation.country)
-        joblocation.zip = request.data.get('zip', joblocation.zip)
+        joblocation.street_address = request.data.get('street_address', joblocation.street_address,'')
+        joblocation.city = request.data.get('city', joblocation.city,'')
+        joblocation.state = request.data.get('state', joblocation.state,'')
+        joblocation.country = request.data.get('country', joblocation.country,'')
+        joblocation.zip = request.data.get('zip', joblocation.zip,'')
         joblocation.save()
 
         jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
@@ -463,14 +469,14 @@ class editjob(APIView):
             else:
                 # Handle invalid input
                 pass
-        jobpost.job_description = request.data.get('job_description', jobpost.job_description,'')
-        jobpost.job_qualification = request.data.get('job_qualification', jobpost.job_qualification,'')
-        jobpost.job_title = request.data.get('job_title', jobpost.job_title)
+        jobpost.job_description = request.data.get('job_description', jobpost.job_description)
+        jobpost.job_qualification = request.data.get('job_qualification', jobpost.job_qualification)
+        jobpost.job_title = request.data.get('job_title', jobpost.job_title,'')
         jobpost.job_location_id = joblocation
-        jobpost.created_date = request.data.get('created_date', jobpost.created_date)
-        jobpost.is_active = request.data.get('is_active', jobpost.is_active)
-        is_active_str = request.data.get('is_active')
-        experince_type_id = request.data.get('experince_type_id', jobpost.experince_type_id.id)
+        jobpost.created_date = request.data.get('created_date', jobpost.created_date,'')
+        jobpost.is_active = request.data.get('is_active', jobpost.is_active,'')
+        is_active_str = request.data.get('is_active','')
+        experince_type_id = request.data.get('experince_type_id', jobpost.experince_type_id.id,'')
         experince_type_instance = experince_type.objects.get(id=experince_type_id)
         jobpost.experince_type_id = experince_type_instance
 
@@ -486,7 +492,7 @@ class editjob(APIView):
         
         jobpost.save()
 
-        skillsetids = request.data.get('skill_set_id').split(',')
+        skillsetids = request.data.get('skill_set_id','').split(',')
         
         # # Delete existing records
         # job_post_skill_set.objects.filter(user_account_id=user_account_id).delete()
@@ -497,7 +503,7 @@ class editjob(APIView):
             if skillsetid:
                 try:
                     skill_set_id = skill_set.objects.get(id=int(skillsetid))
-                    skill_level = request.data.get('skill_level')
+                    skill_level = request.data.get('skill_level','')
                     job_post_id=jobpost.id
                     job_post_instance = job_post.objects.get(id=job_post_id)
                     seekerskillset = job_post_skill_set(skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
