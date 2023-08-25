@@ -163,7 +163,7 @@ class job_post_serializer(serializers.ModelSerializer):
     class Meta:
         model=job_post
         fields=['id','posted_by_id','job_type_id','company_id','user_account_id','experince_type_id','is_company_name_hidden','job_title','created_date',
-                'job_description','is_active','job_location_id','salary','createdDate','modifiedDate']
+                'job_description','job_qualification','is_active','job_location_id','salary','createdDate','modifiedDate']
         
 class job_post_activity_serializertest(serializers.ModelSerializer):
     
