@@ -364,7 +364,7 @@ class postjob(APIView):
         companyid=request.data.get('company_id','')
         useraccountid=request.data.get('user_account_id')
         job_title=request.data.get('job_title','')
-        salary=request.data.get('salary','')
+        salary=request.data.get('salary',0)
 
         joblocation = job_location(street_address=street_address, city=city, state=state, country=country,zip=zip)
         joblocation.save()
@@ -380,23 +380,23 @@ class postjob(APIView):
             company_id = None
             
         user_account_id=user_account.objects.get(id=useraccountid)
-        is_company_name_hidden = request.data.get('is_company_name_hidden','')
+        is_company_name_hidden = request.data.get('is_company_name_hidden',False)
         job_description = request.data.get('job_description')
         job_qualification = request.data.get('job_qualification','')
         job_location_id = joblocation.id
         created_date=request.data.get('created_date')
-        is_active = request.data.get('is_active','')
+        is_active = request.data.get('is_active',True)
         experincetypeid = request.data.get('experince_type_id','')
         experince_type_id = experince_type.objects.get(id=experincetypeid)
         job_location_instance = job_location.objects.get(id=job_location_id)
 
-        try:
-            job_qualification_list = json.loads(job_qualification)
-        except json.JSONDecodeError:
-            job_qualification_list = []
+        # try:
+        #     job_qualification_list = json.dumps(job_qualification)
+        # except json.JSONDecodeError:
+        #     job_qualification_list = []
 
         jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,job_title=job_title,
-                         job_description=job_description,job_qualification=json.dumps(job_qualification_list),job_location_id=job_location_instance,created_date=created_date,is_active=is_active,
+                         job_description=job_description,job_qualification=job_qualification,job_location_id=job_location_instance,created_date=created_date,is_active=is_active,
                          experince_type_id=experince_type_id,salary=salary,user_account_id=user_account_id)
         
         jobpost.save()
@@ -406,7 +406,7 @@ class postjob(APIView):
         for skillsetid in skillsetids:
             try:
                 skill_set_id = skill_set.objects.get(id=int(skillsetid))
-                skill_level = request.data.get('skill_level','')
+                skill_level = request.data.get('skill_level',0)
                 job_post_id=jobpost.id
                 job_post_instance = job_post.objects.get(id=job_post_id)
                 seekerskillset = job_post_skill_set( skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
