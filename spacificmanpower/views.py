@@ -482,6 +482,7 @@ class editjob(APIView):
                         existing_qual['value'] = new_qual.get('value')
                         break
                     
+        jobpost.job_qualification = new_job_qualification
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
         jobpost.job_location_id = joblocation
         jobpost.created_date = request.data.get('created_date', jobpost.created_date)
