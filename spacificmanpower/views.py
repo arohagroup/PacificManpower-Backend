@@ -473,7 +473,15 @@ class editjob(APIView):
                 # Handle invalid input
                 pass
         jobpost.job_description = request.data.get('job_description', jobpost.job_description)
-        jobpost.job_qualification = request.data.get('job_qualification', jobpost.job_qualification)
+        new_job_qualification = request.data.get('job_qualification', jobpost.job_qualification)
+        for new_qual in new_job_qualification:
+            qual_id = new_qual.get('id')
+            if qual_id is not None:
+                for existing_qual in jobpost.job_qualification:
+                    if existing_qual.get('id') == qual_id:
+                        existing_qual['value'] = new_qual.get('value')
+                        break
+                    
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
         jobpost.job_location_id = joblocation
         jobpost.created_date = request.data.get('created_date', jobpost.created_date)
