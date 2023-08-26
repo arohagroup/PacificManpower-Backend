@@ -382,7 +382,7 @@ class postjob(APIView):
         user_account_id=user_account.objects.get(id=useraccountid)
         is_company_name_hidden = request.data.get('is_company_name_hidden',False)
         job_description = request.data.get('job_description')
-        job_qualification = request.data.get('job_qualification','')
+        job_qualification = request.data.get('job_qualification',[])
         job_location_id = joblocation.id
         created_date=request.data.get('created_date')
         is_active = request.data.get('is_active',True)
@@ -395,8 +395,11 @@ class postjob(APIView):
         # except json.JSONDecodeError:
         #     job_qualification_list = []
 
+        job_qualifications_with_ids = [{'id': idx, 'value': qual['value']} for idx, qual in enumerate(job_qualification, start=1)]
+
+
         jobpost=job_post(job_type_id=job_type_id,company_id=company_id,is_company_name_hidden=is_company_name_hidden,job_title=job_title,
-                         job_description=job_description,job_qualification=job_qualification,job_location_id=job_location_instance,created_date=created_date,is_active=is_active,
+                         job_description=job_description,job_qualification=job_qualifications_with_ids,job_location_id=job_location_instance,created_date=created_date,is_active=is_active,
                          experince_type_id=experince_type_id,salary=salary,user_account_id=user_account_id)
         
         jobpost.save()
