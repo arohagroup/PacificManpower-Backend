@@ -472,17 +472,52 @@ class editjob(APIView):
             else:
                 # Handle invalid input
                 pass
+
         jobpost.job_description = request.data.get('job_description', jobpost.job_description)
-        new_job_qualification = request.data.get('job_qualification', jobpost.job_qualification)
-        for new_qual in new_job_qualification:
-            qual_id = new_qual.get('id')
-            if qual_id is not None:
-                for existing_qual in jobpost.job_qualification:
-                    if existing_qual.get('id') == qual_id:
-                        existing_qual['value'] = new_qual.get('value')
-                        break
-                    
-        jobpost.job_qualification = new_job_qualification
+        
+        incoming_data = {}
+
+        # for i in range(len(request.data.getlist('job_qualification[0][id]'))):
+        #     id = request.data.getlist('job_qualification[{}][id]'.format(i))[0]
+        #     value = request.data.getlist('job_qualification[{}][value]'.format(i))[0]
+        #     incoming_data[int(id)] = value
+
+        # existing_qualifications = jobpost.job_qualification
+
+        # for qualification in existing_qualifications:
+        #     id = qualification['id']
+        #     existing_value = qualification['value']
+        #     incoming_value = incoming_data.get(id)
+
+        #     if incoming_value and incoming_value != existing_value:
+        #         qualification['value'] = incoming_value
+
+        # jobpost.job_qualification = existing_qualifications
+
+        for key in request.data.keys():
+            if key.startswith('job_qualification[') and key.endswith('][id]'):
+                # Extract the index value from the key
+                start_index = key.find('[') + 1
+                end_index = key.find(']')
+                index_value = int(key[start_index:end_index])
+                
+                id = request.data.getlist('job_qualification[{}][id]'.format(index_value))[0]
+                value = request.data.getlist('job_qualification[{}][value]'.format(index_value))[0]
+                incoming_data[int(id)] = value
+
+        existing_qualifications = jobpost.job_qualification
+
+        for qualification in existing_qualifications:
+            id = qualification['id']
+            existing_value = qualification['value']
+            incoming_value = incoming_data.get(id)
+
+            if incoming_value and incoming_value != existing_value:
+                qualification['value'] = incoming_value
+
+        jobpost.job_qualification = existing_qualifications
+
+
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
         jobpost.job_location_id = joblocation
         jobpost.created_date = request.data.get('created_date', jobpost.created_date)
