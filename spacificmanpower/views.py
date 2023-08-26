@@ -488,6 +488,12 @@ class editjob(APIView):
         #         incoming_data[int(id)] = value
 
         # existing_qualifications = jobpost.job_qualification
+        # existing_ids = [qualification['id'] for qualification in existing_qualifications]
+
+        # for qualification in existing_qualifications:
+        #     id = qualification['id']
+        #     if id not in incoming_data:
+        #         existing_qualifications.remove(qualification)
 
         # for qualification in existing_qualifications:
         #     id = qualification['id']
@@ -497,20 +503,16 @@ class editjob(APIView):
         #     if incoming_value and incoming_value != existing_value:
         #         qualification['value'] = incoming_value
 
-
         # for key in request.data.keys():
         #     if key.startswith('job_qualification[') and key.endswith('][id]'):
         #         start_index = key.find('[') + 1
         #         end_index = key.find(']')
         #         id = int(key[start_index:end_index])
 
-                
-        #         if id not in [qualification['id'] for qualification in existing_qualifications]:
+        #         if id not in existing_ids:
         #             value = request.data.getlist('job_qualification[{}][value]'.format(id))[0]
         #             existing_qualifications.append({'id': id, 'value': value})
 
-
-        
         # jobpost.job_qualification = existing_qualifications
 
         incoming_data = {}
@@ -526,6 +528,10 @@ class editjob(APIView):
                 incoming_data[int(id)] = value
 
         existing_qualifications = jobpost.job_qualification
+
+        if not existing_qualifications:
+            existing_qualifications = []
+
         existing_ids = [qualification['id'] for qualification in existing_qualifications]
 
         # Remove qualifications that are not in the incoming request
@@ -554,6 +560,7 @@ class editjob(APIView):
                     existing_qualifications.append({'id': id, 'value': value})
 
         jobpost.job_qualification = existing_qualifications
+
 
 
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
