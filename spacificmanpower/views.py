@@ -25,8 +25,11 @@ from django.forms.models import model_to_dict
 from django.http import QueryDict
 from django.utils import timezone
 from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+
+import sys
+import re
+
 import os
 # Create your views here.
 
@@ -488,13 +491,19 @@ class editjob(APIView):
         #         incoming_data[int(id)] = value
 
         # existing_qualifications = jobpost.job_qualification
+
+        # if not existing_qualifications:
+        #     existing_qualifications = []
+
         # existing_ids = [qualification['id'] for qualification in existing_qualifications]
 
+        # # Remove qualifications that are not in the incoming request
         # for qualification in existing_qualifications:
         #     id = qualification['id']
         #     if id not in incoming_data:
         #         existing_qualifications.remove(qualification)
 
+        # # Update or add qualifications based on incoming data
         # for qualification in existing_qualifications:
         #     id = qualification['id']
         #     existing_value = qualification['value']
@@ -529,25 +538,19 @@ class editjob(APIView):
 
         existing_qualifications = jobpost.job_qualification
 
-        if not existing_qualifications:
-            existing_qualifications = []
+        # Create a new list to store filtered qualifications
+        filtered_qualifications = []
 
-        existing_ids = [qualification['id'] for qualification in existing_qualifications]
-
-        # Remove qualifications that are not in the incoming request
         for qualification in existing_qualifications:
             id = qualification['id']
-            if id not in incoming_data:
-                existing_qualifications.remove(qualification)
+            if id in incoming_data:
+                existing_value = qualification['value']
+                incoming_value = incoming_data[id]
+                
+                if incoming_value != existing_value:
+                    qualification['value'] = incoming_value
 
-        # Update or add qualifications based on incoming data
-        for qualification in existing_qualifications:
-            id = qualification['id']
-            existing_value = qualification['value']
-            incoming_value = incoming_data.get(id)
-
-            if incoming_value and incoming_value != existing_value:
-                qualification['value'] = incoming_value
+                filtered_qualifications.append(qualification)
 
         for key in request.data.keys():
             if key.startswith('job_qualification[') and key.endswith('][id]'):
@@ -555,11 +558,14 @@ class editjob(APIView):
                 end_index = key.find(']')
                 id = int(key[start_index:end_index])
 
-                if id not in existing_ids:
+                if id not in [qualification['id'] for qualification in existing_qualifications]:
                     value = request.data.getlist('job_qualification[{}][value]'.format(id))[0]
-                    existing_qualifications.append({'id': id, 'value': value})
+                    filtered_qualifications.append({'id': id, 'value': value})
 
-        jobpost.job_qualification = existing_qualifications
+        # Update job_qualification with the filtered qualifications
+        jobpost.job_qualification = filtered_qualifications
+
+
 
 
 
@@ -906,7 +912,8 @@ class applyjob(APIView):
         country = request.data.get('country')
         enquiry = request.data.get('enquiry')
         uploaded_cv = request.data.get('uploaded_cv')
-            
+        
+
         SMTPserver = 'shared42.accountservergroup.com'
         sender = 'support@pacificmanpower.com.pg'
         destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg']
@@ -915,12 +922,14 @@ class applyjob(APIView):
         PASSWORD = "I2GJS.]rYk^s321"
 
         text_subtype = 'html'
+
+        # Construct the email content
         content = f"""\
             <html>
-              <head>
+            <head>
                 
-              </head>
-              <body>
+            </head>
+            <body>
                 <table> 
                 <tr>
                     <td>Job Name: </td>
@@ -928,76 +937,72 @@ class applyjob(APIView):
                 </tr>
                 <tr>
                     <td>First Name: </td>
-                    <td>{request.data['applicant_name']}</td>
+                    <td>{applicant_name}</td>
                 </tr>
                 <br>
                 <tr>
                     <td>Email address: </td>
-                    <td>{request.data['applicant_email']}</td>
+                    <td>{applicant_email}</td>
                 </tr>
                 <br>
                 <tr>
                     <td>Phone: </td>
-                    <td>{request.data['phone_num']}</td>
+                    <td>{phone_num}</td>
                 </tr>
                 <br>
                 <tr>
                     <td>City: </td>
-                    <td>{request.data['city']}</td>
+                    <td>{city}</td>
                 </tr>
                 <br>
                 <tr>
                     <td>Country: </td>
-                    <td>{request.data['country']}</td>
+                    <td>{country}</td>
                 </tr>
                 <br>
                 <tr>
                     <td>Enquiry: </td>
-                    <td>{request.data['enquiry']}</td>
+                    <td>{enquiry}</td>
                 </tr>
                 <br>
                 </table><br>
-              </body>
+            </body>
             </html>
             """
 
         subject = "Job Application"
 
-        # msg = MIMEText(content, text_subtype)
         msg = MIMEMultipart()
         msg['Subject'] = subject
         msg['From'] = sender
-        msg['To'] = destination
+        msg['To'] = ', '.join(destination)
 
-        msg.attach(MIMEText(content, text_subtype))
+        # Create and attach the HTML content
+        html_content = MIMEText(content, 'html')
+        msg.attach(html_content)
 
-        # Attach the uploaded CV file
-        cv_filename = os.path.basename(uploaded_cv.name)  # Extract the filename from the uploaded_cv object
+        # Get the file name with its extension from uploaded_cv
+        cv_filename = os.path.basename(uploaded_cv.name)
 
-        # Save the uploaded CV to a temporary file
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            for chunk in uploaded_cv.chunks():
-                temp_file.write(chunk)
-            temp_file_path = temp_file.name
+        # Attach the uploaded CV as a file
+        uploaded_cv.seek(0)  # Reset the file pointer to the beginning
+        cv_attachment = MIMEApplication(uploaded_cv.read(), _subtype="pdf")
+        cv_attachment.add_header('content-disposition', f'attachment', filename=cv_filename)
+        msg.attach(cv_attachment)
 
-        # Attach the temporary CV file to the email
-        with open(temp_file_path, "rb") as f:
-            cv_part = MIMEApplication(f.read(), Name=cv_filename)
-        cv_part['Content-Disposition'] = f'attachment; filename="{cv_filename}"'
-        msg.attach(cv_part)
-
-
-        conn = SMTP(SMTPserver)
-        conn.set_debuglevel(False)
-        conn.login(USERNAME, PASSWORD)
+        # Connect to the SMTP server and send the email
         try:
-            conn.sendmail(sender, destination, msg.as_string())
-        finally:
-            conn.quit()
+            conn = SMTP(SMTPserver)
+            conn.set_debuglevel(False)
+            conn.login(USERNAME, PASSWORD)
+            try:
+                conn.sendmail(sender, destination, msg.as_string())
+            finally:
+                conn.quit()
+        except:
+            sys.exit("mail failed; %s" % "CUSTOM_ERROR")  # Give an error message
 
-        os.remove(temp_file_path)
-
-        return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 class trendingnews(APIView):
 
