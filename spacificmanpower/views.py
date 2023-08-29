@@ -1340,14 +1340,17 @@ class contactus(APIView):
         getInTouch=contact_us(email=email,name=name,message=message)
         getInTouch.save()
             
+
         SMTPserver = 'shared42.accountservergroup.com'
-        sender = 'support@pacificmanpower.com.pg'
+        sender =     'support@pacificmanpower.com.pg'
         destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg']
 
         USERNAME = "ashwini@arohagroup.com"
         PASSWORD = "I2GJS.]rYk^s321"
 
+        # typical values for text_subtype are plain, html, xml
         text_subtype = 'html'
+
         content = f"""\
             <html>
               <head>
@@ -1383,18 +1386,21 @@ class contactus(APIView):
 
         subject = "Contact Us"
 
-        msg = MIMEText(content, text_subtype)
-        msg['Subject'] = subject
-        msg['From'] = sender
-        msg['To'] = ', '.join(destination)
-
-        conn = SMTP(SMTPserver)
-        conn.set_debuglevel(False)
-        conn.login(USERNAME, PASSWORD)
         try:
-            conn.sendmail(sender, destination, msg.as_string())
-        finally:
-            conn.quit()
+            msg = MIMEText(content, text_subtype)
+            msg['Subject']= subject
+            msg['From']   = sender # some SMTP servers will do this automatically, not all
+
+            conn = SMTP(SMTPserver)
+            conn.set_debuglevel(False)
+            conn.login(USERNAME, PASSWORD)
+            try:
+                conn.sendmail(sender, destination, msg.as_string())
+            finally:
+                conn.quit()
+
+        except:
+            sys.exit( "mail failed; %s" % "CUSTOM_ERROR" ) # give an error message
 
         return Response({'email sent': True}, status=status.HTTP_201_CREATED)
     
@@ -1420,13 +1426,15 @@ class recEmail(APIView):
         getInTouch.save()
 
         SMTPserver = 'shared42.accountservergroup.com'
-        sender = 'support@pacificmanpower.com.pg'
+        sender =     'support@pacificmanpower.com.pg'
         destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg']
 
         USERNAME = "ashwini@arohagroup.com"
         PASSWORD = "I2GJS.]rYk^s321"
 
+        # typical values for text_subtype are plain, html, xml
         text_subtype = 'html'
+        
         content = f"""\
             <html>
               <head>
@@ -1461,18 +1469,22 @@ class recEmail(APIView):
             """
         
         subject = "Recruitment service"
-        msg = MIMEText(content, text_subtype)
-        msg['Subject'] = subject
-        msg['From'] = sender
-        msg['To'] = destination
-
-        conn = SMTP(SMTPserver)
-        conn.set_debuglevel(False)
-        conn.login(USERNAME, PASSWORD)
         try:
-            conn.sendmail(sender, destination, msg.as_string())
-        finally:
-            conn.quit()
+            msg = MIMEText(content, text_subtype)
+            msg['Subject']= subject
+            msg['From']   = sender # some SMTP servers will do this automatically, not all
+
+            conn = SMTP(SMTPserver)
+            conn.set_debuglevel(False)
+            conn.login(USERNAME, PASSWORD)
+            try:
+                conn.sendmail(sender, destination, msg.as_string())
+            finally:
+                conn.quit()
+
+        except:
+            sys.exit( "mail failed; %s" % "CUSTOM_ERROR" ) # give an error message
+
 
         return Response({'email sent': True}, status=status.HTTP_201_CREATED)
     
