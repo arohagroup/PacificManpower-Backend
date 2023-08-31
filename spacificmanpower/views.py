@@ -1517,10 +1517,10 @@ class joblistbycompany(APIView):
             serializer = job_post_serializer(filtered_data, many=True)
             return Response(serializer.data)
     
-class filteredjobbyparttime(APIView):
+class filteredjobbycontract(APIView):
     def get(self, request, format=None, *args, **kwargs):
 
-        filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='part time')
+        filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='contract')
 
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)
@@ -1546,21 +1546,21 @@ class applyjobUserIdTrue(APIView):
         serializer = job_post_activity_serializertest(filtered_data, many=True)
         return Response(serializer.data)
     
-class filteredjobbyfulltime(APIView):
+class filteredjobbypermanent(APIView):
     def get(self, request, format=None, *args, **kwargs):
 
-        filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='full time')
+        filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='permanent')
 
         serializer = job_post_serializer(filtered_data, many=True)
         return Response(serializer.data)
     
-class filteredjobbyfreelancer(APIView):
-    def get(self, request, format=None, *args, **kwargs):
+# class filteredjobbyfreelancer(APIView):
+#     def get(self, request, format=None, *args, **kwargs):
 
-        filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='freelancer')
+#         filtered_data = job_post.objects.filter(job_type_id__job_type__iexact='freelancer')
 
-        serializer = job_post_serializer(filtered_data, many=True)
-        return Response(serializer.data)
+#         serializer = job_post_serializer(filtered_data, many=True)
+#         return Response(serializer.data)
     
 
 class subscribeemail(APIView):
