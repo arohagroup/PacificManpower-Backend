@@ -2,12 +2,16 @@ import datetime
 from .serializers import *
 from .models import *
 from django.contrib.auth.models import User, Group
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.core import serializers
-from rest_framework import status,viewsets
-from django.http import Http404
+from rest_framework import viewsets, status, permissions, generics
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.core import serializers
+from django.http import Http404
 from django.http import HttpResponse
 from django.utils.crypto import get_random_string
 from ast import literal_eval
@@ -15,7 +19,7 @@ import json
 import ast
 import tempfile
 from django.db.models import Q
-from django.core.mail import BadHeaderError, send_mail
+from django.core.mail import BadHeaderError, send_mail, EmailMessage
 from django.shortcuts import get_object_or_404
 from smtplib import SMTP_SSL as SMTP
 from email.mime.text import MIMEText
@@ -26,6 +30,8 @@ from django.http import QueryDict
 from django.utils import timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+
+from django.conf import settings
 
 import sys
 import re
@@ -68,7 +74,7 @@ class usersaveaccount(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-
+        request.data._mutable = True
         email_address = request.data.get('email_address')
         if user_account.objects.filter(email_address=email_address).exists():
             return Response({"message": "Email address already exists"}, status=status.HTTP_400_BAD_REQUEST)
@@ -85,7 +91,9 @@ class usersaveaccount(APIView):
             userObject = user_type.objects.get(pk=user_type_id)
             request.data['isactive'] = True
         serializer = user_account_serializer(data=request.data)
-
+        
+        request.data._mutable = False
+        
         if serializer.is_valid():
             serializer.save(user_type_id=userObject)
             user_id = user_account.objects.last()
@@ -363,16 +371,22 @@ class postjob(APIView):
         state = request.data.get('state','')
         country = request.data.get('country','')
         zip = request.data.get('zip','')
-        jobtypeid=request.data.get('job_type_id','')
-        companyid=request.data.get('company_id','')
-        useraccountid=request.data.get('user_account_id')
+        jobtypeid=request.data.get('job_type_id',None)
+        companyid=request.data.get('company_id',None)
+        useraccountid=request.data.get('user_account_id', None)
         job_title=request.data.get('job_title','')
         salary=request.data.get('salary',0)
 
         joblocation = job_location(street_address=street_address, city=city, state=state, country=country,zip=zip)
         joblocation.save()
 
-        job_type_id = job_type.objects.get(id=jobtypeid)
+        if jobtypeid:
+            try:
+                job_type_id = job_type.objects.get(id=jobtypeid)
+            except job_type.DoesNotExist:
+                return Response({"message": "Invalid job_type ID"}, status=400)
+        else:
+            job_type_id = None
 
         if companyid:
             try:
@@ -381,16 +395,30 @@ class postjob(APIView):
                 return Response({"message": "Invalid company ID"}, status=400)
         else:
             company_id = None
-            
-        user_account_id=user_account.objects.get(id=useraccountid)
+        
+        if useraccountid:
+            try:
+                user_account_id=user_account.objects.get(id=useraccountid)
+            except user_account.DoesNotExist:
+                return Response({"message": "Invalid user_account ID"}, status=400)
+        else:
+            user_account_id = None
+        
         is_company_name_hidden = request.data.get('is_company_name_hidden',False)
         job_description = request.data.get('job_description')
         job_qualification = request.data.get('job_qualification',[])
         job_location_id = joblocation.id
         created_date=request.data.get('created_date')
         is_active = request.data.get('is_active',True)
-        experincetypeid = request.data.get('experince_type_id','')
-        experince_type_id = experince_type.objects.get(id=experincetypeid)
+        experincetypeid = request.data.get('experince_type_id',None)
+        if experincetypeid:
+            try:
+                experince_type_id = experince_type.objects.get(id=experincetypeid)
+            except experince_type.DoesNotExist:
+                return Response({"message": "Invalid experince_type ID"}, status=400)
+        else:
+            experince_type_id = None
+        
         job_location_instance = job_location.objects.get(id=job_location_id)
 
         # try:
@@ -407,18 +435,19 @@ class postjob(APIView):
         
         jobpost.save()
 
-        skillsetids = request.data.get('skill_set_id','').split(',') 
-        
-        for skillsetid in skillsetids:
-            try:
-                skill_set_id = skill_set.objects.get(id=int(skillsetid))
-                skill_level = request.data.get('skill_level',0)
-                job_post_id=jobpost.id
-                job_post_instance = job_post.objects.get(id=job_post_id)
-                seekerskillset = job_post_skill_set( skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
-                seekerskillset.save() 
-            except skill_set.DoesNotExist:
-                pass
+        skillsetids = request.data.get('skill_set_id',None)
+        if skillsetids != None :
+            skillsetids = request.data.get('skill_set_id',None).split(',') 
+            for skillsetid in skillsetids:
+                try:
+                    skill_set_id = skill_set.objects.get(id=int(skillsetid))
+                    skill_level = request.data.get('skill_level',0)
+                    job_post_id=jobpost.id
+                    job_post_instance = job_post.objects.get(id=job_post_id)
+                    seekerskillset = job_post_skill_set( skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
+                    seekerskillset.save() 
+                except skill_set.DoesNotExist:
+                    pass
         
         return Response(status=status.HTTP_201_CREATED)
 
@@ -452,7 +481,11 @@ class editjob(APIView):
         joblocation.zip = request.data.get('zip', joblocation.zip)
         joblocation.save()
 
-        jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', jobpost.job_type_id.id))
+        if jobpost.job_type_id:
+            job_type_id_id = jobpost.job_type_id.id
+        else:
+            job_type_id_id = None
+        jobpost.job_type_id = job_type.objects.get(id=request.data.get('job_type_id', job_type_id_id))
         # jobpost.company_id = company.objects.get(id=request.data.get('company_id', jobpost.company_id.id))
         
         company_id = request.data.get('company_id', None)
@@ -466,8 +499,8 @@ class editjob(APIView):
             company_instance = None
 
         
-        is_company_name_hidden = request.data.get('is_company_name_hidden', None)
-        if is_company_name_hidden is not None:
+        is_company_name_hidden = request.data.get('is_company_name_hidden',jobpost.is_company_name_hidden)
+        if isinstance(is_company_name_hidden,str):
             if is_company_name_hidden.lower() == 'true':
                 jobpost.is_company_name_hidden = True
             elif is_company_name_hidden.lower() == 'false':
@@ -475,6 +508,8 @@ class editjob(APIView):
             else:
                 # Handle invalid input
                 pass
+        else:
+            jobpost.is_company_name_hidden = request.data.get('is_company_name_hidden',jobpost.is_company_name_hidden)
 
         jobpost.job_description = request.data.get('job_description', jobpost.job_description)
         
@@ -572,43 +607,69 @@ class editjob(APIView):
         jobpost.job_title = request.data.get('job_title', jobpost.job_title)
         jobpost.job_location_id = joblocation
         jobpost.created_date = request.data.get('created_date', jobpost.created_date)
-        jobpost.is_active = request.data.get('is_active', jobpost.is_active)
-        is_active_str = request.data.get('is_active')
-        experince_type_id = request.data.get('experince_type_id', jobpost.experince_type_id.id)
-        experince_type_instance = experince_type.objects.get(id=experince_type_id)
-        jobpost.experince_type_id = experince_type_instance
+        is_active = request.data.get('is_active', jobpost.is_active)
+        if isinstance(is_active,str):
+            if is_active.lower() == 'true':
+                jobpost.is_active = True
+            elif is_active.lower() == 'false':
+                jobpost.is_active = False
+            else:
+                # Handle invalid input
+                pass
+        else:
+            jobpost.is_active = request.data.get('is_active', jobpost.is_active) 
 
-        user_account_id = request.data.get('user_account_id', jobpost.user_account_id.id)
-        user_account_id_instance = user_account.objects.get(id=user_account_id)
-        jobpost.user_account_id = user_account_id_instance
+        # is_active_str = request.data.get('is_active')
+        if jobpost.experince_type_id:
+            experince_type_id_id = jobpost.experince_type_id.id 
+        else:
+            experince_type_id_id = None
+        experince_type_id = request.data.get('experince_type_id', experince_type_id_id)
+        if experince_type_id:
+            experince_type_instance = experince_type.objects.get(id=experince_type_id)
+            jobpost.experince_type_id = experince_type_instance
+        else:
+            jobpost.experince_type_id = None
+        if jobpost.user_account_id:
+            user_account_id_id = jobpost.user_account_id.id 
+        else:
+            user_account_id_id = None
+        user_account_id = request.data.get('user_account_id', user_account_id_id)
+        if user_account_id:
+            user_account_id_instance = user_account.objects.get(id=user_account_id)
+            jobpost.user_account_id = user_account_id_instance
+        else:
+            jobpost.user_account_id = None
         # jobpost.experince_type_id = request.data.get('experince_type_id',jobpost.experince_type_id)
 
         jobpost.salary = request.data.get('salary',jobpost.salary)
-        jobpost.is_active = ast.literal_eval(is_active_str.title())
+        # jobpost.is_active = ast.literal_eval(is_active_str.title())
 
         jobpost.company_id = company_instance
         
         jobpost.save()
 
-        skillsetids = request.data.get('skill_set_id').split(',')
-        
-        # # Delete existing records
-        # job_post_skill_set.objects.filter(user_account_id=user_account_id).delete()
-        
-        seekerskillset = None
+        skillsetids = request.data.get('skill_set_id',None)
+        if skillsetids != None :
 
-        for skillsetid in skillsetids:
-            if skillsetid:
-                try:
-                    skill_set_id = skill_set.objects.get(id=int(skillsetid))
-                    skill_level = request.data.get('skill_level')
-                    job_post_id=jobpost.id
-                    job_post_instance = job_post.objects.get(id=job_post_id)
-                    seekerskillset = job_post_skill_set(skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
-                    seekerskillset.save() 
-                except skill_set.DoesNotExist:
-                    
-                    pass
+            skillsetids = request.data.get('skill_set_id').split(',')
+            
+            # # Delete existing records
+            # job_post_skill_set.objects.filter(user_account_id=user_account_id).delete()
+            
+            seekerskillset = None
+
+            for skillsetid in skillsetids:
+                if skillsetid:
+                    try:
+                        skill_set_id = skill_set.objects.get(id=int(skillsetid))
+                        skill_level = request.data.get('skill_level')
+                        job_post_id=jobpost.id
+                        job_post_instance = job_post.objects.get(id=job_post_id)
+                        seekerskillset = job_post_skill_set(skill_set_id=skill_set_id, skill_level=skill_level,job_post_id=job_post_instance)
+                        seekerskillset.save() 
+                    except skill_set.DoesNotExist:
+                        pass
 
         serializer = job_post_serializer(jobpost)
         return Response(serializer.data)
@@ -884,7 +945,6 @@ class applyjob(APIView):
         uploaded_cv = request.data.get('uploaded_cv')
         notice_period = request.data.get('notice_period')
         expected_pay = request.data.get('expected_pay')
-
         city = request.data.get('city')
         country = request.data.get('country')
         enquiry = request.data.get('enquiry')
@@ -894,6 +954,7 @@ class applyjob(APIView):
 
         jobpostid = request.data.get('job_post_id')
         job_post_id = job_post.objects.get(id=jobpostid)
+        
 
         jobpostactivity = job_post_activity(job_post_id=job_post_id, apply_date=datetime.now(),
                                                 status=status_test,experience=experience,applicant_name=applicant_name,
@@ -914,12 +975,14 @@ class applyjob(APIView):
         uploaded_cv = request.data.get('uploaded_cv')
         
 
-        SMTPserver = 'shared42.accountservergroup.com'
-        sender = 'support@pacificmanpower.com.pg'
-        destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg']
+        # SMTPserver = 'shared42.accountservergroup.com'
+        # sender = 'support@pacificmanpower.com.pg'
+        # destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg', 'ashwitha@arohagroup.com', 'ashwitharao366@gmail.com']
+        sender = settings.EMAIL_HOST_USER
+        destination = ['ashwitha@arohagroup.com', request.data.get('applicant_email')]
 
-        USERNAME = "ashwini@arohagroup.com"
-        PASSWORD = "I2GJS.]rYk^s321"
+        # USERNAME = "ashwini@arohagroup.com"
+        # PASSWORD = "I2GJS.]rYk^s321"
 
         text_subtype = 'html'
 
@@ -976,6 +1039,7 @@ class applyjob(APIView):
         msg['Subject'] = subject
         msg['From'] = sender
         msg['To'] = ', '.join(destination)
+        msg['Reply-To'] = [request.data.get('applicant_email')]
 
         # Create and attach the HTML content
         html_content = MIMEText(content, 'html')
@@ -990,17 +1054,32 @@ class applyjob(APIView):
         cv_attachment.add_header('content-disposition', f'attachment', filename=cv_filename)
         msg.attach(cv_attachment)
 
-        # Connect to the SMTP server and send the email
-        try:
-            conn = SMTP(SMTPserver)
-            conn.set_debuglevel(False)
-            conn.login(USERNAME, PASSWORD)
-            try:
-                conn.sendmail(sender, destination, msg.as_string())
-            finally:
-                conn.quit()
-        except:
-            sys.exit("mail failed; %s" % "CUSTOM_ERROR")  # Give an error message
+        reply_to = [request.data.get('applicant_email')]  # Specify the reply-to address here
+
+        # Create EmailMessage object
+        email = EmailMessage(subject, msg, sender, destination)
+
+        # Attach HTML content to the email
+        email.content_subtype = "html"
+        email.body = msg.as_string()
+
+        # Add Reply-To header
+        email.reply_to = reply_to  # Specify the reply-to address here
+
+        # Send email
+        email.send()
+        
+        # # Connect to the SMTP server and send the email
+        # try:
+        #     conn = SMTP(SMTPserver)
+        #     conn.set_debuglevel(False)
+        #     conn.login(USERNAME, PASSWORD)
+        #     try:
+        #         conn.sendmail(sender, destination, msg.as_string())
+        #     finally:
+        #         conn.quit()
+        # except:
+        #     sys.exit("mail failed; %s" % "CUSTOM_ERROR")  # Give an error message
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
@@ -1158,8 +1237,48 @@ class applyjobIND(APIView):
         jobpostactivity.job_post_id__id = job_post_id
 
         jobpostactivity.save()
+        if status_test == "accepted" :
+            subject = 'Shortlisted for the Job Post'
+            # message = 'HI, ' + jobpostactivity.applicant_name + '\n\n Your Profile is Shortlisted for the Job Posting ID:' + job_post_id + '.'
+            message = ''
+            html_message = f"""\
+            <html>
+              <head>
+                
+              </head>
+              <body>
+    
+                <h2>Hey, {jobpostactivity.applicant_name}</h2>
+                <h3>CONGRATULATIONS</h3>
+                <p>Your profile has been shortlisted for the position in the Job Post. We will contact you soon.</p>
 
-        return Response({"message": "updated"}, status=status.HTTP_201_CREATED) 
+                <br/><br/>
+                <p>Best Regards,<br/></p>
+                <a href="https://pacificmanpower.com.pg/">pacificmanpower.com.pg</a>
+                <br/>
+                <i><small>This is an automated email sent by Pacific Man Power Solutions.</small></i>
+                </body>
+            </html>
+            """
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = ['ashwitha@arohagroup.com', jobpostactivity.applicant_email]
+            reply_to = ['operations@pacificmanpower.com.pg']  # Specify the reply-to address here
+    
+            # Create EmailMessage object
+            email = EmailMessage(subject, message, email_from, recipient_list)
+    
+            # Attach HTML content to the email
+            email.content_subtype = "html"
+            email.body = html_message
+    
+            # Add Reply-To header
+            email.reply_to = reply_to  # Specify the reply-to address here
+    
+            # Send email
+            email.send()
+            print('Mail Sent...')
+
+        return JsonResponse({"message": "updated"}, status=status.HTTP_201_CREATED) 
 
 class editseekrprofile(APIView):
     def get_object(self, pk):
@@ -1341,17 +1460,10 @@ class contactus(APIView):
         getInTouch.save()
             
 
-        SMTPserver = 'shared42.accountservergroup.com'
-        sender =     'support@pacificmanpower.com.pg'
-        destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg']
-
-        USERNAME = "ashwini@arohagroup.com"
-        PASSWORD = "I2GJS.]rYk^s321"
-
-        # typical values for text_subtype are plain, html, xml
-        text_subtype = 'html'
-
-        content = f"""\
+        # Set up email parameters
+        subject = 'Contact Us Form Details'
+        message = ''
+        html_message = f"""\
             <html>
               <head>
                 
@@ -1359,10 +1471,10 @@ class contactus(APIView):
               <body>
                 <p>
 
-                <p2>Hi,</p2>
+                <p>Hi,</p>
                 <br>
                 <br>
-                <p2>Below the information about the user who is interested</p2>
+                <p>Below the information about the user who is interested</p>
                 <br><br>
                 <table> 
                 <tr>
@@ -1383,26 +1495,24 @@ class contactus(APIView):
               </body>
             </html>
             """
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = ['operations@pacificmanpower.com.pg', 'ashwitharao366@gmail.com', request.data['email']]
+        reply_to = [request.data['email']]  # Specify the reply-to address here
 
-        subject = "Contact Us"
+        # Create EmailMessage object
+        email = EmailMessage(subject, message, email_from, recipient_list)
 
-        try:
-            msg = MIMEText(content, text_subtype)
-            msg['Subject']= subject
-            msg['From']   = sender # some SMTP servers will do this automatically, not all
+        # Attach HTML content to the email
+        email.content_subtype = "html"
+        email.body = html_message
 
-            conn = SMTP(SMTPserver)
-            conn.set_debuglevel(False)
-            conn.login(USERNAME, PASSWORD)
-            try:
-                conn.sendmail(sender, destination, msg.as_string())
-            finally:
-                conn.quit()
+        # Add Reply-To header
+        email.reply_to = reply_to  # Specify the reply-to address here
 
-        except:
-            sys.exit( "mail failed; %s" % "CUSTOM_ERROR" ) # give an error message
-
-        return Response({'email sent': True}, status=status.HTTP_201_CREATED)
+        # Send email
+        email.send()
+        
+        return JsonResponse({'email sent': True}, status=status.HTTP_201_CREATED)
     
 class recEmail(APIView):
 
@@ -1425,12 +1535,12 @@ class recEmail(APIView):
         getInTouch=recservice(email=email,name=name,message=message)
         getInTouch.save()
 
-        SMTPserver = 'shared42.accountservergroup.com'
-        sender =     'support@pacificmanpower.com.pg'
+        # SMTPserver = 'shared42.accountservergroup.com'
+        # sender =     'support@pacificmanpower.com.pg'
         destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg']
 
-        USERNAME = "ashwini@arohagroup.com"
-        PASSWORD = "I2GJS.]rYk^s321"
+        # USERNAME = "ashwini@arohagroup.com"
+        # PASSWORD = "I2GJS.]rYk^s321"
 
         # typical values for text_subtype are plain, html, xml
         text_subtype = 'html'
@@ -1469,24 +1579,38 @@ class recEmail(APIView):
             """
         
         subject = "Recruitment service"
-        try:
-            msg = MIMEText(content, text_subtype)
-            msg['Subject']= subject
-            msg['From']   = sender # some SMTP servers will do this automatically, not all
+        # try:
+        #     msg = MIMEText(content, text_subtype)
+        #     msg['Subject']= subject
+        #     msg['From']   = sender # some SMTP servers will do this automatically, not all
 
-            conn = SMTP(SMTPserver)
-            conn.set_debuglevel(False)
-            conn.login(USERNAME, PASSWORD)
-            try:
-                conn.sendmail(sender, destination, msg.as_string())
-            finally:
-                conn.quit()
+        #     conn = SMTP(SMTPserver)
+        #     conn.set_debuglevel(False)
+        #     conn.login(USERNAME, PASSWORD)
+        #     try:
+        #         conn.sendmail(sender, destination, msg.as_string())
+        #     finally:
+        #         conn.quit()
 
-        except:
-            sys.exit( "mail failed; %s" % "CUSTOM_ERROR" ) # give an error message
+        # except:
+        #     sys.exit( "mail failed; %s" % "CUSTOM_ERROR" ) # give an error message
 
+        reply_to = [request.data['email']]  # Specify the reply-to address here
 
-        return Response({'email sent': True}, status=status.HTTP_201_CREATED)
+        # Create EmailMessage object
+        email = EmailMessage(subject, message, email_from, recipient_list)
+
+        # Attach HTML content to the email
+        email.content_subtype = "html"
+        email.body = content
+
+        # Add Reply-To header
+        email.reply_to = reply_to  # Specify the reply-to address here
+
+        # Send email
+        email.send()
+        
+        return JsonResponse({'email sent': True}, status=status.HTTP_201_CREATED)
     
 class joblistbycompany(APIView):
     def get(self, request,searchItem, format=None, *args, **kwargs):
@@ -1705,7 +1829,7 @@ class editgallery(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class statusThroughfilter(APIView):
-    def get(self, request, status,format=None, *args, **kwargs):
+    def get(self, request, status, format=None, *args, **kwargs):
         filtered_data=None
         if status.lower()=='accepted':
             filtered_data = job_post_activity.objects.filter(status__iexact='Accepted')
@@ -1717,8 +1841,31 @@ class statusThroughfilter(APIView):
         serializer = job_post_activity_serializertest(filtered_data, many=True)
         return Response(serializer.data)
 
+class jobThroughfilter(APIView):
+    def get(self, request, job_post_id, format=None):
+        filtered_data = []
+        filtered_data = job_post_activity.objects.filter(job_post_id=job_post_id)
+        serializer = job_post_activity_serializertest(filtered_data, many=True)
+        return Response(serializer.data)
+
 class companynamefilter(APIView):
     def get(self, request, company_name, format=None, *args, **kwargs):
         filtered_data = company.objects.filter(company_name__icontains=company_name)
         serializer = company_serializer(filtered_data, many=True)
         return Response(serializer.data)
+        
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email,
+            'groups': user.groups.values_list('name', flat=True)
+        })
+
+# obtain_auth_token = CustomAuthToken.as_view()

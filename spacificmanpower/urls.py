@@ -10,6 +10,7 @@ router.register(r'groups', views.GroupViewSet)
 
 
 urlpatterns = [
+    path('auth-token/', views.CustomAuthToken.as_view()), #custom authentication token view
     path('', include(router.urls)),
 
     path('user_type/',views.usertype.as_view()),
@@ -77,4 +78,5 @@ urlpatterns = [
     path('gallery/<int:pk>/',views.editgallery.as_view()),
 
     path('statuswisefilter/<str:status>/',views.statusThroughfilter.as_view()),
+    path('jobwisefilter/<str:job_post_id>/',views.jobThroughfilter.as_view()),
 ]
