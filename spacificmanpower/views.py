@@ -979,7 +979,7 @@ class applyjob(APIView):
         # sender = 'support@pacificmanpower.com.pg'
         # destination = ['recruitment@pacificmanpower.com.pg', 'operations@pacificmanpower.com.pg', 'ashwitha@arohagroup.com', 'ashwitharao366@gmail.com']
         sender = settings.EMAIL_HOST_USER
-        destination = ['ashwitha@arohagroup.com', request.data.get('applicant_email')]
+        destination = ['ashwitha@arohagroup.com', applicant_email]
 
         # USERNAME = "ashwini@arohagroup.com"
         # PASSWORD = "I2GJS.]rYk^s321"
@@ -1039,7 +1039,7 @@ class applyjob(APIView):
         msg['Subject'] = subject
         msg['From'] = sender
         msg['To'] = ', '.join(destination)
-        msg['Reply-To'] = [request.data.get('applicant_email')]
+        msg['Reply-To'] = [applicant_email]
 
         # Create and attach the HTML content
         html_content = MIMEText(content, 'html')
@@ -1054,8 +1054,6 @@ class applyjob(APIView):
         cv_attachment.add_header('content-disposition', f'attachment', filename=cv_filename)
         msg.attach(cv_attachment)
 
-        reply_to = [request.data.get('applicant_email')]  # Specify the reply-to address here
-
         # Create EmailMessage object
         email = EmailMessage(subject, msg, sender, destination)
 
@@ -1064,7 +1062,7 @@ class applyjob(APIView):
         email.body = msg.as_string()
 
         # Add Reply-To header
-        email.reply_to = reply_to  # Specify the reply-to address here
+        email.reply_to = [applicant_email]  # Specify the reply-to address here
 
         # Send email
         email.send()
