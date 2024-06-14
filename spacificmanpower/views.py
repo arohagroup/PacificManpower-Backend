@@ -162,8 +162,16 @@ class userlogin(APIView):
 
         if user.password == password:
             
-            user_logData.last_login_date = datetime.now()
-            user_logData.save()
+            # Fetch the latest user_log entry for the specific user
+            user_logData = user_log.objects.filter(user=user).last()
+
+            if user_logData:
+                user_logData.last_login_date = datetime.now()
+                user_logData.save()
+            else:
+                # Handle case where no log entry exists for the user
+                user_logData = user_log(user=user, last_login_date=datetime.now())
+                user_logData.save()
             unique_id = get_random_string(length=32)
             return Response({"userid": user.id,"user_type_id": user.user_type_id.id,"username":user.first_name,"token": unique_id},status=status.HTTP_200_OK)
         else:
