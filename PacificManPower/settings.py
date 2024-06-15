@@ -88,7 +88,7 @@ DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': 'db.sqlite3',
-        'ENGINE': 'django.db.backends.mysql',
+        # 'ENGINE': 'django.db.backends.mysql',
         'ENGINE': 'mysql.connector.django',
         'NAME': 'pacificmanpower_django',
         'USER': 'pacificmanpower_pacificmanpower',
